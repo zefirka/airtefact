@@ -17,4 +17,4 @@ test:
 	npm test
 
 run:
-	node node/index.js
+	"C:\Program Files\nodejs\node.exe" node/index.js
