@@ -15,7 +15,7 @@ var InitMiddlewares     = require('./middlewares.js'),
 
 var app = express();
 
-/* Enviroment [dev, test]*/ 
+/* Enviroment [dev, test]*/
 var env = process.env.NODE_ENV || config.env || 'dev';
 
 InitMiddlewares(app);
@@ -38,21 +38,13 @@ if(env == 'dev'){
 /* Useragent enviroment configuration */
 app.use(express.static(config.public));
 
-
-/* Main route */
-app.get('/', function (req, res) {
-  res.render('index.jade', utils.getCtrl('index'));
-});
-
-
-
 module.exports = {
   init: function(router){
     router = router || InitRoutes;
-    return router(app);
+    router(app);
+    return app;
   },
   destruct: function(){
     console.log('should destruct app')
   }
 }
-

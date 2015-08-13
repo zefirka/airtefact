@@ -11,11 +11,11 @@ var config          = require('./config/config');
 
 module.exports = function(app){
 	/* Configure middlewares */
-	
-  app.use(bodyParser.urlencoded({ 
-    extended: true 
+
+  app.use(bodyParser.urlencoded({
+    extended: true
   }));
-	
+
   /* Body parser and cookie parser */
   app.use(bodyParser.json());
 	app.use(cookieParser());
@@ -26,7 +26,7 @@ module.exports = function(app){
 
 
   /* Jade configuration */
-  app.set('views', config.root + config.views);
+  app.set('views', config.views);
   app.set('view engine', 'jade');
   app.engine('jade', jade.__express);
 

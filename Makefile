@@ -10,8 +10,11 @@ ifeq ($(ENV),dev)
 	NPM_FLAGS=--dev
 endif
 
-static: 
+static:
 	gulp build:static
 
 test:
 	npm test
+
+run:
+	node node/index.js

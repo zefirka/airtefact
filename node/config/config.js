@@ -1,10 +1,8 @@
-
-
 function config(locale){
 	/* Private scope */
 
 	function rooty(path){
-		return __dirname + '../../' + path;
+		return __dirname + '/../../' + path;
 	}
 
 	/* End of private scope */
@@ -12,8 +10,8 @@ function config(locale){
 	return {
 		root: rooty(''),
 		public: rooty('public'),
-		views: rooty('public/views'),
-		
+		views: rooty('public/view'),
+
 		port: 2007,
 
 		meta: {
