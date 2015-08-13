@@ -1,5 +1,4 @@
 /* GULP modules */
-
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('gulp-browserify');
@@ -22,9 +21,8 @@ gulp.
 
 task('less:main', task('less:main', function () {
 
-  var stat  = pkg.front + 'static/',
-      src   = stat + 'styles/less/main.less',
-      dest  = stat + "styles/css"
+  var src   = _static + 'less/main.less',
+      dest  = _static + "css/"
   try{
     gulp.src(src)
         .pipe(less())
@@ -34,31 +32,33 @@ task('less:main', task('less:main', function () {
   }
 })).
 
-task('less:bootstrap', function () {
-  var stat =  pkg.front + 'static/',
-      src = stat + 'styles/less/bootstrap.less',
-      dest = stat + "styles/css";
+// task('less:bootstrap', function () {
+//   var stat =  pkg.front + 'static/',
+//       src = stat + 'styles/less/bootstrap.less',
+//       dest = stat + "styles/css";
+//
+//   try{
+//     gulp.src(src).pipe(less()).pipe(gulp.dest(dest));
+//   }catch(err){
+//     console.log(err);
+//   }
+// }).
 
-  try{
-    gulp.src(src).pipe(less()).pipe(gulp.dest(dest));
-  }catch(err){
-    console.log(err);
-  }
-}).
-
-task('less', ['less:main', 'less:bootstrap']).
+task('less', ['less:main']).
 task('styles', ['less']).
 
 task("scripts:build", task('Building scripts', function() {
-  gulp.src(pkg.front + 'static/js/app.js')
+  gulp.src(_static + 'js/app/app.js')
       .pipe(bfy({
-        insertGlobals : true,
-        debug : !gulp.env.production
+        insertGlobals : false,
+        debug : false
       }))
-      .pipe( gulp.dest(pkg.front + 'static/js/app/'))
+      .pipe( gulp.dest(_static + '/js'))
 })).
 
 task('scripts', ["scripts:build"]).
+
+task('build:static', ['scripts', 'styles']).
 
 task('default', function() {
   gulp.watch(_static + 'less/*.less', ['less']);

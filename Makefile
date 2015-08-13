@@ -10,6 +10,10 @@ ifeq ($(ENV),dev)
 	NPM_FLAGS=--dev
 endif
 
+build:
+	npm install
+	gulp build
+
 static:
 	gulp build:static
 
