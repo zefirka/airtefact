@@ -10,10 +10,24 @@ function config(locale){
 	/* End of private scope */
 
 	return {
+		root: rooty(''),
 		public: rooty('public'),
-		views: rooty('public/views')
+		views: rooty('public/views') 
+		
+		meta: {
+			favicon: rooty('public/favicon.png'),
+		}
 
-		defaultLocale: 'ru',
+		dev: {
+			logTime: {
+				repl: true,
+				file: false,
+			},
+			logMorgan: {
+				repl: false,
+				file: true
+			}
+		}
 	}
 }
 
