@@ -12,7 +12,7 @@ function config(locale){
 		public: rooty('public'),
 		views: rooty('public/view'),
 
-		port: 2007,
+		port: 7778,
 
 		meta: {
 			favicon: rooty('public/favicon.png'),
