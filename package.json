@@ -1,5 +1,5 @@
 {
-  "name": "airtefact",
+  "name": "nadmozg",
   "version": "0.0.1",
   "description": "Pretty AI Interface",
   "main": "node/index.js",
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zefirka/airtefact.git"
+    "url": "git+https://github.com/zefirka/nadmozg.git"
   },
   "keywords": [
     "ai"
@@ -16,9 +16,9 @@
   "author": "Trdat Mkrtchyan, Anton Standrik",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zefirka/airtefact/issues"
+    "url": "https://github.com/zefirka/nadmozg/issues"
   },
-  "homepage": "https://github.com/zefirka/airtefact#readme",
+  "homepage": "https://github.com/zefirka/nadmozg#readme",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-browserify": "^0.5.1",
