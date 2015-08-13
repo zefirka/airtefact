@@ -20,8 +20,6 @@ var server = App.listen(config.port, function () {
 
     console.log('App listening at http://127.0.0.1:%s', port);
 });
-<<<<<<< HEAD
-=======
 
 var io = require('socket.io')(server);
 io.sockets.on('connection', function (socket) {
@@ -30,4 +28,3 @@ io.sockets.on('connection', function (socket) {
      io.emit('getElement', element);
   });
 });
->>>>>>> origin/Branch
