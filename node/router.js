@@ -6,11 +6,15 @@ var jade = require('jade'),
 
 
 module.exports = function (app) {
-  app.get('/', function(req, res, next){
-    // отправляю отрендеренный jade
 
-    res.render('index.jade', extend({}, config, Ctrl()));
-  })
+  /* Роут главной страницы */
+  app.get('/', function(req, res, next){
+    res.render('index.jade', Ctrl('index'));
+  });
+
+  // app.get('/', function(req, res, next){
+  //   res.render('error404.jade', Ctrl('error404', req))
+  // });
 
   return app;
 }

@@ -35,5 +35,6 @@
     "ramda": "^0.17.1",
     "serve-favicon": "^2.3.0",
     "warden.js": "^0.4.1"
-  }
+  },
+  "front": "public/"
 }

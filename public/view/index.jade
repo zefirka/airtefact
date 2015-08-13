@@ -1,19 +1,7 @@
-doctype html
-block vars
-  - var language = locals.language;
+extend ./layout.jade
 
-block root
-  html(lang=language)
-    block head
-      head
-        include ./head.jade
-    body
-      .g-overlays
-        block overlays
-      .g-content
-        block content
-          h1 Hello from express.js
-      .g-footer
-        block footer
-      block scripts 
-        p1 сюда бы перетащить скрипты, а то они пока в хедере 
+block content
+  h1 Hello from express.js
+
+block footer
+  p1 footer

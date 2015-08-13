@@ -1,5 +1,3 @@
-var fs = require('fs');
-
 var config = require('./config/config');
 var express = require('./app');
 

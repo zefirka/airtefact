@@ -1,0 +1,20 @@
+doctype html
+block vars
+  - var language = locals.language;
+
+block root
+  html(lang=language)
+    block head
+      head
+        include ./head.jade
+    body
+      .g-overlays
+        block overlays
+      .g-content
+        block content
+      .g-footer
+        block footer
+      block scripts
+        - var scripts = locals.scripts || [];
+        each url in scripts
+          script(type='text/javascript',src=url)

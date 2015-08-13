@@ -20,8 +20,6 @@ module.exports = function(app){
   app.use(bodyParser.json());
 	app.use(cookieParser());
 
-
-
   //app.use(favicon(config.meta.favicon));
 
 
