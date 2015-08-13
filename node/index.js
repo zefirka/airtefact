@@ -21,10 +21,4 @@ var server = App.listen(config.port, function () {
     console.log('App listening at http://127.0.0.1:%s', port);
 });
 
-var io = require('socket.io')(server);
-io.sockets.on('connection', function (socket) {
-    socket.on('creator', function(msg){
-    var element = "<div style='width:40px;height:40px;background:red;position:absolute;left:" + msg.left + ";right:"+msg.right+"'/>";
-     io.emit('getElement', element);
-  });
-});
+express.initWebSocket(server);

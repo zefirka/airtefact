@@ -1,4 +1,5 @@
 var express         = require('express'),
+    ws              = require('socket.io'),
     jade            = require('jade'),
     cookieParser    = require('cookie-parser'),
     url             = require('url'),
@@ -38,11 +39,21 @@ if(env == 'dev'){
 /* Useragent enviroment configuration */
 app.use(express.static(config.public));
 
+
 module.exports = {
   init: function(router){
     router = router || InitRoutes;
     router(app);
     return app;
+  },
+  initWebSocket : function(server){
+    var io = ws(server);
+
+    io.sockets.on('connection', function (socket) {
+      socket.on('test', function(){
+        io.emit('hello', 'hello world');
+      });
+    });
   },
   destruct: function(){
     console.log('should destruct app')
