@@ -10,6 +10,13 @@ ifeq ($(ENV),dev)
 	NPM_FLAGS=--dev
 endif
 
+ifdef SystemRoot
+   NODE = "C:\Program Files\nodejs\node.exe"
+else
+   NODE = node
+endif
+
+
 build:
 	npm install
 	gulp build
@@ -21,4 +28,4 @@ test:
 	npm test
 
 run:
-	node node/index.js
+	$(NODE) node/index.js
