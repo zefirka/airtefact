@@ -1,15 +1,13 @@
 var express         = require('express'),
-    favicon         = require('serve-favicon'),
-    bodyParser      = require('body-parser'),
-    morgan          = require('morgan'),
     jade            = require('jade'),
     cookieParser    = require('cookie-parser'),
     url             = require('url'),
     fs              = require('fs'),
+    morgan,         // inited only in dev mode
     color;          // inited only in dev mode
 
 var config          = require('./config/config.js'),
-    expressUtils    = require('./utils/exrepss');
+    expressUtils    = require('./utils/express.js');
 
 
 var InitMiddlewares     = require('./middlewares.js'),
@@ -28,6 +26,7 @@ if(env == 'dev'){
 
   /* Configure morgan */
   if(config.dev.logMorgan){
+    morgan = require('morgan')
     app.use(morgan('dev'));
   }
 
@@ -37,7 +36,6 @@ if(env == 'dev'){
 }
 
 /* Useragent enviroment configuration */
-app.use(favicon(config.meta.favicon));
 app.use(express.static(config.public));
 
 

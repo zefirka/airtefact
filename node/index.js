@@ -1,6 +1,10 @@
 var fs = require('fs');
 
-var App = require('./app');
+var config = require('./config/config');
+var express = require('./app');
+
+var App = express.init();
+
 
 process.argv.forEach(function(arg){
   /* In case if want to use custom port */
@@ -13,9 +17,9 @@ process.argv.forEach(function(arg){
   }
 });
 
-var server = app.listen(config.port, function () {
+var server = App.listen(config.port, function () {
   var host = server.address().address,
       port = server.address().port;
 
-    console.log('App listening at http://%s:%s', host, port);
+    console.log('App listening at http://127.0.0.1:%s', port);
 });

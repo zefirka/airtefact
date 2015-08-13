@@ -7,9 +7,7 @@ var favicon         = require('serve-favicon'),
     fs              = require('fs'),
     color;          // inited only in dev mode
 
-var config          = require('./config/config.js'),
-    expressUtils    = require('./utils/exrepss');
-
+var config          = require('./config/config');
 
 module.exports = function(app){
 	/* Configure middlewares */
@@ -22,9 +20,18 @@ module.exports = function(app){
   app.use(bodyParser.json());
 	app.use(cookieParser());
 
+
+
+  //app.use(favicon(config.meta.favicon));
+
+
   /* Jade configuration */
   app.set('views', config.root + config.views);
   app.set('view engine', 'jade');
   app.engine('jade', jade.__express);
 
+}
+
+function uiDetect () {
+  return {}
 }
