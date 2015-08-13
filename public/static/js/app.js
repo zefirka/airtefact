@@ -3,7 +3,23 @@ var testModule = require('./modules/test.js');
 
 console.log(testModule.test);
 
-},{"./modules/test.js":2}],2:[function(require,module,exports){
+var socketModule = require('./modules/socket.js');
+
+socketModule.init();
+
+},{"./modules/socket.js":2,"./modules/test.js":3}],2:[function(require,module,exports){
+var socket = io();
+
+module.exports = {
+  init : function () {
+    socket.on('getElement', function(msg){
+      debugger
+      $('.g-content').append(msg);
+    });
+  }
+}
+
+},{}],3:[function(require,module,exports){
 module.exports = {
   test: 'Hello world!'
 }
