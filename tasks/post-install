@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-ln -fs $(pwd)/tasks/hooks/pre-commit $(pwd)/.git/hooks/pre-commit
-ln -fs $(pwd)/tasks/hooks/commit-msg $(pwd)/.git/hooks/commit-msg
+ln -fs $(pwd)/tasks/pre-commit $(pwd)/.git/hooks/pre-commit
+chmod 777 $(pwd)/tasks/*

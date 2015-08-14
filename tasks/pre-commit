@@ -1,7 +1,9 @@
 #!/bin/sh
 
+echo "Commit!"
+
 CSS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.css$/p'`
-JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -E '/\.js$/d' | sed -n '/\.js$/p'`
+JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }'  | sed -n '/\.js$/p'`
 TEST=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.test\.js$/p'`
 
 if [ "$CSS" ]; then
