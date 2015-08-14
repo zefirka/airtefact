@@ -7,4 +7,10 @@ $(function(){
   var socketModule = require('./modules/socket.js');
 
   socketModule.init();
-})
+
+  var $canvas = $('#game'),
+      canvasModule = require('./modules/canvas.js');
+
+  canvasModule.init($canvas);
+
+});

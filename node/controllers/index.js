@@ -13,7 +13,9 @@ if (env == 'prod') {
   scripts = [
     path(lib, 'jquery/dist/jquery.min.js'),
     path(lib, 'bootstrap/dist/js/bootstrap.min.js'),
-    path(lib, 'warden.js/dist/warden.min.js')
+    path(lib, 'warden.js/dist/warden.min.js'),
+		path(lib, 'socket.io-client/socket.io.js'),
+		path(jsc, 'app.js')
   ];
 }
 

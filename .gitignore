@@ -13,3 +13,4 @@ server/commit.js
 
 public/static/lib
 public/static/bundle
+public/static/js/app.js

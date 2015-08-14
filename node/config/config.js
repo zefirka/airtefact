@@ -8,6 +8,7 @@ function config(locale){
   /* End of private scope */
 
   return {
+    title : 'NADMOZG',
     root : rooty(''),
     public : rooty('public'),
     views : rooty('public/view'),

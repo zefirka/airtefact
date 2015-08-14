@@ -6,13 +6,18 @@ block vars
 
 
 block content
-  h1 Hello from express.js
-  .field
-    each row in rows
-      .row
-        each col in cols
-          .cell x
+  .container
+    h1!=title
+  .container
+    .row 
+      .col-md-8.col-lg-8.col-sm-12.col-xs-12
+        .b-game
+          canvas#play
+      .col-md-4.col-lg-4.col-sm-12.col-xs-12
+        .b-controls
+          p Тута будут контролы и всякая интерфейсная фигня
   
   
 block footer
-  p1 footer
+  .container
+    p1 footer
