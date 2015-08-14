@@ -1,34 +1,34 @@
 function config(locale){
-	/* Private scope */
+  /* Private scope */
 
-	function rooty(path){
-		return __dirname + '/../../' + path;
-	}
+  function rooty(path){
+    return __dirname + '/../../' + path;
+  }
 
-	/* End of private scope */
+  /* End of private scope */
 
-	return {
-		root: rooty(''),
-		public: rooty('public'),
-		views: rooty('public/view'),
+  return {
+    root : rooty(''),
+    public : rooty('public'),
+    views : rooty('public/view'),
+    static : rooty('public/static'),
+    port : 7778,
 
-		port: 7778,
+    meta : {
+      favicon : rooty('public/favicon.png'),
+    },
 
-		meta: {
-			favicon: rooty('public/favicon.png'),
-		},
-
-		dev: {
-			logTime: {
-				repl: true,
-				file: false,
-			},
-			logMorgan: {
-				repl: false,
-				file: true
-			}
-		}
-	}
+    dev : {
+      logTime : {
+        repl : true,
+        file : false,
+      },
+      logMorgan : {
+        repl : false,
+        file : true
+      }
+    }
+  };
 }
 
 
