@@ -1,0 +1,22 @@
+{
+  "name": "nadmozg",
+  "version": "0.0.1",
+  "homepage": "https://github.com/zefirka/nadmozg",
+  "authors": [
+    "Trdat Mkrtchyan",
+    "Anton Standrik"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "jQuery": "#1.11.1",
+    "boostrap": "#3.3.5",
+    "warden.js": "#0.4.1"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
