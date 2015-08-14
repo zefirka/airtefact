@@ -1,6 +1,5 @@
 var express         = require('express'),
     ws              = require('socket.io'),
-    jade            = require('jade'),
     cookieParser    = require('cookie-parser'),
     url             = require('url'),
     fs              = require('fs'),
@@ -22,12 +21,12 @@ var env = process.env.NODE_ENV || config.env || 'dev';
 InitMiddlewares(app);
 
 /* configuration for development */
-if(env == 'dev'){
+if (env == 'dev'){
   colors = require('colors');
 
   /* Configure morgan */
-  if(config.dev.logMorgan){
-    morgan = require('morgan')
+  if (config.dev.logMorgan){
+    morgan = require('morgan');
     app.use(morgan('dev'));
   }
 
@@ -41,7 +40,7 @@ app.use(express.static(config.public));
 
 
 module.exports = {
-  init: function(router){
+  init : function(router){
     router = router || InitRoutes;
     router(app);
     return app;
@@ -55,7 +54,7 @@ module.exports = {
       });
     });
   },
-  destruct: function(){
-    console.log('should destruct app')
+  destruct : function(){
+    console.log('should destruct app');
   }
-}
+};

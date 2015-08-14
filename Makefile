@@ -33,5 +33,4 @@ test:
 	npm test
 
 run:
-
 	$(NODE) node/index.js
