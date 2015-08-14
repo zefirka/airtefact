@@ -4,28 +4,26 @@ var sequence = new Queue();
 function Canvas(node){
   this.ctx = node.getContext('2d');
   this.node = node;
+  this.objects = [];
   paper.setup(node);
 }
 
-Canvas.prototype.draw = function(){
-  var path = new paper.Path();
-  path.strokeColor = 'black';
-  path.add(new paper.Point(30, 75));
-  path.add(new paper.Point(30, 25));
-  path.add(new paper.Point(80, 25));
-  path.add(new paper.Point(80, 75));
-  path.closed = true;
+Canvas.prototype.draw = function(drawning, options){
+  var obj = drawning();
+  obj.strokeColor = '#ff0000';
+  obj.fillColor = 'blue';
 
-  // Select the path, so we can see its handles:
-  path.fullySelected = true;
+  paper.view.draw();
+};
 
-  // Create a copy of the path and move it 100pt to the right:
-  var copy = path.clone();
-  copy.fullySelected = true;
-  copy.position.x += 100;
+Canvas.prototype.addObject = function(object){
+  this.objects.push(object);
+};
 
-  // Smooth the segments of the copy:
-  copy.smooth();
+Canvas.prototype.removeObject = function(object){
+  this.objects = this.objects.filter(function(o){
+    return o.id !== object.id;
+  }).slice();
 };
 
 function init(canvas){
