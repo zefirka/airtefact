@@ -1,23 +1,21 @@
-function Queue(){
-  this.data = [];
-}
-
-Queue.prototype.push = function(value){
-  this.data.push(value);
-};
-
-Queue.prototype.pop = function(){
-  return this.data.shift(0);
-};
-
+var Quere = require('../../utils/Queue.js');
 var sequence = new Queue();
 
+function Canvas(node){
+  this.ctx = node.getContext('2d');
+  this.node = node;
+
+}
+
+function init(canvas){
+  return new Canvas(canvas);
+}
+
+function put(state){
+  sequence.push(state);
+}
+
 module.exports = {
-  init : function($canvasObject){
-    /* Тута делаем рисование и все такое */
-    console.log('Hey! Canvas is ready!');
-  },
-  put : function(state){
-    sequence.push(state);
-  }
+  init : init,
+  put : put
 };
