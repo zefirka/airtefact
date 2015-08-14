@@ -6,9 +6,9 @@ CSS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }'
 JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }'  | sed -n '/\.js$/p'`
 TEST=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.test\.js$/p'`
 
-if [ "$CSS" ]; then
-  ./tasks/lint-css $CSS || ERRORS=1
-fi
+# if [ "$CSS" ]; then
+#   ./tasks/lint-css $CSS || ERRORS=1
+# fi
 
 if [ "$JS" ]; then
   ./tasks/lint-js $JS || ERRORS=1
