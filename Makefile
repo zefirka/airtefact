@@ -10,12 +10,17 @@ ifeq ($(ENV),dev)
 	NPM_FLAGS=--dev
 endif
 
+SUPERVISOR=$(shell supervisor 2>/dev/null)
+
 ifdef SystemRoot
    NODE = "C:\Program Files\nodejs\node.exe"
 else
    NODE = node
 endif
 
+ifdef SUPERVISOR
+	NODE = supervisor
+endif
 
 build:
 	npm install
@@ -28,4 +33,5 @@ test:
 	npm test
 
 run:
+
 	$(NODE) node/index.js

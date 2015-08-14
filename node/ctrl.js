@@ -1,13 +1,22 @@
 var extend = require('warden.js').Utils.extend;
 var config = require('./config/config.js');
 
-module.exports = function(name, req){
+/* Принимает название кейсета и объект HTTP-запроса и возвращает данные контроллера */
+function resolveControllerByName(name, req){
+
+  /* Данные по-умолчанию */
+  var data = extend({}, config, {url : req.url}),
+      ctrlData = {};
+
   try{
-    var data = require('./controllers/' + name);
+    ctrlData = require('./controllers' + name);
   }catch(error){
+    console.log('Controller: ' +  name +  ' not found!');
     console.trace();
-    throw error;
   }finally{
-    return extend({}, config, data, req);
+    return extend(data, ctrlData);
   }
+
 }
+
+module.exports = resolveControllerByName;
