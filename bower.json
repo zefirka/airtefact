@@ -8,9 +8,9 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "jQuery": "#1.11.1",
-    "boostrap": "#3.3.5",
-    "warden.js": "#0.4.1"
+    "jquery": "#1.11.1",
+    "bootstrap": "#3.3.5",
+    "warden.js": "latest"
   },
   "ignore": [
     "**/.*",

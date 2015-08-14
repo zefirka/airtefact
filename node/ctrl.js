@@ -14,6 +14,7 @@ function resolveControllerByName(name, req){
     console.log('Controller: ' +  name +  ' not found!');
     console.trace();
   }finally{
+    console.log(ctrlData);
     return extend(data, ctrlData);
   }
 

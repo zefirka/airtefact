@@ -11,7 +11,7 @@ function config(locale){
     root : rooty(''),
     public : rooty('public'),
     views : rooty('public/view'),
-    static : rooty('public/static'),
+    static : 'static',
     port : 7778,
 
     meta : {
