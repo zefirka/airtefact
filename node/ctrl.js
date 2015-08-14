@@ -9,7 +9,7 @@ function resolveControllerByName(name, req){
       ctrlData = {};
 
   try{
-    ctrlData = require('./controllers' + name);
+    ctrlData = require('./controllers/' + name);
   }catch(error){
     console.log('Controller: ' +  name +  ' not found!');
     console.trace();

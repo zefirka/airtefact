@@ -18,5 +18,5 @@ block root
         block footer
       block scripts
         - var scripts = locals.scripts || [];
-        each url in scripts
+        each url in scripts 
           script(type='text/javascript',src=url)
