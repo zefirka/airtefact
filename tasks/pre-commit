@@ -1,0 +1,19 @@
+#!/bin/sh
+
+CSS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.css$/p'`
+JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -E '/\.js$/d' | sed -n '/\.js$/p'`
+TEST=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.test\.js$/p'`
+
+if [ "$CSS" ]; then
+  ./tasks/lint-css $CSS || ERRORS=1
+fi
+
+if [ "$JS" ]; then
+  ./tasks/lint-js $JS || ERRORS=1
+fi
+
+if [ "$TEST" ]; then
+  ./tasks/lint-test-only $TEST || ERRORS=1
+fi
+
+exit $ERRORS
