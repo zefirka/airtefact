@@ -5,11 +5,12 @@ socket.init();
 
 $(function(){
 
-  Canvas.init(document.getElementById('game'));
+  var canvas = new Canvas(document.getElementById('play'));
 
+  canvas.draw();
 
   socket.transmit(function (diff){
-    Canvas.put(diff);
+    canvas.put(diff);
   });
 
 });

@@ -15,6 +15,7 @@ if (env == 'prod') {
     path(lib, 'bootstrap/dist/js/bootstrap.min.js'),
     path(lib, 'warden.js/dist/warden.min.js'),
 		path(lib, 'socket.io-client/socket.io.js'),
+		path(lib, 'paper/dist/paper-full.js'),
 		path(jsc, 'app.js')
   ];
 }
