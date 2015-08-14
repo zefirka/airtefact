@@ -12,11 +12,16 @@ Circle.prototype = new Point();
 Circle.prototype.draw = function(options){
   var self = this;
   this.ctx.draw(function(){
-    return new paper.Path.Circle({
+    self.present = new paper.Path.Circle({
       center : [self.x, self.y],
       radius : self.radius
     });
+    return self.present;
   }, options);
+};
+
+Circle.prototype.animate = function(){
+  this.present.fillColor.hue += 1;
 };
 
 module.exports = Circle;

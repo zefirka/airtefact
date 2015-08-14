@@ -2,7 +2,9 @@ var models = require('./models/models'),
     socket = require('./modules/socket'),
     Canvas = require('./modules/canvas');
 
+/* Первоначальная инициализация */
 socket.init();
+paper.install(window);
 
 $(function(){
 
