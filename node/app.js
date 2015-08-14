@@ -11,7 +11,8 @@ var config          = require('./config/config.js'),
 
 
 var InitMiddlewares     = require('./middlewares.js'),
-    InitRoutes          = require('./router.js');
+    InitRoutes          = require('./router.js'),
+    WebSocketMaster     = require('./socket.js');
 
 var app = express();
 
@@ -38,7 +39,6 @@ if (env == 'dev'){
 /* Useragent enviroment configuration */
 app.use(express.static(config.public));
 
-
 module.exports = {
   init : function(router){
     router = router || InitRoutes;
@@ -47,11 +47,8 @@ module.exports = {
   },
   initWebSocket : function(server){
     var io = ws(server);
-
     io.sockets.on('connection', function (socket) {
-      socket.on('test', function(){
-        io.emit('hello', 'hello world');
-      });
+      WebSocketMaster(socket);
     });
   },
   destruct : function(){

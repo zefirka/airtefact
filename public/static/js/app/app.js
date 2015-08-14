@@ -1,16 +1,15 @@
-var testModule = require('./modules/test.js');
+var socket = require('./modules/socket.js');
+var drawer = require('./modules/canvas.js');
 
-console.log(testModule.test);
-
+socket.init();
 
 $(function(){
-  var socketModule = require('./modules/socket.js');
+  var $canvas = $('#game');
+  drawer.init($canvas);
 
-  socketModule.init();
 
-  var $canvas = $('#game'),
-      canvasModule = require('./modules/canvas.js');
-
-  canvasModule.init($canvas);
+  socket.transmit(function (diff){
+    drawer.put(diff);
+  });
 
 });

@@ -9,3 +9,32 @@
   height: 20px;
   margin-bottom: 3px;
 }
+.b-players {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.b-players li {
+  white-space: nowrap;
+  margin-bottom: 10px;
+}
+.b-players li input {
+  display: inline-block;
+  width: 80%;
+  margin: 0 5px;
+}
+.b-players .glyphicon {
+  font-size: 22px;
+  display: inline-block;
+  margin: 0 5px;
+  position: relative;
+  top: 6px;
+}
+canvas {
+  border: solid 1px gray;
+  width: 100%;
+  min-height: 300px;
+}
+footer {
+  margin-top: 20px;
+}
