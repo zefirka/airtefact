@@ -6,15 +6,22 @@ var models = require('./models/models'),
 socket.init();
 paper.install(window);
 
-$(function(){
+$(function() {
 
   var canvas = new Canvas(document.getElementById('play'));
 
   var testShape = new models.Circle(40, 40, 15);
   testShape.attach(canvas).draw();
 
+  var osama = new models.Raster('Usama', {
+    src :'static/img/bin.png',
+    x : 200,
+    y : 150
+  });
 
-  socket.transmit(function (diff){
+  osama.attach(canvas).draw();
+
+  socket.transmit(function(diff) {
     canvas.put(diff);
   });
 
