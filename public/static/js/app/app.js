@@ -1,15 +1,16 @@
 var socket = require('./modules/socket.js');
 var drawer = require('./modules/canvas.js');
 
-socket.init();
+var socket = io();
 
 $(function(){
-  var $canvas = $('#game');
-  drawer.init($canvas);
 
-
-  socket.transmit(function (diff){
-    drawer.put(diff);
-  });
-
-});
+  socket.on('drawElements', function(res) {
+    console.log(res);
+  })
+  $('#summoner').click(function() {
+    console.log('emitted');
+    socket.emit('create', 'empty')
+  }
+)
+})

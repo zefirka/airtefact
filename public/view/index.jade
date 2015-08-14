@@ -9,7 +9,7 @@ block content
   .container
     h1!=title
   .container
-    .row 
+    .row
       .col-md-8.col-lg-8.col-sm-12.col-xs-12
         .b-game
           canvas#play
@@ -26,8 +26,10 @@ block content
               i.glyphicon.glyphicon-plus
               input.form-control(type="text" pid="1" placeholder="player id", value="Абдул раис Фатрих")
               i.glyphicon.glyphicon-cog
-              i.glyphicon.glyphicon-remove  
-  
+              i.glyphicon.glyphicon-remove
+            li.b-player
+              i.glyphicon.glyphicon-asterisk(id = 'summoner' )
+
 block footer
   footer
     .container

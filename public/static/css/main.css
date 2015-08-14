@@ -5,6 +5,9 @@
   margin-right: 3px;
   background: gray;
 }
+#summoner {
+  cursor: pointer;
+}
 .row {
   height: 20px;
   margin-bottom: 3px;
