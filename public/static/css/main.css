@@ -5,12 +5,15 @@
   margin-right: 3px;
   background: gray;
 }
-#summoner {
+.glyphicon {
   cursor: pointer;
 }
 .row {
   height: 20px;
   margin-bottom: 3px;
+}
+.actionList {
+  height: 50px;
 }
 .b-players {
   padding: 0;

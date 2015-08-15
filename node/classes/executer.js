@@ -20,6 +20,5 @@ function DrawAll(socket) {
     var obj = {posX : el.position.X, posY : el.position.Y};
     bag.push(obj);
   }
-  console.log(bag);
   socket.emit('drawElements',bag);
 }

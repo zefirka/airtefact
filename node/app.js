@@ -51,17 +51,39 @@ module.exports = {
   initWebSocket : function(server){
     var io = ws(server);
     io.sockets.on('connection', function (socket) {
+      socket.on('play', function() {
+        logics.Execute(io.sockets);
+      });
       socket.on('create', function() {
-        console.log('in create');
-        var el = factory.Element();
+        console.log("create ");
+        var el = new factory.Element();
         logics.Elements.push(el);
+        socket.emit('appendInterface', {});
+      });
+      socket.on('MoveLeft', function(e) {
+        console.log("MoveLeft");
+        console.log(e);
+        for(var i = 0; i < logics.Elements.length; i++) {
+          if (logics.Elements[i].ID == e.ID) {
+            logics.Elements[i].SetAction(factory.Move, {posX : -5, posY : 0});
+          }
+        }
+      });
+      socket.on('MoveRight', function(e) {
+        console.log("MoveRight");
+        console.log(e);
+        for(var i = 0; i < logics.Elements.length; i++) {
+          if (logics.Elements[i].ID == e.ID) {
+            logics.Elements[i].SetAction(factory.Move, {posX : 5, posY : 0});
+          }
+        }
       });
       WebSocketMaster(socket);
     });
 
-    setInterval(function() {
-      logics.Execute(io.sockets);
-    }, 1000);
+    //setInterval(function() {
+    //
+    //}, 2000);
   },
   destruct : function(){
     console.log('should destruct app');
