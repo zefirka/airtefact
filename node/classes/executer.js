@@ -6,17 +6,18 @@ module.exports = {
   DrawAll(socket);
 },
   Elements :[]
-}
+};
 
 function ActAll() {
-  for(var e in module.exports.Elements) {
-    e.DoAction();
+  for(var i = 0; i < module.exports.Elements.length; i++) {
+    module.exports.Elements[i].DoAction();
   }
 }
 function DrawAll(socket) {
-  var bag = []
-  for(var e in module.exports.Elements){
-    var obj = {posX : e.position.X, posY : e.position.Y};
+  var bag = [];
+  for(var i = 0; i < module.exports.Elements.length; i++){
+    var el =   module.exports.Elements[i];
+    var obj = {posX : el.position.X, posY : el.position.Y};
     bag.push(obj);
   }
   console.log(bag);

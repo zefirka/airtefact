@@ -14,8 +14,8 @@ var InitMiddlewares     = require('./middlewares.js'),
     InitRoutes          = require('./router.js'),
     WebSocketMaster     = require('./socket.js');
 
-var factory = require('./classes/element.js')
-var logics = require('./classes/executer.js')
+var factory = require('./classes/element.js');
+var logics = require('./classes/executer.js');
 
 var app = express();
 
@@ -53,13 +53,14 @@ module.exports = {
     io.sockets.on('connection', function (socket) {
       socket.on('create', function() {
         console.log('in create');
-        logics.Elements.push(factory.Element());
-      })
+        var el = factory.Element();
+        logics.Elements.push(el);
+      });
       WebSocketMaster(socket);
     });
 
     setInterval(function() {
-      logics.Execute(io.sockets)
+      logics.Execute(io.sockets);
     }, 1000);
   },
   destruct : function(){

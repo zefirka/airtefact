@@ -15,15 +15,16 @@ function Move(element, destination) {
 module.exports = {
 
   Element : function() {
-    this.position = {X :0, Y :0}
+    this.position = {X :0, Y :0};
     this.ID = 0;
     this.Action = Idle;
 
     this.DoAction = function() {
-      Action();
-    }
+      this.Action();
+    };
     this.AbortActive = function() {
-      Action = Idle;
-    }
+      this.Action = Idle;
+    };
+    return this;
   }
-}
+};

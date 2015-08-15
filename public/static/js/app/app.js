@@ -1,16 +1,23 @@
 var socket = require('./modules/socket.js');
 var drawer = require('./modules/canvas.js');
 
-var socket = io();
+socket = io();
 
 $(function(){
+  var $canvas = $('#game');
+  drawer.init($canvas);
 
-  socket.on('drawElements', function(res) {
-    console.log(res);
-  })
+  socket.on('drawElements', function(bag) {
+    //console.log(bag);
+    var c = $('#play')[0];
+    var ctx  = c.getContext('2d');
+    for(var i = 0; i < bag.length; i++) {
+      ctx.fillRect(bag[i].posX, bag[i].posY, 20,20);
+    }
+  });
   $('#summoner').click(function() {
-    console.log('emitted');
-    socket.emit('create', 'empty')
-  }
-)
-})
+    socket.emit('create','empty');
+  });
+
+
+});
