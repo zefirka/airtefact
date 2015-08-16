@@ -20,7 +20,7 @@ $(function() {
     $('.actionList').text('');
 
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
-    canvas.ctx.clearRect(0, 0, c.width, c.height);
+    canvas.ctx.clearRect(0, 0, canvas.node.width, canvas.node.height);
     for(var i = 0; i < bag.length; i++) {
       canvas.ctx.fillRect(bag[i].posX, bag[i].posY, 20,20);
     }

@@ -22,7 +22,7 @@ module.exports = {
         this.Action.Params = this.actions[0].Params;
       }
       this.Action.Act(this, this.Action.Params);
-      this.actions.pop();
+      this.actions.shift();
 
     };
     this.AbortActive = function() {
