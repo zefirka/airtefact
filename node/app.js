@@ -52,20 +52,23 @@ module.exports = {
     var io = ws(server);
     io.sockets.on('connection', function (socket) {
       socket.on('play', function() {
-        logics.Execute(io.sockets);
+        setInterval(function() {
+          logics.Execute(io.sockets);
+        },1000);
       });
       socket.on('create', function() {
         console.log("create ");
         var el = new factory.Element();
         logics.Elements.push(el);
         socket.emit('appendInterface', {});
+        logics.Execute(io.sockets);
       });
       socket.on('MoveLeft', function(e) {
         console.log("MoveLeft");
         console.log(e);
         for(var i = 0; i < logics.Elements.length; i++) {
           if (logics.Elements[i].ID == e.ID) {
-            logics.Elements[i].SetAction(factory.Move, {posX : -5, posY : 0});
+            logics.Elements[i].AddAction(factory.Move, {posX : -5, posY : 0});
           }
         }
       });
@@ -74,7 +77,7 @@ module.exports = {
         console.log(e);
         for(var i = 0; i < logics.Elements.length; i++) {
           if (logics.Elements[i].ID == e.ID) {
-            logics.Elements[i].SetAction(factory.Move, {posX : 5, posY : 0});
+            logics.Elements[i].AddAction(factory.Move, {posX : 5, posY : 0});
           }
         }
       });
