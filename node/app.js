@@ -43,9 +43,9 @@ if (env == 'dev'){
 app.use(express.static(config.public));
 
 var actionsDict = {MoveLeft : {Action : factory.Move, Params :  {posX : -5, posY : 0}},
-MoveRight : {Action : factory.Move, Params :  {posX : 5, posY : 0}},
-MoveDown : {Action : factory.Move, Params :  {posX : 0, posY : 5}},
-MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
+  MoveRight : {Action : factory.Move, Params :  {posX : 5, posY : 0}},
+  MoveDown : {Action : factory.Move, Params :  {posX : 0, posY : 5}},
+  MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
 };
 
 
