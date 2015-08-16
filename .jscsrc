@@ -23,7 +23,6 @@
     "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
     "requireCapitalizedConstructors": true,
     "requireCurlyBraces": [ "if", "for", "while", "do" ],
-    "requireDotNotation": true,
     "requireKeywordsOnNewLine": null,
     "requireLineFeedAtFileEnd": true,
     "requireOperatorBeforeLineBreak": true,

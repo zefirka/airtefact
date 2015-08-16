@@ -45,5 +45,10 @@ module.exports = {
     elem.position.X += relative.posX;
     elem.position.Y += relative.posY;
     console.log(elem.position);
+  },
+  GetElementsById : function(ID) {
+    return logics.Elements.filter(function(a) {
+      return a.ID == ID;
+    });
   }
 };

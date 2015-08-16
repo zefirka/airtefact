@@ -15,12 +15,11 @@ block content
           canvas#play
       .col-md-4.col-lg-4.col-sm-12.col-xs-12
         h2 Моя команда
-        i.glyphicon.glyphicon-play(id='Go')
         .b-controls
+            i.glyphicon.glyphicon-asterisk(id = 'summoner' )
+            textarea(rows=5, class="commandLine")
+            i.glyphicon.glyphicon-play(id='Go')
           ul.b-players
-            li.b-player
-              i.glyphicon.glyphicon-asterisk(id = 'summoner' )
-
 block footer
   footer
     .container

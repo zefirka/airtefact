@@ -42,6 +42,15 @@ if (env == 'dev'){
 /* Useragent enviroment configuration */
 app.use(express.static(config.public));
 
+var actionsDict = {MoveLeft : {Action : factory.Move, Params :  {posX : -5, posY : 0}},
+MoveRight : {Action : factory.Move, Params :  {posX : 5, posY : 0}},
+MoveDown : {Action : factory.Move, Params :  {posX : 0, posY : 5}},
+MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
+};
+
+
+
+
 module.exports = {
   init : function(router){
     router = router || InitRoutes;
@@ -51,10 +60,17 @@ module.exports = {
   initWebSocket : function(server){
     var io = ws(server);
     io.sockets.on('connection', function (socket) {
-      socket.on('play', function() {
-        setInterval(function() {
-          logics.Execute(io.sockets);
-        },1000);
+      socket.on('play', function(res) {
+        var commands = res.toString().split(',');
+        commands.forEach(function(elem,index) {
+          var ID = elem.split(':')[0];
+          var ActionName =  elem.split(':')[1];
+          var Action = actionsDict[ActionName].Action;
+          var Params =  actionsDict[ActionName].Params;
+          factory.GetElementsById(ID).map(function(a) {
+            a.AddAction(Action, Params);
+          });
+        });
       });
       socket.on('create', function() {
         console.log("create ");
@@ -63,25 +79,10 @@ module.exports = {
         socket.emit('appendInterface', {});
         logics.Execute(io.sockets);
       });
-      socket.on('MoveLeft', function(e) {
-        console.log("MoveLeft");
-        console.log(e);
-        for(var i = 0; i < logics.Elements.length; i++) {
-          if (logics.Elements[i].ID == e.ID) {
-            logics.Elements[i].AddAction(factory.Move, {posX : -5, posY : 0});
-          }
-        }
-      });
-      socket.on('MoveRight', function(e) {
-        console.log("MoveRight");
-        console.log(e);
-        for(var i = 0; i < logics.Elements.length; i++) {
-          if (logics.Elements[i].ID == e.ID) {
-            logics.Elements[i].AddAction(factory.Move, {posX : 5, posY : 0});
-          }
-        }
-      });
       WebSocketMaster(socket);
+      setInterval(function() {
+        logics.Execute(io.sockets);
+      },1000);
     });
 
     //setInterval(function() {

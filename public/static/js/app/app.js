@@ -9,20 +9,8 @@ $(function(){
 
   socket.on('appendInterface', function() {
     var list = $('.b-players');
-    var length = list.children().length;
-    var id = "element" + length;
-    list.append(' <li class="b-player ' +id +'"><span>' + length +
-    ': </span><i class="glyphicon glyphicon-arrow-left ' +
-    id +'"/><i class="glyphicon glyphicon-arrow-right ' +
-    id +'"/></li>');
-    $('.glyphicon-arrow-left.' + id).click(function() {
-      socket.emit('MoveLeft', {ID : length});
-      $('.b-player.' + id).append('MoveLeft ');
-    });
-    $('.glyphicon-arrow-right.' + id).click(function() {
-      socket.emit('MoveRight', {ID : length});
-      $('.b-player.' + id).append('MoveRight ');
-    });
+    var id = list.children().length + 1;
+    $('ul.b-players').append('<li class="b-player">' +id +'</li>');
   });
   socket.on('drawElements', function(bag) {
     //console.log(bag);
@@ -38,7 +26,7 @@ $(function(){
     socket.emit('create','empty');
   });
   $('#Go').click(function() {
-    socket.emit('play','empty');
+    socket.emit('play',$('.commandLine').val());
   });
 
 
