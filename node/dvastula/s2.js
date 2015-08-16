@@ -81,7 +81,7 @@ function typenizer(token, index, expression) {
 
 /* Служебные функции */
 function wrap(keyset, key) {
-  return 'function(){ return $' + keyset + '["' + key + '"]; }';
+  return 'function deref(scope){ return scope.$' + keyset + '["' + key + '"]; }';
 }
 
 function stringSwipeOn(s) {
