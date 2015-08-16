@@ -24,7 +24,7 @@ function startRepl(){
         cmd = cmd.slice(1, -2);
 
         var res = s2(cmd);
-        callback(nul, res);
+        callback(null, res);
       } else {
         callback(null);
       }
