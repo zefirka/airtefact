@@ -9,7 +9,7 @@ function isNumber(token) {
 
 function isString(token) {
   return (token[0] == '"' && token[token.length - 1] == '"') ||
-          (token[0] == '\'' && token[token.length - 1] == '\'');
+         (token[0] == '\'' && token[token.length - 1] == '\'');
 }
 
 function isExpression(token) {
@@ -21,7 +21,7 @@ function isGlobalToken(token) {
 }
 
 function isDelim(token) {
-  return token == ']' || token == ']' || token == ':';
+  return token == '[' || token == ']' || token == ':';
 }
 
 function isId(token) {

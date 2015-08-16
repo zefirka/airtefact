@@ -7,7 +7,6 @@ module.exports = Translator;
   @param {string} source  - Строка кода на языке DVASTULA
   @return {array}         - Массив JS - который исполняет интерпретатор
 */
-
 function Translator(source) {
   var js = toJs(tokeinzer(source));
   return (function() {
@@ -24,6 +23,7 @@ function tokeinzer(source) {
   var seqs = source .replace(/\[/g, ' [ ')
                     .replace(/\]/g, ' ] ')
                     .replace(/\#.+(\n|$)/g, '') //cut of comments
+                    .replace(/\".*?\"/g, stringSwipeOn)
                     .replace(/\'.*?\'/g, stringSwipeOn)
                     .replace(/\{.*?\}/g, stringSwipeOn);
 
@@ -50,7 +50,6 @@ function toJs(struct) {
   @return {mixed}
 */
 function typenizer(token, index, expression) {
-
   var result = '';
 
   if (is.global(token)) {
