@@ -10,17 +10,17 @@ var favicon         = require('serve-favicon'),
 var config          = require('./config/config');
 
 module.exports = function(app){
-	/* Configure middlewares */
+  /* Configure middlewares */
 
   app.use(bodyParser.urlencoded({
-    extended: true
+    extended : true
   }));
 
   /* Body parser and cookie parser */
   app.use(bodyParser.json());
-	app.use(cookieParser());
+  app.use(cookieParser());
 
-  //app.use(favicon(config.meta.favicon));
+  app.use(favicon(config.meta.favicon));
 
 
   /* Jade configuration */
@@ -28,8 +28,8 @@ module.exports = function(app){
   app.set('view engine', 'jade');
   app.engine('jade', jade.__express);
 
-}
+};
 
 function uiDetect () {
-  return {}
+  return {};
 }
