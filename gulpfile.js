@@ -2,6 +2,7 @@
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('gulp-browserify'),
+    bower   = require('gulp-bower'),
     jsdoc   = require('gulp-jsdoc');
 
 var color   = require('colors'),
@@ -34,6 +35,12 @@ task('less:main', task('less:main', function () {
   }
 })).
 
+task('bower', function(){
+  return bower({
+    directory : _static + 'lib'
+  });
+}).
+
 task('less', ['less:main']).
 task('styles', ['less']).
 
@@ -48,12 +55,14 @@ task('scripts:build', task('Building scripts', function() {
 
 task('scripts', ['scripts:build']).
 
+task('build', ['bower', 'build:static', 'docs']).
+
 task('build:static', ['scripts', 'styles']).
 
 task('docs', task('Generation documentation', function () {
-  gulp.src('./node/*.js')
+  gulp.src(['./node/*.js', './node/**/*.js'])
       .pipe(jsdoc.parser())
-      .pipe(gulp.dest('./docs'));
+      .pipe(jsdoc.generator('./docs'));
 })).
 
 task('default', function() {

@@ -1,0 +1,17 @@
+{
+  "templates": {
+    "systemName"            : "nadmozg",
+    "footer"                : "{string}",
+    "copyright"             :  "{string}",
+    "navType"               : "vertical",
+    "theme"                 : "simplex",
+    "linenums"              : true,
+    "collapseSymbols"       : true,
+    "inverseNav"            : false,
+    "outputSourceFiles"     : true ,
+    "outputSourcePath"      : false,
+    "dateFormat"            : "DD-MMM-YYYY hh:mm Z",
+    "highlightTutorialCode" : true,
+    "syntaxTheme"           : "default"
+  }
+}

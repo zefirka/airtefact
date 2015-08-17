@@ -24,8 +24,7 @@ endif
 
 build:
 	npm install
-	bower install
-	gulp build:static
+	gulp build
 
 static:
 	gulp build:static

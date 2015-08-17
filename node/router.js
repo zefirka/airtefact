@@ -6,14 +6,33 @@ var Ctrl = require('./ctrl.js'),
     extend = require('warden.js').Utils.extend;
 
 /**
-  Модуль выолняющий логику компоновки событий сокета.
-  Все передачи данных и формирование событий должны происходить
-  в этом модуле.
-  @module router
+  Модуль выполняющий логику роутинга веб-приложения.
+  Все роуты, должны быть описанны в этом модуле или подключаться сюда.
+  @module node/router
 */
-module.exports = function (app) {
 
-  /* Роут главной страницы */
+/**
+  Проверяет существует ли данный файл.
+
+  @todo Выделить в отдельный util, чтобы потом можно было пользоваться
+
+  @param {string} url Адрес файла в fs
+  @param {function} yes Коллбэк, вызывается, если файл найден
+  @param {function} no Коллбэк, вызывается, если файл не найден
+*/
+function isFileExist(url, yes, no){
+  return fs.stat(url, function(err){
+    return err ? yes() : no();
+  });
+}
+
+/**
+  Принимает объект приложения и задает ему роутинги.
+  @public
+  @param {object} app Express.js приложение
+  @return {object} конфигурированное Express.js приложение с готовым роутингом
+*/
+function router(app) {
   app.get('/', function(req, res, next){
     res.render('index.jade', Ctrl('index', req));
   });
@@ -21,17 +40,19 @@ module.exports = function (app) {
   app.all('/*', function(req, res, next){
     var url = req.url;
 
-    console.log(url);
-
-    fs.stat(url, function(err){
-     if (err){
-       res.render('error404.jade', Ctrl('error404', req));
-     }else{
-       res.sendFile(url);
-     }
-     next();
-   });
+    isFileExist(url,
+      function(){
+        res.sendFile(url);
+        next();
+      },
+      function(){
+        res.render('error404.jade', Ctrl('error404', req));
+        next();
+      }
+    );
   });
 
   return app;
-};
+}
+
+module.exports = router;
