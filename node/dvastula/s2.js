@@ -20,6 +20,7 @@ function Translator(source) {
   @return {array}
 */
 function tokeinzer(source) {
+  source = source.toString();
   var seqs = source .replace(/\[/g, ' [ ')
                     .replace(/\]/g, ' ] ')
                     .replace(/\#.+(\n|$)/g, '') //cut of comments
@@ -52,17 +53,11 @@ function toJs(struct) {
 function typenizer(token, index, expression) {
   var result = '';
 
-  if (is.global(token)) {
-    result = wrap('G', token.slice(1));
-  }else
-  if (is.refer(token)) {
-    result = wrap('D', token.slice(1));
+  if (is.expr(token)) {
+    result = wrap(token);
   }else
   if (is.id(token)) {
-    result = wrap('I', token);
-  }else
-  if ( is.expr(token)) {
-    result = wrap('E', token.slice(1,-1));
+    result = wrap(token);
   }else {
     result = token;
   }
@@ -80,8 +75,8 @@ function typenizer(token, index, expression) {
 }
 
 /* Служебные функции */
-function wrap(keyset, key) {
-  return 'function deref(scope){ return scope.$' + keyset + '["' + key + '"]; }';
+function wrap(key) {
+  return '"' + key + '"';
 }
 
 function stringSwipeOn(s) {

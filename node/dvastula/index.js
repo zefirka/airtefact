@@ -2,102 +2,123 @@
   * Модуль реализует компилятор dvastula
   *
   */
-
-var utils = require('warden.js').Utils,
+var beautify = require('js-beautify').js_beautify,
+    utils = require('warden.js').Utils,
     toArray   = utils.toArray,
+    interpolate = utils.interpolate,
     is = utils.is;
 
 var Errors  = require('./maps/errors.js'),
-    s2      = require('./s2.js');
+    s2      = require('./s2.js'),
+    lang    = require('./lang');
 
-var res =  {
+var Dvastula =  {
   parse : function (dvastula){
     return s2(dvastula);
   },
   invoke : function (js){
     return Interpreter(js, true);
   },
-  compile : function (source){
+  compile : function (){
+    var source = require('fs').readFileSync('test.ss2', {encoding : 'utf-8'});
+    var res = interpolate(wrapper, {
+      fname : 'comp',
+      arg_name : 'globalEnv',
+      body : Compiler(s2(source)),
+      context : 'globalScope',
+      arg_values : 'void 0'
+    });
 
+    require('fs').writeFileSync('result.js', beautify(res, { indent_size : 2 }));
+    return res;
   },
   setup : function (config){
 
   }
 };
 
-function Interpreter(struct, fromParent){
-  var CurrentScope = D2Scope;
+var wrapper = '(function {{fname}}({{arg_name}}){\n\t{{body}}\n}).call({{context}},{{arg_values}});';
+var _throwError = '(function(){throw "Error"})()';
+function evalForm(js){
+  return 'eval("(function(){ return ' + exprForm(js) + '; }).call(this);");';
+}
 
-  if (!struct.length){
-    return '';
-  }
+function funcForm(js){
+  return '(function(){ return ' + exprForm(js) + '; }).call(this)';
+}
 
-  function invoke(js){
-    console.log('Invoking: ', js);
+function exprForm(js){
+  return js .slice(1,-1)
+            .replace(/(@[a-z\$_][\$_a-z0-9\.]*)/gm, function(a,b){
+              return 'this.get("' + a.slice(1)  + '")';
+            })
+            .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gm, function(a,b){
+              return 'global.get("' + a.slice(1)  + '")';
+            });
+}
 
+function Compiler(source){
+  return source.map(translate).join('\n\n\t');
+}
 
-    var position = 0;
-    while(position < js.length){
-      var instance = js[position];
+/* Транслитерация объектов JS - в директивы */
+function translate(js){
+  if (is.array(js)){
 
-      if (instance.name == 'deref'){
-        instance = instance(CurrentScope);
+    var pos = 0;
+    while(pos < js.length ){
+      var statement = js[pos];
+
+      /*
+        Trying to deref statement
+       */
+      if (Lang.public[statement]) {
+        statement = Lang.public[statement];
+      }else
+      if (Lang.private[statement]) {
+        statement = Lang.public[statement];
       }
 
-      if (is.array(instance)){
-        instance = invoke(instance);
+
+      if (pos === 0 && !is.fn(statement) ){
+        return _throwError;
       }
 
-      if (!is.fn(instance)){
-        throw SyntaxError(instance);
+      if (pos === 0 && is.fn(statement)) {
+        js = statement.apply(null, js.slice(1));
       }else{
-        console.log('here');
-        js = instance.apply(CurrentScope, js.slice(1));
+        if (is.array(statement)){
+          statement = statement.map(translate);
+          js[pos] = statement;
+        }
       }
+
+      pos++;
     }
-    console.log(js);
     return js;
-  }
 
-  return struct.map(invoke);
-}
+  }else{
 
-function define(scope, name, fn, arity){
-  scope[name] = function (){
-    var argv = toArray(arguments),
-        argc = argv.length;
-
-    if (arity && arity !== argc){
-      console.trace();
-      throw intp(ArityError, name, arity, argc);
+    if ( /^\{.+\}$/.test(js) ){
+      return funcForm(js);
+    } else {
+      return js;
     }
 
-    return fn.apply(scope, arguments);
-  };
-}
-
-function Scope(elems){
-  if (elems){
-    utils.extend(this, elems);
   }
 }
 
-Scope.prototype.set = function (name, value) {
-  this.name = value;
+var Lang = {
+  public : {
+
+  },
+  private : {
+
+  }
 };
 
-var ReservedScope = new Scope();
+lang(Lang.public, translate, Lang.private);
 
-var D2Scope = {
-  $I : ReservedScope,
-  $D : {}
+module.exports = Dvastula;
 
-};
-
-define(ReservedScope, 'def', function(name, value){
-  console.log(this);
-  this.set(name, value);
-  return value;
-}, 2);
-
-res.invoke(res.parse('[def x 10]'));
+Dvastula.compile();

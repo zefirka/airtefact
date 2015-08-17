@@ -31,20 +31,5 @@ function startRepl(){
     }
   });
 }
-//
-// if(process.argv.length == 3){
-//   var filename = process.argv.pop();
-//   require('fs').readFile(filename, {encoding: 'utf-8'}, function(err, data){
-//     if(err){
-//       if(filename == "-r"){
-//         startRepl();
-//       }else{
-//         throw err;
-//       }
-//     }else{
-//       Jisp.Eval(data);
-//     }
-//   })
-// }
 
 startRepl();
