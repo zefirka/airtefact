@@ -5,7 +5,12 @@ var Ctrl = require('./ctrl.js'),
     config = require('./config/config'),
     extend = require('warden.js').Utils.extend;
 
-
+/**
+  Модуль выолняющий логику компоновки событий сокета.
+  Все передачи данных и формирование событий должны происходить
+  в этом модуле.
+  @module router
+*/
 module.exports = function (app) {
 
   /* Роут главной страницы */

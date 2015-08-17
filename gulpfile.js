@@ -1,9 +1,11 @@
 /* GULP modules */
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
-    bfy     = require('gulp-browserify');
+    bfy     = require('gulp-browserify'),
+    jsdoc   = require('gulp-jsdoc');
 
-var color   = require('colors');
+var color   = require('colors'),
+    pkg     = require('./package.json');
 
 var _static = 'public/static/',
     _server = 'node/';
@@ -47,6 +49,12 @@ task('scripts:build', task('Building scripts', function() {
 task('scripts', ['scripts:build']).
 
 task('build:static', ['scripts', 'styles']).
+
+task('docs', task('Generation documentation', function () {
+  gulp.src('./node/*.js')
+      .pipe(jsdoc.parser())
+      .pipe(gulp.dest('./docs'));
+})).
 
 task('default', function() {
   gulp.watch(_static + 'less/*.less', ['less']);
