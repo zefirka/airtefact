@@ -1,19 +1,14 @@
+/**
+  * Модуль реализует компилятор dvastula
+  *
+  */
+
 var utils = require('warden.js').Utils,
     toArray   = utils.toArray,
-    intp      = utils.interpolate,
-    is        = utils.is;
+    is = utils.is;
 
-
-function ArityError(a,b,c){
-  return intp('Aritye Error: function {{0}} exptect {{1}} arguments but {{2}} recieved.',a,b,c);
-}
-
-function SyntaxError(a){
-  return intp('SyntaxError: {{0}} is not a defined method.', a);
-}
-
-var deref = require('./deref.js'),
-    s2    = require('./s2.js');
+var Errors  = require('./maps/errors.js'),
+    s2      = require('./s2.js');
 
 var res =  {
   parse : function (dvastula){
