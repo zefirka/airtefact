@@ -5,10 +5,22 @@ var models = require('./models/models'),
 /* Первоначальная инициализация */
 socket.init();
 paper.install(window);
+var InfoBag = {};
 
 $(function() {
   var canvas = new Canvas(document.getElementById('play'));
-
+  var mousePos;
+  canvas.node.addEventListener('mousemove', function(evt) {
+    mousePos = getMousePos(canvas, evt);
+    InfoBag.MousePos = mousePos;
+  }, false);
+  function getMousePos(canvas, evt) {
+          var rect = canvas.node.getBoundingClientRect();
+          return {
+            X : evt.clientX - rect.left,
+            Y : evt.clientY - rect.top
+          };
+        }
   socket.on('appendInterface', function() {
     var list = $('.b-players');
     var id = list.children().length + 1;
@@ -22,7 +34,8 @@ $(function() {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
     canvas.ctx.clearRect(0, 0, canvas.node.width, canvas.node.height);
     for(var i = 0; i < bag.length; i++) {
-      canvas.ctx.fillRect(bag[i].posX, bag[i].posY, 20,20);
+      var fig = bag[i];
+      canvas.ctx.fillRect(bag[i].X, bag[i].Y, 20,20);
     }
   });
 
@@ -32,7 +45,11 @@ $(function() {
 
   $('#Go').click(function() {
     socket.emit('play',$('.commandLine').val());
+
   });
+  setInterval(function() {
+    socket.emit('ping', InfoBag);
+  }, 500);
 
   /* Вот так я работаю с моделями на фронтенде */
   // var testShape = new models.Circle(40, 40, 15);

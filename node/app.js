@@ -48,8 +48,7 @@ var actionsDict = {MoveLeft : {Action : factory.Move, Params :  {posX : -5, posY
   MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
 };
 
-
-
+var RulesDict = {FollowCursor : {Rule : factory.FollowCursor}};
 
 module.exports = {
   init : function(router){
@@ -59,17 +58,30 @@ module.exports = {
   },
   initWebSocket : function(server){
     var io = ws(server);
+    var infoCollector = [];
     io.sockets.on('connection', function (socket) {
       socket.on('play', function(res) {
         var commands = res.toString().split(',');
         commands.forEach(function(elem,index) {
-          var ID = elem.split(':')[0];
-          var ActionName =  elem.split(':')[1];
-          var Action = actionsDict[ActionName].Action;
-          var Params =  actionsDict[ActionName].Params;
-          factory.GetElementsById(ID).map(function(a) {
-            a.AddAction(Action, Params);
-          });
+          var ID = 0;
+          var Params = 0;
+          if (elem.indexOf(":") > -1) {
+            ID = elem.split(':')[0];
+            var ActionName =  elem.split(':')[1];
+            var Action = actionsDict[ActionName].Action;
+            Params =  actionsDict[ActionName].Params;
+            factory.GetElementsById(ID).map(function(a) {
+              a.AddAction(Action, Params);
+            });
+          } else if (elem.indexOf(";") > -1) {
+            ID = elem.split(';')[0];
+            var RuleName =  elem.split(';')[1];
+            var Rule = RulesDict[RuleName].Rule;
+            Params =  RulesDict[RuleName].Params;
+            factory.GetElementsById(ID).map(function(a) {
+              a.AddRule(Rule, Params, RuleName);
+            });
+          }
         });
       });
       socket.on('create', function() {
@@ -79,10 +91,15 @@ module.exports = {
         socket.emit('appendInterface', {});
         logics.Execute(io.sockets);
       });
+      socket.on('ping', function(info) {
+        infoCollector.push(info);
+      });
       WebSocketMaster(socket);
       setInterval(function() {
+        factory.UpdateInfo(infoCollector);
+        infoCollector = [];
         logics.Execute(io.sockets);
-      },1000);
+      },100);
     });
 
     //setInterval(function() {
