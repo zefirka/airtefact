@@ -61,10 +61,60 @@ var API = {
       return API.def.fn.call(this, name, API.lambda.fn.call(this, params, body));
     },
     arity : 3
+  },
+
+  'if' : {
+    fn : function(cond, then, _else){
+      var ar2Statement = 'if ({{condition}}) { return {{then}}}';
+      var ar3Statement = ar2Statement + ' else {return {{_else}} }';
+      var str = ar2Statement;
+      if (arguments.length == 3){
+        str = ar3Statement;
+      }
+
+      var res = interpolate(str, {
+        condition : compile(cond),
+        then : compile(then),
+        _else : compile(_else)
+      });
+
+      return '(function(){ ' + res + ' }).call(this);';
+    }
+  },
+
+  'do' : {
+    fn : function(){
+      var comps = toArray(arguments);
+      comps = comps.map(compile);
+      return '(function(){' + comps.join('') +  '}).call(this)';
+    }
+  },
+  list : {
+    fn : function(){
+      return toArray(arguments);
+    }
   }
 };
 
 
+API['for'] = {
+  fn : function(name, rules){
+    var res = '';
+    var obj = compile(name);
+    rules = '[' + rules.map(compile).map(function(rule){
+      return CUtils.invokeForm(rule, false);
+    }).join(',') + ']';
+    var f = '(function(){' + rules + '.forEach(this.setRule.bind(scope));}).call(' + obj + '.getScope());';
+    return f;
+  },
+  arity : 2
+};
+
+API['->'] = {
+  fn : function(){
+    return API['do'].fn.apply(this, arguments);
+  }
+};
 
 var lang = require('./lang')(API);
 
@@ -77,8 +127,6 @@ var lang = require('./lang')(API);
 function Compiler(source){
   var translatedJs = Parser(source);
   var body = translatedJs.map(compile).join('\n\n');
-
-  console.log(body);
   var res = interpolate(CUtils.functionWrapper, {
     fname : 'comp',
     arg_name : 'globalEnv',
@@ -120,7 +168,13 @@ function compile(js){
 
     if ( /^\{.+\}$/.test(js) ){
       return CUtils.funcForm(js);
-    } else {
+    } else
+    if (/^\$.+$/.test(js) ){
+      return CUtils.globalForm(js);
+    } else
+    if (/^\@.+$/.test(js)) {
+      return CUtils.derefForm(js);
+    }else{
       return js;
     }
 

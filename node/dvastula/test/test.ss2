@@ -1,3 +1,4 @@
+[def my-object $allah]
 [def x 10]
 [def y 20]
 [def z {@x + @y}]
@@ -11,4 +12,28 @@
   [def newobject object]
 ]]
 
-[defn add[x y] [def result {x + y}]]
+[for $allah [
+  [def test { 'значение переменно, которую можно юзать в скопе' }]
+
+  [def algorithm [do
+    @go-to-start
+    @make-namaz
+  ]]
+
+  [defn make-namaz[]
+    {console.log('Во имя всевышнего')}]
+
+  [defn go-to-start[]
+    [$goto {x: 0, y: 0}]]
+
+]]
+
+[defn add[x y]
+  [if y {x + y} {console.trace()}]]
+
+[defn pow[a b]
+  [->
+    [if {a > b} a b]
+    [def c allahu-akbar]
+  ]
+]

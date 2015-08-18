@@ -52,7 +52,6 @@ function toJs(struct) {
 */
 function typenizer(token, index, expression) {
   var result = '';
-
   if (is.expr(token)) {
     result = wrap(token);
   }else

@@ -1,15 +1,10 @@
 var repl = require('repl');
-// var S2 = require("./index");
-//
-// S2.setup({
-//   stdin : process.stdin,
-//   stdout : process.stdout,
-//   env: 'dev'
-// });
 
-var s2 = require('./s2');
 
-function startRepl(){
+var s2      = require('./s2'),
+    compile = require('./compiler');
+
+function startRepl(instance){
   repl.start({
     prompt : 'есть два стула...> ',
     input : process.stdin,
@@ -21,9 +16,9 @@ function startRepl(){
     eval : function(cmd, context, filename, callback) {
       if (cmd !== '(\n)') {
 
-        cmd = cmd.slice(1, -2);
+        cmd = cmd.slice(0, -1);
 
-        var res = s2(cmd);
+        var res = instance == 'compile' ? compile(cmd) : s2(cmd);
         callback(null, res);
       } else {
         callback(null);
@@ -32,4 +27,12 @@ function startRepl(){
   });
 }
 
-startRepl();
+var instance = 'interop';
+process.argv.forEach(function(arg){
+  /* In case if want to use custom port */
+  if (arg.indexOf('-c') >= 0){
+    instance = 'compile';
+  }
+});
+
+startRepl(instance);
