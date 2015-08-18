@@ -81,7 +81,6 @@ var API = {
       return '(function(){ ' + res + ' }).call(this);';
     }
   },
-
   'do' : {
     fn : function(){
       var comps = toArray(arguments);
@@ -93,9 +92,14 @@ var API = {
     fn : function(){
       return toArray(arguments);
     }
+  },
+  '$goto' : {
+    fn : function(arg){
+      return '(function(arg){ return globalEng.call("goTo", arg);}).call(null, ' + compile(arg) + ')';
+    },
+    arity : 1
   }
 };
-
 
 API['for'] = {
   fn : function(name, rules){
@@ -104,7 +108,8 @@ API['for'] = {
     rules = '[' + rules.map(compile).map(function(rule){
       return CUtils.invokeForm(rule, false);
     }).join(',') + ']';
-    var f = '(function(){' + rules + '.forEach(this.setRule.bind(scope));}).call(' + obj + '.getScope());';
+    var f = '/* FOR DIRECTIVE */';
+    f += '(function(){' + rules + '.forEach(this.setRule.bind(scope));}).call(' + obj + '.getScope());';
     return f;
   },
   arity : 2

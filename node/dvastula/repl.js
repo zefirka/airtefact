@@ -1,5 +1,5 @@
-var repl = require('repl');
-
+var repl        = require('repl');
+var beautify    = require('js-beautify').js_beautify;
 
 var s2      = require('./s2'),
     compile = require('./compiler');
@@ -18,7 +18,7 @@ function startRepl(instance){
 
         cmd = cmd.slice(0, -1);
 
-        var res = instance == 'compile' ? compile(cmd) : s2(cmd);
+        var res = instance == 'compile' ? beautify(compile(cmd), { indent_size : 2 }) : s2(cmd);
         callback(null, res);
       } else {
         callback(null);

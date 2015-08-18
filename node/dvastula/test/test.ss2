@@ -24,7 +24,7 @@
     {console.log('Во имя всевышнего')}]
 
   [defn go-to-start[]
-    [$goto {x: 0, y: 0}]]
+    [$goto {0, 0}]]
 
 ]]
 
