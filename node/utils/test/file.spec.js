@@ -9,5 +9,10 @@ describe('Module: node/utils/file'.red, function() {
     expect(file.ext(0, 0)).toBe('0.0');
   });
 
+  it(':: path', function(){
+    expect(file.path('a', 'b', 'c')).toBe('a/b/c');
+    expect(file.path('/a/', '/b/', '/c/')).toBe('/a///b///c/');
+    expect(file.path('a', 1, 2)).toBe('a/1/2');
+  });
 
 });
