@@ -13,7 +13,7 @@ function ActAll() {
   module.exports.Elements.forEach(function(elem, i) {
     elem.DoAction();
     elem.Rules.forEach(function(rule,i) {
-      rule.call(elem);
+      rule.Rule.call(elem, rule.Params);
     });
   });
 }

@@ -19,6 +19,7 @@ var logics = require('./classes/executer.js');
 
 var app = express();
 
+
 /* Enviroment [dev, test]*/
 var env = process.env.NODE_ENV || config.env || 'dev';
 
@@ -48,7 +49,8 @@ var actionsDict = {MoveLeft : {Action : factory.Move, Params :  {posX : -5, posY
   MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
 };
 
-var RulesDict = {FollowCursor : {Rule : factory.FollowCursor}};
+var RulesDict = {FollowCursor : {Rule : factory.FollowCursor},
+                  FollowObject : {Rule : factory.FollowObject}};
 
 module.exports = {
   init : function(router){
@@ -76,10 +78,14 @@ module.exports = {
           } else if (elem.indexOf(";") > -1) {
             ID = elem.split(';')[0];
             var RuleName =  elem.split(';')[1];
+            var RuleObj = RuleName.split('|')[1];
+            if (RuleObj !== "")  {
+              RuleObj = factory.GetElementsById(RuleObj);
+            }
+            RuleName = RuleName.split('|')[0];
             var Rule = RulesDict[RuleName].Rule;
-            Params =  RulesDict[RuleName].Params;
             factory.GetElementsById(ID).map(function(a) {
-              a.AddRule(Rule, Params, RuleName);
+              a.AddRule(Rule, RuleObj, RuleName);
             });
           }
         });
@@ -99,7 +105,7 @@ module.exports = {
         factory.UpdateInfo(infoCollector);
         infoCollector = [];
         logics.Execute(io.sockets);
-      },100);
+      },30);
     });
 
     //setInterval(function() {

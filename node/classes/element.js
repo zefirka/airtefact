@@ -1,13 +1,5 @@
 var logics = require('./executer.js');
-function contains(a, obj) {
-  var i = a.length;
-  while(i--) {
-    if (a[i] === obj) {
-      return true;
-    }
-  }
-  return false;
-}
+
 function dist(a,b) {
   return Math.sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
 }
@@ -26,8 +18,7 @@ module.exports = {
     this.Action = { Act : Idle, Params : 0};
     this.actions = [];
     this.Rules = [];
-    this.RuleNames = [];
-    this.Speed = 5;
+    this.Speed = 1;
 
     this.DoAction = function() {
       if (this.actions.length === 0) {
@@ -54,10 +45,19 @@ module.exports = {
       this.actions.push(Action);
     };
     this.AddRule = function(Rule, params, Name) {
-      if (!contains(this.RuleNames,Name))
+      var contains = false;
+      this.Rules.forEach(function(item) {
+        if (item.Name == Name) {
+          contains = true;
+        }
+      });
+      if (!contains)
       {
-        this.Rules.push(Rule);
-        this.RuleNames.push(Name);
+        var R = {};
+        R.Rule = Rule;
+        R.Params = params;
+        R.Name = Name;
+        this.Rules.push(R);
       }
     };
     return this;
@@ -85,5 +85,11 @@ module.exports = {
     this.AddAction(module.exports.Move,
       {X : InfoBag.MousePos.X - this.position.X,
         Y : InfoBag.MousePos.Y - this.position.Y});
+  },
+  FollowObject : function(elem) {
+    elem = elem[0];
+    this.AddAction(module.exports.Move,
+      {X : elem.position.X - this.position.X,
+        Y : elem.position.Y - this.position.Y});
   }
 };
