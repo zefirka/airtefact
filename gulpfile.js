@@ -2,7 +2,7 @@
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('gulp-browserify'),
-    Karma   = require('karma');
+    jasmine = require('gulp-jasmine-phantom');
 
 var color   = require('colors');
 
@@ -35,14 +35,6 @@ task('less:main', task('less:main', function () {
 
 task('less', ['less:main']).
 task('styles', ['less']).
-
-task('test', task('Starting test server', function(done){
-  var Server = Karma.Server;
-  new Server({
-    configFile : __dirname + '/karma.conf.js',
-    singleRun : true
-  }, done).start();
-})).
 
 task('scripts:build', task('Building scripts', function() {
   gulp.src(_static + 'js/app/app.js')

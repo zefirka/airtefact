@@ -4,7 +4,8 @@
   "description": "Pretty AI Interface",
   "main": "node/index.js",
   "scripts": {
-    "postinstall": "./tasks/post-install"
+    "postinstall": "./tasks/post-install",
+    "test": "./node_modules/jasmine-node/bin/jasmine-node --verbose ./"
   },
   "repository": {
     "type": "git",
@@ -23,20 +24,16 @@
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
     "gulp-browserify": "^0.5.1",
+    "gulp-jasmine-phantom": "^2.0.0",
     "gulp-less": "^3.0.3",
     "gulp-uglify": "^1.2.0",
     "jasmine-core": "^2.3.4",
+    "jasmine-node": "^1.14.5",
     "jscs": "^2.1.0",
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
-    "karma": "^0.13.9",
-    "karma-coverage": "0.2.4",
-    "karma-jasmine": "0.1.0",
-    "karma-common-js": "0.2.2",
-    "karma-phantomjs-launcher": "0.1.4",
     "phantomjs": "^1.9.18",
     "sinon": "1.14.0",
-    "must-dist": "0.11.0",
     "supervisor": "^0.7.1"
   },
   "dependencies": {
