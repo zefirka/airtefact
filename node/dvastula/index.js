@@ -11,6 +11,7 @@ var Parser    = require('./s2.js'),
 var Dvastula =  {
   /**
     Парсер ss2
+    @function parse
     @public
     @param {string} dvastula Код на языке 2stula
     @return {array}
@@ -21,6 +22,7 @@ var Dvastula =  {
   /**
     Компилятор ss2. Пока читает не из инпута, а файл test/test.ss2 в той же дирректории и пишет в файл test/result.js
     @public
+    @method compile
     @param {string} source Код на языке 2stula
     @return {string} Код на языке JavaScript
   */

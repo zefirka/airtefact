@@ -1,8 +1,22 @@
+/**
+  Модуль реализующий типизацию языка 2stula
+  @module 2stula/maps/types
+*/
 
+/**
+  Является ли лексема ссылкой (если начинается с @)
+  @param {string} token
+  @return {boolean}
+*/
 function isReference(token) {
   return token[0] == '@';
 }
 
+/**
+  Является ли лексема числом
+  @param {string} token
+  @return {boolean}
+*/
 function isNumber(token) {
   return /^\d+$/.test(token);
 }

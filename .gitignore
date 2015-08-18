@@ -11,7 +11,7 @@ server/commit.js
 
 .anti_cache
 
-docs/
+docs
 
 public/static/lib
 public/static/bundle

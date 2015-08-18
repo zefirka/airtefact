@@ -27,13 +27,3 @@
     [$goto {0, 0}]]
 
 ]]
-
-[defn add[x y]
-  [if y {x + y} {console.trace()}]]
-
-[defn pow[a b]
-  [->
-    [if {a > b} a b]
-    [def c allahu-akbar]
-  ]
-]
