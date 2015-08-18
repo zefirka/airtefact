@@ -1,3 +1,7 @@
+/**
+  @module 2Stula/maps/errors
+*/
+
 var intp  = require('warden.js').Utils.interpolate;
 
 function ArityErrorMismatch(a,b,c){

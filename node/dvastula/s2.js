@@ -1,4 +1,4 @@
-var is = require('./types').is;
+var is = require('./maps/types').is;
 
 module.exports = Translator;
 
