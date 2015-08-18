@@ -1,6 +1,6 @@
 {
   "name": "nadmozg",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Pretty AI Interface",
   "main": "node/index.js",
   "scripts": {
@@ -23,10 +23,13 @@
     "gulp": "^3.9.0",
     "gulp-bower": "0.0.10",
     "gulp-browserify": "^0.5.1",
+    "gulp-jsdoc": "^0.1.4",
     "gulp-less": "^3.0.3",
     "gulp-uglify": "^1.2.0",
     "js-beautify": "^1.5.10",
+    "ink-docstrap": "^0.5.2",
     "jscs": "^2.1.0",
+    "jsdoc": "^3.3.2",
     "jshint": "^2.8.0",
     "jshint-stylish": "^2.0.1",
     "supervisor": "^0.7.1"
