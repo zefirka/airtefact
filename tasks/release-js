@@ -1,0 +1,12 @@
+#!/bin/sh
+
+TESTS=`npm test`
+FAILS=`echo $TESTS | grep "[1-9]+ failures"`
+
+
+#if [ "$FAILS" ]; then
+#  echo "Can't release!"
+#  echo $FAILS
+#else
+#  echo "Testing ended successful!"
+#fi
