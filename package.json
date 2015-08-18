@@ -21,7 +21,7 @@
   "homepage": "https://github.com/zefirka/nadmozg#readme",
   "devDependencies": {
     "gulp": "^3.9.0",
-    "gulp-bower": "0.0.10",
+    "gulp-bower": "latest",
     "gulp-browserify": "^0.5.1",
     "gulp-jsdoc": "^0.1.4",
     "gulp-less": "^3.0.3",

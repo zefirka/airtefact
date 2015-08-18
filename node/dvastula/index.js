@@ -8,9 +8,6 @@ var beautify    = require('js-beautify').js_beautify;
 var Parser    = require('./s2.js'),
     Compiler  = require('./compiler');
 
-/**
-  @exports
-  */
 var Dvastula =  {
   /**
     Парсер ss2

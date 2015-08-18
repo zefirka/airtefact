@@ -1,9 +1,16 @@
+/**
+  Модуль реализующий парсинг кода на языке 2stula и возвращающий массив js - символов,
+  которые компилятор превратит в js - код
+  @module 2stula/Parser
+*/
+
 var is = require('./maps/types').is;
 
 module.exports = Translator;
 
 /**
-  Транслятор:
+  Транслятор
+  @access public
   @param {string} source  - Строка кода на языке DVASTULA
   @return {array}         - Массив JS - который исполняет интерпретатор
 */
@@ -16,6 +23,7 @@ function Translator(source) {
 
 /**
   Превращает код на языке DVASTULA в массив лексем
+  @access public
   @param {string} source
   @return {array}
 */
@@ -35,6 +43,7 @@ function tokeinzer(source) {
 /**
   Превращает список лексем языка DVASTULA в строку,
   которая распарситься в массив типов js
+  @access public
   @param {array} struct
   @return {string}
 */
@@ -45,6 +54,7 @@ function toJs(struct) {
 
 /**
   Превращает лексему DVASTULA в приемлемый для исполнения JS - тип
+  @access public
   @param {string} token - лексема
   @param {number} index - позиция лексемы в списке
   @param {array} expression - список лексем
@@ -73,7 +83,10 @@ function typenizer(token, index, expression) {
   return result;
 }
 
-/* Служебные функции */
+/**
+  Возвращает строковое представление ключа.
+  @access public
+*/
 function wrap(key) {
   return '"' + key + '"';
 }
