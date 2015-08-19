@@ -78,7 +78,7 @@ var API = {
         _else : compile(_else)
       });
 
-      return '(function(){ ' + res + ' }).call(this);';
+      return '(function(){ ' + res + ' }).call(this)';
     }
   },
   'do' : {
@@ -120,7 +120,7 @@ API['for'] = {
       return CUtils.invokeForm(rule, false);
     }).join(',') + ']';
     var f = '/* FOR DIRECTIVE */';
-    f += '(function(){' + rules + '.forEach(this.setRule.bind(scope));}).call(' + obj + '.getScope());';
+    f += '(function(){' + rules + '.forEach(this.setRule.bind(this));}).call(' + obj + '.getScope());';
     return f;
   },
   arity : 2
@@ -128,7 +128,11 @@ API['for'] = {
 
 API['->'] = {
   fn : function(){
-    return API['do'].fn.apply(this, arguments);
+    var args = '[' + toArray(arguments).map(compile).join(', ') + '].';
+    return '(function(){' + args +
+               'reduce(function(result, current){ ' +
+               'return typeof current == "function" ? current.call(result || null) : current;' +
+               '}); }).call(this)';
   }
 };
 
@@ -142,7 +146,11 @@ var lang = require('./lang')(API);
 */
 function Compiler(source){
   var translatedJs = Parser(source);
-  var body = translatedJs.map(compile).join('\n\n');
+  var body = translatedJs.map(compile);
+  if (body[body.length - 1 ].slice(0, 6) !== 'return'){
+    body[body.length - 1 ] = 'return ( ' + body[body.length - 1] + ' )';
+  }
+  body = body.join('\n\n');
   var res = interpolate(CUtils.functionWrapper, {
     fname : 'comp',
     arg_name : 'globalEnv',
@@ -191,6 +199,7 @@ function compile(js){
     if (/^\@.+$/.test(js)) {
       return CUtils.derefForm(js);
     }else{
+      js = lang.derefPublic(js) || js;
       return js;
     }
 

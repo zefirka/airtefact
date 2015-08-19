@@ -42,6 +42,9 @@ function lang(referenceLanguage){
     derefAll : function(token){
       return dict.public[token] || dict.private[token] || dict.reserved[token];
     },
+    derefPublic : function(name){
+      return dict.public[name];
+    },
     derefPrivate : function(token){
       return dict.private[token];
     },

@@ -1,29 +1,36 @@
-[def my-object $allah]
-[def x 10]
-[def y 20]
-[def z {@x + @y}]
-[def x 20]
-[def x 12 23]
-[def c {x + y - 20}]
-
-[def be-red [lambda [param1 param2] [def x 20]]]
-
-[def copy-object [lambda [object]
-  [def newobject object]
-]]
-
+[def allah $allah]
+[def x [if {2 > 3} false true]]
 [for $allah [
-  [def test { 'значение переменно, которую можно юзать в скопе' }]
 
-  [def algorithm [do
-    @go-to-start
-    @make-namaz
-  ]]
-
-  [defn make-namaz[]
-    {console.log('Во имя всевышнего')}]
-
-  [defn go-to-start[]
-    [$goto {0, 0}]]
 
 ]]
+
+#[def my-object $allah]
+#[def x 10]
+#[def y 20]
+#[def z {@x + @y}]
+#[def x 20]
+#[def x 12 23]
+#[def c {x + y - 20}]
+
+#[def be-red [lambda [param1 param2] [def x 20]]]
+
+#[def copy-object [lambda [object]
+#  [def newobject object]
+#]]
+
+#[for $allah [
+#  [def test { 'значение переменно, которую можно юзать в скопе' }]
+
+#  [def algorithm [do
+#    @go-to-start
+#    @make-namaz
+#  ]]
+
+#  [defn make-namaz[]
+#    {console.log('Во имя всевышнего')}]
+
+#  [defn go-to-start[]
+#    [$goto {0, 0}]]
+
+#]]

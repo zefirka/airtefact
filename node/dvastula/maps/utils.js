@@ -2,7 +2,9 @@
   @module 2Stula/maps/utils
 */
 
-var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n};\n\nmodule.exports = {{fname}}';
+var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n};\n\nmodule.exports = function(glob, scope){' +
+  '{{fname}}.call(scope, glob); ' +
+  '}';
 var _throwError = '(function(){throw "Error"})();';
 
 function evalForm(js){
@@ -22,7 +24,7 @@ function derefForm(js){
 }
 
 function globalForm(js, semicolon){
-  return 'globalEnv.get("' + js.slice(1) + '")' + (semicolon ? ';' : '');
+  return 'globalScope.get("' + js.slice(1) + '")' + (semicolon ? ';' : '');
 }
 
 function exprForm(js){
