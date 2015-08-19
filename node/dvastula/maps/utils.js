@@ -2,7 +2,7 @@
   @module 2Stula/maps/utils
 */
 
-var wrapper = '(function {{fname}}({{arg_name}}){\n\t{{body}}\n}).call({{context}},{{arg_values}});';
+var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n};\n\nmodule.exports = {{fname}}';
 var _throwError = '(function(){throw "Error"})();';
 
 function evalForm(js){

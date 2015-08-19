@@ -90,7 +90,7 @@ var API = {
   },
   list : {
     fn : function(){
-      return toArray(arguments);
+      return '[' + toArray(arguments).map(compile).join(', ') + ']';
     }
   },
   '$goto' : {
@@ -100,6 +100,17 @@ var API = {
     arity : 1
   }
 };
+
+/* MATH MACH FREI */
+(['+', '-', '*', '/']).forEach(function(op){
+  API[op] = {
+    fn : function(){
+      var args = toArray(arguments).map(compile).join(', ');
+      return '(function(){ return Array.prototype.slice.call(arguments).reduce(function(a, b){ return a ' +
+        op + ' b;}) }).call(null, ' + args +  ')';
+    }
+  };
+});
 
 API['for'] = {
   fn : function(name, rules){
