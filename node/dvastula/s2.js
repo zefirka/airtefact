@@ -11,8 +11,8 @@ module.exports = Translator;
 /**
   Транслятор
   @access public
-  @param {string} source  - Строка кода на языке DVASTULA
-  @return {array}         - Массив JS - который исполняет интерпретатор
+  @param {string} source  - Строка кода на 2stula
+  @return {array}         - Массив JS - который получает компилятор
 */
 function Translator(source) {
   var js = toJs(tokeinzer(source));
@@ -88,18 +88,36 @@ function typenizer(token, index, expression) {
 
 /**
   Возвращает строковое представление ключа.
-  @access public
+  @param {mixed} key - значение
+  @return {string} значение представленное в виде строки
 */
 function wrap(key) {
+  if (Array.isArray(key)){
+    key = key.join(' ');
+  }
+
   return '"' + key + '"';
 }
 
+/**
+  Заменяет все пробельные символы на алиасы, чтобы не потерять их при парсинге
+  @private
+  @param {string} s строка
+  @return {string} строка с метками
+*/
 function stringSwipeOn(s) {
   return s.replace(/ /g, '__PROB__')
           .replace(/\n/g, '__NLIN__')
           .replace(/\t/g, '__NTAB__');
 }
 
+/**
+  Заменяет все алиасы пробельных символов на их оригинал
+  @private
+  @param {string} s строка
+  @return {string}
+
+*/
 function stringSwipeOff(e) {
   return e.replace(/__PROB__/g, ' ')
           .replace(/__NLIN__/g, '\n')
