@@ -28,9 +28,9 @@ var API = {
         res += 'globalScope.throWarning("Trying to rewrite local variable");';
       }
 
-      lang.set('private', name, value);
+      lang.set('public', name, value);
 
-      res += interpolate('this.set("{{name}}", {{value}});', {
+      res += interpolate('this.set("{{name}}", {{value}})', {
         name : name,
         value : value
       });
@@ -48,7 +48,7 @@ var API = {
       lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
       body = lines.join('\n');
 
-      return interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this)', {
+      return interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.bornScope())', {
         params : params,
         body : body
       });
@@ -58,6 +58,12 @@ var API = {
 
   defn : {
     fn : function(name, params, body){
+
+      lang.set('public', name, function(){
+        var myParams = toArray(arguments).join(', ');
+        return 'this.get("' + name + '").call(this, ' + myParams + ')';
+      });
+
       return API.def.fn.call(this, name, API.lambda.fn.call(this, params, body));
     },
     arity : 3
@@ -120,7 +126,8 @@ API['for'] = {
       return CUtils.invokeForm(rule, false);
     }).join(',') + ']';
     var f = '/* FOR DIRECTIVE */';
-    f += '(function(){' + rules + '.forEach(this.setRule.bind(this));}).call(' + obj + '.getScope());';
+    f += '(function(){' + rules + '.forEach(this.setRule.bind(this));}).call(globalScope.getObject("' +
+      obj + '").getScope());';
     return f;
   },
   arity : 2

@@ -1,36 +1,15 @@
-[def allah $allah]
-[def x [if {2 > 3} false true]]
-[for $allah [
+# Specifications
+
+[def x 10]
+[def y @x]
+[def start-coors {{x:0, y:0}}]
+
+[defn inc[x] [+ x 1]]
+[defn map[list fn] {list.map(fn)}]
 
 
+[for allah [
+  [+ 1 2 3]
 ]]
 
-#[def my-object $allah]
-#[def x 10]
-#[def y 20]
-#[def z {@x + @y}]
-#[def x 20]
-#[def x 12 23]
-#[def c {x + y - 20}]
-
-#[def be-red [lambda [param1 param2] [def x 20]]]
-
-#[def copy-object [lambda [object]
-#  [def newobject object]
-#]]
-
-#[for $allah [
-#  [def test { 'значение переменно, которую можно юзать в скопе' }]
-
-#  [def algorithm [do
-#    @go-to-start
-#    @make-namaz
-#  ]]
-
-#  [defn make-namaz[]
-#    {console.log('Во имя всевышнего')}]
-
-#  [defn go-to-start[]
-#    [$goto {0, 0}]]
-
-#]]
+[inc 12]

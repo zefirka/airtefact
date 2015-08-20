@@ -19,8 +19,8 @@ function invokeForm(js, semicolon){
   return '(function(){' + js + '}).call(this)' + (semicolon ? ';' : '');
 }
 
-function derefForm(js){
-  return 'this.get("' + js.slice(1) + '");';
+function derefForm(js, semicolon){
+  return 'this.get("' + js.slice(1) + '")' + (semicolon ? ';' : '');
 }
 
 function globalForm(js, semicolon){
