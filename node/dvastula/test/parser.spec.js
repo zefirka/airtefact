@@ -1,6 +1,16 @@
-var Parser = require('../s2');
+var Parser = require('../s2'),
+    colors = require('colors');
 
-var colors = require('colors');
+function parse(token){
+  var res = null;
+  try{
+      res = Parser(token);
+  }catch(error){
+      res = 'error';
+  }finally{
+      return res;
+  }
+}
 
 describe('Module: 2sula/Parser'.bold, function (){
     describe('Should parse token', function () {
@@ -14,16 +24,7 @@ describe('Module: 2sula/Parser'.bold, function (){
             '[',
             '[]'
         ];
-        var outputs = inputs.map(function(token){
-                          var res = null;
-                          try{
-                              res = Parser(token);
-                          }catch(error){
-                              res = 'error';
-                          }finally{
-                              return res;
-                          }
-                      });
+        var outputs = inputs.map(parse);
 
         it('should parse simple literal', function(){
            expect(outputs[0]).toEqual(['x']);
@@ -56,6 +57,31 @@ describe('Module: 2sula/Parser'.bold, function (){
         it('should parse simple empty', function(){
             expect(outputs[7]).toEqual([[]]);
         });
-
     });
+
+  describe('Should parse constructions', function(){
+    var constrs = [
+      '[def x 10]',
+      '[defn inc[x] [+ x 1]]',
+      '[list 1 2 [3 4 [5 6]]]',
+      '[def x {test-something}]',
+      '[def j $global]'
+    ];
+
+    var ans = [
+      [['def', 'x', 10]],
+      [['defn', 'inc', ['x'], ['+', 'x', 1]]],
+      [['list', 1, 2, [3, 4, [5,6]]]],
+      [['def', 'x', '{test-something}']],
+      [['def', 'j', '$global']]
+    ];
+
+
+    var outputs = constrs.map(parse);
+    outputs.forEach(function (code, index){
+      it('Should parse: ' + constrs[index], function(){
+        expect(code).toEqual(ans[index]);
+      });
+    });
+  });
 });
