@@ -27,7 +27,6 @@
     "requireOperatorBeforeLineBreak": true,
     "requireParenthesesAroundIIFE": true,
     "requireSpaceAfterBinaryOperators": null,
-    "requireSpaceAfterKeywords": [ "if", "return" ],
     "requireSpaceAfterLineComment": null,
     "requireSpaceAfterObjectKeys": true,
     "requireSpaceAfterPrefixUnaryOperators": null,
@@ -36,6 +35,8 @@
     "requireSpacesInConditionalExpression": true,
     "safeContextKeyword": ["self"],
     "validateIndentation": 2,
-    "validateLineBreaks": "LF",
-    "validateQuoteMarks": true
+    "validateQuoteMarks": true,
+    "excludeFiles" : [
+      "karma.conf.js"
+    ]
 }

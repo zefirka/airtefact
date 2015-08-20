@@ -22,6 +22,13 @@ ifdef SUPERVISOR
 	NODE = supervisor
 endif
 
+release:
+	npm install
+	bower install
+	gulp build
+	npm test | ./tasks/release-js
+
+
 build:
 	npm install
 	gulp build

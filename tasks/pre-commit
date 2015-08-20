@@ -14,8 +14,8 @@ if [ "$JS" ]; then
   ./tasks/lint-js $JS || ERRORS=1
 fi
 
-if [ "$TEST" ]; then
-  ./tasks/lint-test-only $TEST || ERRORS=1
-fi
+#if [ "$TEST" ]; then
+#  ./tasks/lint-test-only $TEST || ERRORS=1
+#fi
 
 exit $ERRORS

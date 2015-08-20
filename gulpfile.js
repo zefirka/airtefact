@@ -3,7 +3,8 @@ var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('gulp-browserify'),
     bower   = require('gulp-bower'),
-    jsdoc   = require('gulp-jsdoc');
+    jsdoc   = require('gulp-jsdoc'),
+    jasmine = require('gulp-jasmine-phantom');
 
 var color   = require('colors'),
     pkg     = require('./package.json');
