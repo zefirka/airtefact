@@ -1,7 +1,5 @@
 var express         = require('express'),
     ws              = require('socket.io'),
-    cookieParser    = require('cookie-parser'),
-    url             = require('url'),
     fs              = require('fs'),
     morgan,         // inited only in dev mode
     color;          // inited only in dev mode
