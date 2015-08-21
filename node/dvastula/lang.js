@@ -33,6 +33,7 @@ function lang(referenceLanguage){
     private : {},
     reserved : defineLang(referenceLanguage)
   };
+
   return {
     set : function(keyset, key, value){
       keyset = keyset || 'public';
@@ -40,7 +41,7 @@ function lang(referenceLanguage){
       return value;
     },
     derefAll : function(token){
-      return dict.public[token] || dict.private[token] || dict.reserved[token];
+      return dict.public[token] || dict.reserved[token];
     },
     derefPublic : function(name){
       return dict.public[name];
@@ -50,6 +51,9 @@ function lang(referenceLanguage){
     },
     derefReserved : function(token){
       return dict.reserved[token];
+    },
+    isFn : function(token){
+      return dict.private[token] == 'function';
     }
   };
 }
