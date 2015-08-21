@@ -1,7 +1,5 @@
 var express         = require('express'),
     ws              = require('socket.io'),
-    cookieParser    = require('cookie-parser'),
-    url             = require('url'),
     fs              = require('fs'),
     morgan,         // inited only in dev mode
     color;          // inited only in dev mode
@@ -67,7 +65,7 @@ module.exports = {
         commands.forEach(function(elem,index) {
           var ID = 0;
           var Params = 0;
-          if (elem.indexOf(":") > -1) {
+          if (elem.indexOf(':') > -1) {
             ID = elem.split(':')[0];
             var ActionName =  elem.split(':')[1];
             var Action = actionsDict[ActionName].Action;
@@ -75,11 +73,11 @@ module.exports = {
             factory.GetElementsById(ID).map(function(a) {
               a.AddAction(Action, Params);
             });
-          } else if (elem.indexOf(";") > -1) {
+          } else if (elem.indexOf(':') > -1) {
             ID = elem.split(';')[0];
             var RuleName =  elem.split(';')[1];
             var RuleObj = RuleName.split('|')[1];
-            if (RuleObj !== "")  {
+            if (RuleObj !== '')  {
               RuleObj = factory.GetElementsById(RuleObj);
             }
             RuleName = RuleName.split('|')[0];
@@ -91,7 +89,7 @@ module.exports = {
         });
       });
       socket.on('create', function() {
-        console.log("create ");
+        console.log('create ');
         var el = new factory.Element();
         logics.Elements.push(el);
         socket.emit('appendInterface', {});

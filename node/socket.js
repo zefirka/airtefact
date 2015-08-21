@@ -1,10 +1,19 @@
+/**
+  Модуль выолняющий логику компоновки событий сокета.
+  Все передачи данных и формирование событий должны происходить
+  в этом модуле.
+  @module node/socket
+*/
+
 var socket = null;
 
+/**
+  Возвращает веб-сокет (по идее должен его конфигурировать)
+  @public
+  @param {object} _ws_ - объект socket.io
+  @return {object}
+*/
 module.exports = function(_ws_){
-  console.log('socket');
   socket = _ws_;
-
-  setTimeout(function(){
-    socket.emit('ready');
-  }, 1000);
+  return socket;
 };

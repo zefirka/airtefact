@@ -3,7 +3,6 @@
     "disallowKeywordsOnNewLine": [ "else" ],
     "disallowMixedSpacesAndTabs": true,
     "disallowMultipleLineStrings": true,
-    "disallowQuotedKeysInObjects": true,
     "disallowSpaceAfterKeywords": [ "for", "while", "do", "switch" ],
     "disallowNamedUnassignedFunctions" : true,
     "disallowSpaceAfterPrefixUnaryOperators": true,
@@ -28,7 +27,6 @@
     "requireOperatorBeforeLineBreak": true,
     "requireParenthesesAroundIIFE": true,
     "requireSpaceAfterBinaryOperators": null,
-    "requireSpaceAfterKeywords": [ "if", "return" ],
     "requireSpaceAfterLineComment": null,
     "requireSpaceAfterObjectKeys": true,
     "requireSpaceAfterPrefixUnaryOperators": null,
@@ -37,5 +35,8 @@
     "requireSpacesInConditionalExpression": true,
     "safeContextKeyword": ["self"],
     "validateIndentation": 2,
-    "validateLineBreaks": "LF"
+    "validateQuoteMarks": true,
+    "excludeFiles" : [
+      "karma.conf.js"
+    ]
 }
