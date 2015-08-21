@@ -28,7 +28,7 @@ var API = {
         res += 'globalScope.throWarning("Trying to rewrite local variable");';
       }
 
-      lang.set('public', name, value);
+      lang.set('public', name, 'this.get("' + name + '")');
 
       res += interpolate('this.set("{{name}}", {{value}})', {
         name : name,
@@ -212,7 +212,12 @@ function compile(js, _, _2, scope){
       return CUtils.derefForm(js);
     }else{
       if(!scope){
-        js = lang.derefPublic(js) || js;
+        console.log(js);
+        if(lang.derefReserved(js)){
+          js = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', js);
+        }else{
+          js = lang.derefPublic(js) || js;
+        }
       }
       return js;
     }

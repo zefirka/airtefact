@@ -1,3 +1,1 @@
-[def x [if {a > b} true false]]
-
-[def y @x]
+[def x +]

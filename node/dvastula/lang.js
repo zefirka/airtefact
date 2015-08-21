@@ -49,7 +49,7 @@ function lang(referenceLanguage){
       return dict.private[token];
     },
     derefReserved : function(token){
-      return dict.private[token];
+      return dict.reserved[token];
     }
   };
 }
