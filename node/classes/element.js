@@ -1,5 +1,11 @@
 var logics = require('./executer.js');
 
+function getRandomArbitary(min, max)
+{
+  return Math.random() * (max - min) + min;
+}
+
+
 function dist(a,b) {
   return Math.sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
 }
@@ -18,16 +24,15 @@ module.exports = {
     this.Action = { Act : Idle, Params : 0};
     this.actions = [];
     this.Rules = [];
-    this.Speed = 1;
+    this.Speed = 2;
 
     this.DoAction = function() {
       if (this.actions.length === 0) {
-        this.Action.Act = Idle;
-      } else {
-        this.Action.Act = this.actions[0].Act;
-        this.Action.Params = this.actions[0].Params;
+        this.AddAction(module.exports.MoveRandomly);
       }
-      this.Action.Act(this, this.Action.Params);
+      this.Action.Act = this.actions[0].Act;
+      this.Action.Params = this.actions[0].Params;
+      this.Action.Act.call(this, this.Action.Params);
       this.actions.shift();
 
     };
@@ -74,11 +79,22 @@ module.exports = {
       }
     }
   },
-  Move : function(elem,vector) {
-    var X = vector.X /len(vector) * elem.Speed;
-    var Y = vector.Y /len(vector) * elem.Speed;
-    elem.position.X += X;
-    elem.position.Y += Y;
+
+  Move : function(vector) {
+    var X = vector.X /len(vector) * this.Speed;
+    var Y = vector.Y /len(vector) * this.Speed;
+    this.position.X += X;
+    this.position.Y += Y;
+  },
+  MoveTo : function(position) {
+    var vector = {X : position.X - this.position.X, Y : position.Y - this.position.Y};
+    var X = vector.X /len(vector) * this.Speed;
+    var Y = vector.Y /len(vector) * this.Speed;
+    this.position.X += X;
+    this.position.Y += Y;
+    if (dist(position, this.position) > 10){
+      this.AddAction(module.exports.MoveTo, position);
+    }
   },
   FollowCursor : function() {
     //  console.log(InfoBag);
@@ -91,5 +107,9 @@ module.exports = {
     this.AddAction(module.exports.Move,
       {X : elem.position.X - this.position.X,
         Y : elem.position.Y - this.position.Y});
+  },
+  MoveRandomly : function() {
+    var randPos = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
+    this.AddAction(module.exports.MoveTo, randPos);
   }
 };
