@@ -21,11 +21,21 @@ function isNumber(token) {
   return /^\d+$/.test(token);
 }
 
+/**
+  Является ли лексема строкой
+  @param {string} tokens
+  @return {boolean}
+*/
 function isString(token) {
   return (token[0] == '"' && token[token.length - 1] == '"') ||
          (token[0] == '\'' && token[token.length - 1] == '\'');
 }
 
+/**
+  Является ли лексема встроенным выражением
+  @param {string} tokens
+  @return {boolean}
+*/
 function isExpression(token) {
   return /^\{.+\}$/.test(token);
 }
@@ -34,6 +44,11 @@ function isGlobalToken(token) {
   return token[0] == '$';
 }
 
+/**
+  Является ли лексема разделителем [ ] :
+  @param {string} tokens
+  @return {boolean}
+*/
 function isDelim(token) {
   return token == '[' || token == ']' || token == ':';
 }

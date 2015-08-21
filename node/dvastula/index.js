@@ -32,7 +32,6 @@ var Dvastula =  {
     var source = require('fs').readFileSync('./test/test.ss2', {encoding : 'utf-8'});
 
     var js = Compiler(source);
-    console.log(js);
     require('fs').writeFileSync('./test/result.js', beautify(js, { indent_size : 2 }));
     return js;
   },
@@ -46,4 +45,5 @@ var Dvastula =  {
 
 module.exports = Dvastula;
 
+// чтобы через node index компилить файл
 Dvastula.compile();

@@ -33,7 +33,7 @@ function exprForm(js){
               return 'this.get("' + a.slice(1)  + '")';
             })
             .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gm, function(a,b){
-              return 'globalEnv.get("' + a.slice(1)  + '")';
+              return 'globalScope.get("' + a.slice(1)  + '")';
             });
 }
 

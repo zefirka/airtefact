@@ -1,15 +1,3 @@
-# Specifications
+[def x [if {a > b} true false]]
 
-[def x 10]
 [def y @x]
-[def start-coors {{x:0, y:0}}]
-
-[defn inc[x] [+ x 1]]
-[defn map[list fn] {list.map(fn)}]
-
-
-[for allah [
-  [+ 1 2 3]
-]]
-
-[inc 12]

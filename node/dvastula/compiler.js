@@ -43,7 +43,8 @@ var API = {
   lambda : {
     fn :  function(params, body){
       params = params.join(', ');
-      body = compile(body);
+
+      body =  compile(body, false, false, true);
       lines = body.split('\n');
       lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
       body = lines.join('\n');
@@ -169,15 +170,19 @@ function Compiler(source){
   return res;
 }
 
-function compile(js){
+function compile(js, _, _2, scope){
   if (is.array(js)){
 
     var pos = 0;
     while(pos < js.length ){
       var token = js[pos];
 
-      token = lang.derefAll(token);
+      if(!scope){
+        token = lang.derefAll(token);
+      }
+
       if (pos === 0 && !is.fn(token) ){
+        console.log(token);
         return CUtils.errorWrapper;
       }
 
@@ -206,7 +211,9 @@ function compile(js){
     if (/^\@.+$/.test(js)) {
       return CUtils.derefForm(js);
     }else{
-      js = lang.derefPublic(js) || js;
+      if(!scope){
+        js = lang.derefPublic(js) || js;
+      }
       return js;
     }
 
