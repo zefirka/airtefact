@@ -4,6 +4,7 @@ logs
 .idea
 .DS_Store
 **/*.DS_Store
+
 npm-debug.log
 *~
 node_modules
@@ -11,7 +12,7 @@ server/commit.js
 .tern-project
 .anti_cache
 
-docs/
+docs
 
 public/static/lib
 public/static/bundle
