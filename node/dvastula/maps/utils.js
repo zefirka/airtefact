@@ -2,6 +2,10 @@
   @module 2Stula/maps/utils
 */
 
+var utils = require('warden.js').Utils,
+    toArray = utils.toArray,
+    intp = utils.interpolate;
+
 var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n};\n\nmodule.exports = function(glob, scope){' +
   '{{fname}}.call(scope, glob); ' +
   '}';
@@ -37,6 +41,14 @@ function exprForm(js){
             });
 }
 
+function comment(){
+  return intp('/*  {{0}}  */\n', intp.apply(null, toArray(arguments)));
+}
+
+function wrapInnerCall(fn, params){
+  return 'this.get("' + fn + '").call(this, ' + params.join(', ') + ')';
+}
+
 module.exports  = {
   functionWrapper : wrapper,
   errorWrapper    : _throwError,
@@ -45,5 +57,7 @@ module.exports  = {
   funcForm        : funcForm,
   exprForm        : exprForm,
   globalForm      : globalForm,
-  invokeForm      : invokeForm
+  invokeForm      : invokeForm,
+  comment         : comment,
+  wrapInnerCall   : wrapInnerCall
 };

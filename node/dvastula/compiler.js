@@ -1,4 +1,5 @@
 /**
+  Модуль реализующий комплияцию кода на 2stula в JavaScript
   @module 2Stula/compiler
 */
 
@@ -15,7 +16,12 @@ var utils       = require('warden.js').Utils,
 var API = {
   def : {
     fn : function(name, value){
-      var res = '';
+      // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
+      var res = CUtils.comment('[def {{0}} {{1}}]', name, value);
+
+      if(value[0] == 'lambda'){
+        lang.set('private', name, 'function');
+      }
       value = compile(value);
 
       /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
@@ -28,7 +34,7 @@ var API = {
         res += 'globalScope.throWarning("Trying to rewrite local variable");';
       }
 
-      lang.set('public', name, value);
+      lang.set('public', name, 'this.get("' + name + '")');
 
       res += interpolate('this.set("{{name}}", {{value}})', {
         name : name,
@@ -44,7 +50,8 @@ var API = {
     fn :  function(params, body){
       params = params.join(', ');
 
-      body =  compile(body, false, false, true);
+      body =  compile(body, null, null);
+
       lines = body.split('\n');
       lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
       body = lines.join('\n');
@@ -108,8 +115,8 @@ var API = {
   }
 };
 
-/* MATH MACH FREI */
-(['+', '-', '*', '/']).forEach(function(op){
+/* MATH MACHT FREI */
+(['+', '-', '*', '/', '>', '<', '>=', '<=', '&&', '&', '>>', '<<']).forEach(function(op){
   API[op] = {
     fn : function(){
       var args = toArray(arguments).map(compile).join(', ');
@@ -119,6 +126,7 @@ var API = {
   };
 });
 
+
 API['for'] = {
   fn : function(name, rules){
     var res = '';
@@ -126,7 +134,7 @@ API['for'] = {
     rules = '[' + rules.map(compile).map(function(rule){
       return CUtils.invokeForm(rule, false);
     }).join(',') + ']';
-    var f = '/* FOR DIRECTIVE */';
+    var f = '/* FOR DIRECTIVE */\n';
     f += '(function(){' + rules + '.forEach(this.setRule.bind(this));}).call(globalScope.getObject("' +
       obj + '").getScope());';
     return f;
@@ -144,7 +152,11 @@ API['->'] = {
   }
 };
 
+
+/* Вот здесь происходит определение языка на основе вышеизложенного API */
 var lang = require('./lang')(API);
+
+
 
 /**
   Компилирует строку 2stula в JS
@@ -170,24 +182,29 @@ function Compiler(source){
   return res;
 }
 
-function compile(js, _, _2, scope){
+function compile(js, indexInParent, parent){
   if (is.array(js)){
-
     var pos = 0;
+
     while(pos < js.length ){
       var token = js[pos];
 
-      if(!scope){
-        token = lang.derefAll(token);
+      if (lang.derefPrivate(token)){
+        token = token;
+      } else {
+        token = lang.derefAll(token) || token;
       }
 
-      if (pos === 0 && !is.fn(token) ){
-        console.log(token);
+      if (pos === 0 && !( is.fn(token)  || lang.isFn(token) )  ){
         return CUtils.errorWrapper;
       }
 
-      if (pos === 0 && is.fn(token)) {
-        js = token.apply(null, js.slice(1));
+      if (pos === 0) {
+        if (is.fn(token) ) {
+          js = token.apply(null, js.slice(1));
+        }else{
+          return CUtils.wrapInnerCall(token, js.slice(1).map(compile));
+        }
       }else{
         if (is.array(token)){
           token = token.map(compile);
@@ -211,7 +228,9 @@ function compile(js, _, _2, scope){
     if (/^\@.+$/.test(js)) {
       return CUtils.derefForm(js);
     }else{
-      if(!scope){
+      if (lang.derefReserved(js)){
+        js = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', js);
+      }else{
         js = lang.derefPublic(js) || js;
       }
       return js;
