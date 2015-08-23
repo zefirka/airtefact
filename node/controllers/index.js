@@ -4,7 +4,7 @@ var config   = require('../config/config.js'),
 var scripts = [];
 
 var jsc = path(config.static, 'js'),
-		lib = path(config.static, 'lib'),
+    lib = path(config.static, 'lib'),
     env = process.env.NODE_ENV || config.env || 'dev';
 
 if (env == 'prod') {
@@ -14,18 +14,16 @@ if (env == 'prod') {
     path(lib, 'jquery/dist/jquery.min.js'),
     path(lib, 'bootstrap/dist/js/bootstrap.min.js'),
     path(lib, 'warden.js/dist/warden.min.js'),
-		path(lib, 'socket.io-client/socket.io.js'),
-		path(lib, 'paper/dist/paper-full.js'),
-		path(jsc, 'app.js')
+    path(lib, 'socket.io-client/socket.io.js'),
+    path(lib, 'paper/dist/paper-full.js'),
+    path(jsc, 'app.js')
   ];
 }
 
 module.exports = {
-
   scripts : scripts,
-
   styles : [
-		path(lib, 'bootstrap/dist/css/bootstrap.min.css'),
+    path(lib, 'bootstrap/dist/css/bootstrap.min.css'),
     'static/css/main.css'
   ]
 

@@ -1,3 +1,9 @@
-[def inc [lambda [x] [+ x 1]]]
+[def x 10]
+[def j [+ x 1]]
 
-[def j [inc 10]]
+[defn inc[x] [+ x 1]]
+
+[def l [list
+  [lambda [x] [+ x 1]]
+  [lambda [y] [* x x]]
+]]

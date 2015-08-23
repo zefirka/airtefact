@@ -10,28 +10,31 @@ var Errors  = require('./maps/errors'),
 var utils       = require('warden.js').Utils,
     toArray     = utils.toArray,
     interpolate = utils.interpolate,
-    is          = utils.is;
+    is          = utils.is,
+    strarr      = CUtils.strarr;
 
-/* Language reference */
+/**
+  Language reference
+  Здесь описывается сами директивы языка
+  @access public
+*/
 var API = {
   def : {
     fn : function(name, value){
       // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
-      var res = CUtils.comment('[def {{0}} {{1}}]', name, value);
+      var res = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
 
+      // если следующая директива - определение функции, то храним это значение в приватных данных lang
       if(value[0] == 'lambda'){
         lang.set('private', name, 'function');
       }
+
       value = compile(value);
 
       /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
       if (lang.derefReserved[name]){
         res = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
         return res;
-      }
-
-      if (lang.derefPrivate[name]){
-        res += 'globalScope.throWarning("Trying to rewrite local variable");';
       }
 
       lang.set('public', name, 'this.get("' + name + '")');
@@ -48,6 +51,7 @@ var API = {
 
   lambda : {
     fn :  function(params, body){
+      var res = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
       params = params.join(', ');
 
       body =  compile(body, null, null);
@@ -56,7 +60,7 @@ var API = {
       lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
       body = lines.join('\n');
 
-      return interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.bornScope())', {
+      return res + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.bornScope())', {
         params : params,
         body : body
       });
@@ -66,13 +70,12 @@ var API = {
 
   defn : {
     fn : function(name, params, body){
-
+      var res = CUtils.comment('[defn {{0}} ...]', name);
       lang.set('public', name, function(){
         var myParams = toArray(arguments).join(', ');
         return 'this.get("' + name + '").call(this, ' + myParams + ')';
       });
-
-      return API.def.fn.call(this, name, API.lambda.fn.call(this, params, body));
+      return res + API.def.fn.call(this, name, ['lambda', params, body]);
     },
     arity : 3
   },
@@ -120,7 +123,8 @@ var API = {
   API[op] = {
     fn : function(){
       var args = toArray(arguments).map(compile).join(', ');
-      return '(function(){ return Array.prototype.slice.call(arguments).reduce(function(a, b){ return a ' +
+      var debug = CUtils.comment('[' + op + ' ' +  strarr(args) + ']');
+      return debug + '(function(){ return Array.prototype.slice.call(arguments).reduce(function(a, b){ return a ' +
         op + ' b;}) }).call(null, ' + args +  ')';
     }
   };

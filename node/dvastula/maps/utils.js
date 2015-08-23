@@ -6,7 +6,7 @@ var utils = require('warden.js').Utils,
     toArray = utils.toArray,
     intp = utils.interpolate;
 
-var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n};\n\nmodule.exports = function(glob, scope){' +
+var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n}\n\nmodule.exports = function(glob, scope){' +
   '{{fname}}.call(scope, glob); ' +
   '}';
 var _throwError = '(function(){throw "Error"})();';
@@ -40,13 +40,33 @@ function exprForm(js){
               return 'globalScope.get("' + a.slice(1)  + '")';
             });
 }
+/**
 
+
+  */
 function comment(){
-  return intp('/*  {{0}}  */\n', intp.apply(null, toArray(arguments)));
+  return process.env.DEBUG == 'true' ?  intp('/*  {{0}}  */\n', intp.apply(null, toArray(arguments))) : '';
 }
 
 function wrapInnerCall(fn, params){
   return 'this.get("' + fn + '").call(this, ' + params.join(', ') + ')';
+}
+
+function strarr(arr){
+  if(Array.isArray(arr)){
+    var str = arr.map(function(item){
+      if(Array.isArray(item)){
+        return strarr(item);
+      }else{
+        return item;
+      }
+    }).join(' ');
+
+    return '[' + str + ']';
+
+  }else{
+    return arr;
+  }
 }
 
 module.exports  = {
@@ -59,5 +79,6 @@ module.exports  = {
   globalForm      : globalForm,
   invokeForm      : invokeForm,
   comment         : comment,
-  wrapInnerCall   : wrapInnerCall
+  wrapInnerCall   : wrapInnerCall,
+  strarr          : strarr
 };
