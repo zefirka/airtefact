@@ -8,7 +8,7 @@ npm-debug.log
 *~
 node_modules
 server/commit.js
-
+docs
 .anti_cache
 
 public/static/lib
