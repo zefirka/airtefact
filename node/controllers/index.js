@@ -14,6 +14,6 @@ common.scripts = common.scripts.concat([
   path(jsc, 'app.js')
 ]);
 
-module.exports = extend(common, {
+module.exports = extend({}, common, {
   route : 'index'
 });

@@ -53,7 +53,7 @@ var API = {
     fn :  function(params, body){
       var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
 
-      params = strarr(params);
+      params = params.join(',');
 
       // null null нужны
       // хз зачем

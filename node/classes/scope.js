@@ -18,3 +18,13 @@ Scope.prototype.born = function () {
   utils.extend(ns.store, this.store);
   return ns;
 };
+
+Scope.prototype.resolve = function (name){
+  return  this.store[name] || (function(store){
+    for(var i in store){
+      if(store[i] instanceof Scope){
+        return store[i].resolve(name);
+      }
+    }
+  })(this.store);
+};

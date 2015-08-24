@@ -11,6 +11,6 @@ common.scripts.push(path(jsc, 'compiler.js'));
 common.scripts.push(path(lib, 'jshighlight/highlight.pack.js'));
 common.styles.push(path(lib, 'jshighlight/github.css'));
 
-module.exports = extend(common, {
+module.exports = extend({}, common, {
   route : 'compiler'
 });
