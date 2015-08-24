@@ -3,11 +3,11 @@ NPM_PACKAGE=package.json
 NPM_FLAGS=dev
 
 ifeq ($(ENV),prod)
-	NPM_FLAGS=--production
+  NPM_FLAGS=--production
 endif
 
 ifeq ($(ENV),dev)
-	NPM_FLAGS=--dev
+  NPM_FLAGS=--dev
 endif
 
 SUPERVISOR=$(shell supervisor 2>/dev/null)
@@ -19,19 +19,26 @@ else
 endif
 
 ifdef SUPERVISOR
-	NODE = supervisor
+  NODE = supervisor
 endif
 
-build:
-	npm install
-	bower install
-	gulp build:static
+release:
+  npm install
+<<<<<<< HEAD
+  bower install
+  gulp build
+  npm test | ./tasks/release-js
 
+
+build:
+  npm install
+  gulp build
+  
 static:
-	gulp build:static
+  gulp build:static
 
 test:
-	npm test
+  npm test
 
 run:
-	$(NODE) node/index.js
+  $(NODE) node/index.js

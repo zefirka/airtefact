@@ -1,23 +1,45 @@
-function Queue(){
-  this.data = [];
-}
-
-Queue.prototype.push = function(value){
-  this.data.push(value);
-};
-
-Queue.prototype.pop = function(){
-  return this.data.shift(0);
-};
-
+var Queue = require('../../utils/queue.js');
 var sequence = new Queue();
 
-module.exports = {
-  init : function($canvasObject){
-    /* Тута делаем рисование и все такое */
-    console.log('Hey! Canvas is ready!');
-  },
-  put : function(state){
-    sequence.push(state);
-  }
+function Canvas(node) {
+  this.ctx = node.getContext('2d');
+  this.node = node;
+  this.objects = [];
+  paper.setup(node);
+
+  var self = this;
+
+  paper.view.onFrame = function() {
+    self.objects.forEach(function(o) {
+      o.animate();
+    });
+  };
+}
+
+Canvas.prototype.draw = function(drawning, options) {
+  var obj = drawning();
+  obj.strokeColor = '#ff0000';
+  obj.fillColor = 'blue';
+
+  paper.view.draw();
 };
+
+Canvas.prototype.addObject = function(object) {
+  this.objects.push(object);
+};
+
+Canvas.prototype.removeObject = function(object) {
+  this.objects = this.objects.filter(function(o) {
+    return o.id !== object.id;
+  }).slice();
+};
+
+function init(canvas) {
+  return new Canvas(canvas);
+}
+
+function put(state) {
+  sequence.push(state);
+}
+
+module.exports = Canvas;

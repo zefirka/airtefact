@@ -9,25 +9,17 @@ block content
   .container
     h1!=title
   .container
-    .row 
+    .row
       .col-md-8.col-lg-8.col-sm-12.col-xs-12
         .b-game
-          canvas#play
+          canvas#play(resize)
       .col-md-4.col-lg-4.col-sm-12.col-xs-12
         h2 Моя команда
         .b-controls
+            i.glyphicon.glyphicon-asterisk(id = 'summoner' )
+            textarea(rows=5, class="commandLine")
+            i.glyphicon.glyphicon-play(id='Go')
           ul.b-players
-            li.b-player
-              i.glyphicon.glyphicon-plus
-              input.form-control(type="text" pid="1" placeholder="player id", value="Абу Юакр аль-Багдади")
-              i.glyphicon.glyphicon-cog
-              i.glyphicon.glyphicon-remove
-            li.b-player
-              i.glyphicon.glyphicon-plus
-              input.form-control(type="text" pid="1" placeholder="player id", value="Абдул раис Фатрих")
-              i.glyphicon.glyphicon-cog
-              i.glyphicon.glyphicon-remove  
-  
 block footer
   footer
     .container

@@ -3,14 +3,15 @@ logs
 
 .idea
 .DS_Store
+**/*.DS_Store
 
 npm-debug.log
 *~
 node_modules
 server/commit.js
 docs
+.tern-project
 .anti_cache
-
 public/static/lib
 public/static/bundle
 public/static/js/app.js

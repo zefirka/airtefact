@@ -5,9 +5,22 @@
   margin-right: 3px;
   background: gray;
 }
+.glyphicon {
+  cursor: pointer;
+}
+.commandLine {
+  width: 100%;
+  float: left;
+}
+#Go {
+  float: left;
+}
 .row {
   height: 20px;
   margin-bottom: 3px;
+}
+.actionList {
+  height: 50px;
 }
 .b-players {
   padding: 0;
