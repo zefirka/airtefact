@@ -4,7 +4,7 @@ logs
 .idea
 .DS_Store
 **/*.DS_Store
-
+files
 npm-debug.log
 *~
 node_modules
