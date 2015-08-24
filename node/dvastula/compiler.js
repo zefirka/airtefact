@@ -19,48 +19,51 @@ var utils       = require('warden.js').Utils,
   @access public
 */
 var API = {
+
   def : {
     fn : function(name, value){
       // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
-      var res = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
+      var debug = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
 
       // если следующая директива - определение функции, то храним это значение в приватных данных lang
       if(value[0] == 'lambda'){
         lang.set('private', name, 'function');
       }
 
+      // компилируем значение
       value = compile(value);
 
       /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
       if (lang.derefReserved[name]){
-        res = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
-        return res;
+        return interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
       }
 
       lang.set('public', name, 'this.get("' + name + '")');
 
-      res += interpolate('this.set("{{name}}", {{value}})', {
+      return debug + interpolate('this.set("{{name}}", {{value}})', {
         name : name,
         value : value
       });
-
-      return res;
     },
     arity :  2
   },
 
+
   lambda : {
     fn :  function(params, body){
-      var res = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
-      params = params.join(', ');
+      var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
 
-      body =  compile(body, null, null);
+      params = strarr(params);
+
+      // null null нужны
+      // хз зачем
+      body = compile(body, null, null);
 
       lines = body.split('\n');
       lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
       body = lines.join('\n');
 
-      return res + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.bornScope())', {
+      return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.born())', {
         params : params,
         body : body
       });
@@ -70,21 +73,26 @@ var API = {
 
   defn : {
     fn : function(name, params, body){
-      var res = CUtils.comment('[defn {{0}} ...]', name);
+      var debug = CUtils.comment('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
+
       lang.set('public', name, function(){
-        var myParams = toArray(arguments).join(', ');
+        var myParams = strarr(toArray(arguments));
         return 'this.get("' + name + '").call(this, ' + myParams + ')';
       });
-      return res + API.def.fn.call(this, name, ['lambda', params, body]);
+
+      return debug + API.def.fn.call(this, name, ['lambda', params, body]);
     },
     arity : 3
   },
 
   'if' : {
     fn : function(cond, then, _else){
-      var ar2Statement = 'if ({{condition}}) { return {{then}}}';
-      var ar3Statement = ar2Statement + ' else {return {{_else}} }';
-      var str = ar2Statement;
+      var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
+
+      var ar2Statement = 'if ({{condition}}) { return {{then}}}',
+          ar3Statement = ar2Statement + ' else {return {{_else}} }',
+          str = ar2Statement;
+
       if (arguments.length == 3){
         str = ar3Statement;
       }
@@ -95,7 +103,7 @@ var API = {
         _else : compile(_else)
       });
 
-      return '(function(){ ' + res + ' }).call(this)';
+      return debug + '(function(){ ' + res + ' }).call(this)';
     }
   },
   'do' : {

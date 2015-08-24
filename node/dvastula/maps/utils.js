@@ -45,7 +45,7 @@ function exprForm(js){
 
   */
 function comment(){
-  return process.env.DEBUG == 'true' ?  intp('/*  {{0}}  */\n', intp.apply(null, toArray(arguments))) : '';
+  return process.env.DEBUG == 'true' ?  intp('\n/*  {{0}}  */\n', intp.apply(null, toArray(arguments))) : '';
 }
 
 function wrapInnerCall(fn, params){
