@@ -1,0 +1,17 @@
+extend ./layout.jade
+
+
+block content
+  .container
+    h1 Compiler test
+  .container
+    .row       
+      .col-sm-12.col-xs-12.col-md-12.col-lg-12
+        .b-code--debug
+          input(type="checkbox")#debug
+          label Debug mode
+    .row
+      .col-md-6.col-lg-6.col-sm-6.col-xs-6
+        textarea#input.b-code-area.b-code-area--in
+      .col-md-6.col-lg-6.col-sm-6.col-xs-6
+        pre#output.b-code-area.b-code-area--out.javascript.hljs

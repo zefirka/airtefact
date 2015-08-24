@@ -22,7 +22,8 @@ function resolveControllerByName(name, req){
       ctrlData = {};
 
   try{
-    ctrlData = require('./controllers/' + name);
+    var ctrl  = __dirname + '/controllers/' + name;
+    ctrlData = require(ctrl);
   }catch(error){
     console.log('Controller: ' +  name +  ' not found!');
     console.trace();
