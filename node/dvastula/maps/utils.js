@@ -33,10 +33,10 @@ function globalForm(js, semicolon){
 
 function exprForm(js){
   return js .slice(1,-1)
-            .replace(/(@[a-z\$_][\$_a-z0-9\.]*)/gm, function(a,b){
+            .replace(/(@[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
               return 'this.get("' + a.slice(1)  + '")';
             })
-            .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gm, function(a,b){
+            .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
               return 'globalScope.get("' + a.slice(1)  + '")';
             });
 }

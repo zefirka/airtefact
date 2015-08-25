@@ -4,7 +4,7 @@
 
 Предлагай свои варианты.
 
-## v.1
+## v.2
 
 #### Комменты
 ```
@@ -20,72 +20,60 @@
 @variable-name
 
 # function definition
-[def increment [ x -> {x + 1} ]]
+[defn increment[x] [+ x 1 ]]
+
+[defn increment[x] {x + 1}]
 
 # lambda function
-[[ x -> {x + 1} ] 10] # 11
+[lambda [x] [+ x 1]]
 ```
 
 ### Поток управления
 ```
 # condition
-[ if {@x > 10}
-  then [js console.log('test')]
-  else [def x {x + 1}]
+[ if  {x > 10}
+      [js console.log('test')]
+      [def x {x + 1}]
 ]
 
 # loop
-[ loop-of {@x [x -> {x > 5}]}
-  do [js console.log('test')]
-  finish [def x 123]
+[ dolist [x [list 1 2 3 4]]
+  {alert(x)}
 ]
 ```
 
 ### Абстракция над объектами
 ```
-[ describe $ID-объекта-или-имя [    # описываем поведение объекта
-  [ algorithm [                     # линейный алгоритм
-    [go-to @left @top ]    -> trail # сначала идти налево вверх (этап называем trail)
-    [go-to @left @bottom ] -> down  # потом налево вниз (этот этап называем down)
+[ for object-id [
+  [set-algorithm [
+    [go-to $left $top] as phase-1
+    [make-namaz 'Allah!'] as namaz
+    [boom 100] as phase-2]]
 
-    [when trail [                   # во время этапа trail
-      [try-to @avoid]               # пытаться вызвать метод avoid
-      [try-to @whirle               # а еще метод whirl
-        [only-when {@@ == 'ok'}]    # но только если результат равен 'ok'
-      ]
-      [never @collide]              # не пытаться вызвать collide
-    ]]
-
-    [when down [                    # во время этапа down
-      [compose @avoid @whirle       # совмсетить методы avoid и whirle
-
-        [when {$y > @y50%} [        # если мы спустились ниже 50% высоты
-          [@avoid 25%]              # avoid вызывать 25% попыток
-          [@whirle 75%]             # whirle вызывать 75% попыток
-        ]]
-
-        [otherwise [                # в других случаях
-          [@avoid --once--]         # вызывать avoid 1 раз
-          [@whirle --default--]     # все оставшеемся всермя
-        ]]
-      ]
+  [when phase-1 [
+    [cond [len @lookAround]
+          0 : [call @moveRandomly]
+          1 : [setPhase follower {this.get('lookAround')[0]}
     ]]
   ]]
 
-  [def whirle [
-    ### реализация whirle для этого объекта ###
+  [when follower(object)
+      if(distance(this, object) < 10)
+        this.MoveTo(object);
+      else
+        setPhase(phase-1);
+      ]
+
+  [when namaz [
+    ...
   ]]
 
-  [triggers ] ... ну ты понел
+  [when phase-2 [
+    ...
+  ]]
 ]]
 
-# определение глобальной функции для каждого объекта
-[def avoid [object -> [
-  ### реализация avoid ###
-]]]
-
 ```
-
 #### Плюсы
  - Легко парсить
  - Вроде понятно глазу
