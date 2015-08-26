@@ -13,8 +13,35 @@ function len(vector) {
   return (Math.sqrt(vector.X * vector.X + vector.Y * vector.Y));
 }
 function Idle(){}
-
 var InfoBag = {MousePos : {X :0, Y :0}};
+
+var Phases = {TestPhase : {
+                Blocks : [{
+                  Condition : function() {
+                    return 1;
+                  },
+                  Action : {Act : Idle, Params : 0},
+                }],
+                Params : 0
+              },
+              GoToPhase : {
+                Blocks : [{
+                  Condition : function(Params) {
+                    return this.Speed !== undefined && dist(this, Params[0]) >= 10;
+                  },
+                  Action : MoveToPosition,
+                  NextPhase : GoToPhase
+                },
+                {
+                  Condition : function(Params) {
+                    return this.Speed !== undefined && dist(this, Params[0]) < 10;
+                  },
+                  Action : Idle,
+                  NextPhase : TestPhase
+                }],
+                Params : 0
+              }
+};
 
 module.exports = {
 
@@ -23,12 +50,24 @@ module.exports = {
     this.ID = logics.Elements.length + 1;
     this.Action = { Act : Idle, Params : 0};
     this.actions = [];
-    this.Rules = [];
+    this.Phase = 0;
+    this.ItemsInMind = [];
     this.Speed = 2;
 
+    this.ConsiderAlgorithm = function() {
+      if (this.Phase === 0) {
+        return 1;
+      }
+      this.Phase.Blocks.forEach(function(item, i) {
+        if(item.Condition(ItemsInMind[0])) {
+          this.AddAction(item.Action, ItemsInMind[0]);
+        }
+      });
+
+    };
     this.DoAction = function() {
       if (this.actions.length === 0) {
-        this.AddAction(module.exports.MoveRandomly);
+        this.AddAction({Act : Idle, Params : 0});
       }
       this.Action.Act = this.actions[0].Act;
       this.Action.Params = this.actions[0].Params;
@@ -48,22 +87,6 @@ module.exports = {
       Action.Act = Act;
       Action.Params = params;
       this.actions.push(Action);
-    };
-    this.AddRule = function(Rule, params, Name) {
-      var contains = false;
-      this.Rules.forEach(function(item) {
-        if (item.Name == Name) {
-          contains = true;
-        }
-      });
-      if (!contains)
-      {
-        var R = {};
-        R.Rule = Rule;
-        R.Params = params;
-        R.Name = Name;
-        this.Rules.push(R);
-      }
     };
     return this;
   },
@@ -101,6 +124,11 @@ module.exports = {
     this.AddAction(module.exports.Move,
       {X : InfoBag.MousePos.X - this.position.X,
         Y : InfoBag.MousePos.Y - this.position.Y});
+  },
+  MoveToPosition : function(pos) {
+    this.AddAction(module.exports.Move,
+      {X : pos.X - this.position.X,
+        Y : pos.Y - this.position.Y});
   },
   FollowObject : function(elem) {
     elem = elem[0];
