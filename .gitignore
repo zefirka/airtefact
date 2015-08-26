@@ -13,5 +13,5 @@ docs
 .tern-project
 .anti_cache
 public/static/lib
-public/static/bundle
+public/static/js/bundle
 public/static/js/app.js

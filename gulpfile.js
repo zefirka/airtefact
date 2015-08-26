@@ -1,10 +1,12 @@
 /* GULP modules */
-var gulp    = require('gulp'),
-    less    = require('gulp-less'),
-    bfy     = require('gulp-browserify'),
-    bower   = require('gulp-bower'),
-    jsdoc   = require('gulp-jsdoc'),
-    jasmine = require('gulp-jasmine-phantom');
+var gulp      = require('gulp'),
+    less      = require('gulp-less'),
+    bfy       = require('browserify'),
+    bower     = require('gulp-bower'),
+    jsdoc     = require('gulp-jsdoc'),
+    reactify  = require('reactify'),
+    source    = require('vinyl-source-stream'),
+    jasmine   = require('gulp-jasmine-phantom');
 
 var color   = require('colors'),
     pkg     = require('./package.json');
@@ -16,7 +18,7 @@ function task(name, fn){
   return function(){
     console.log('Apply task: '.green + name.green);
     console.log('___________________________________________'.green);
-    fn.apply(null, arguments);
+    return fn.apply(null, arguments);
   };
 }
 
@@ -46,12 +48,15 @@ task('less', ['less:main']).
 task('styles', ['less']).
 
 task('scripts:build', task('Building scripts', function() {
-  gulp.src(_static + 'js/app/app.js')
-      .pipe(bfy({
-        insertGlobals : false,
-        debug : false
-      }))
-      .pipe( gulp.dest(_static + '/js'));
+  /* browserify */
+  var enter = _static + 'js/app/app.js';
+  var b = bfy();
+
+  b.transform(reactify); // use the reactify transform
+  b.add(enter);
+  return b.bundle()
+        .pipe(source('bundle.js'))
+        .pipe(gulp.dest(_static + '/js/bundle'));
 })).
 
 task('scripts', ['scripts:build']).
@@ -70,5 +75,6 @@ task('default', function() {
   gulp.watch(_static + 'less/*.less', ['less']);
   gulp.watch(_static + 'less/**/*.less', ['less']);
   gulp.watch(_static + 'js/app/**/*.js', ['scripts:build']);
+  gulp.watch(_static + 'js/app/**/*.jsx', ['scripts:build']);
   gulp.watch(_static + 'js/app/modules/**/*.js', ['scripts:build']);
 });

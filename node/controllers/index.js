@@ -11,7 +11,8 @@ var jsc = path(config.static, 'js'),
 common.scripts = common.scripts.concat([
   path(lib, 'socket.io-client/socket.io.js'),
   path(lib, 'paper/dist/paper-full.js'),
-  path(jsc, 'app.js')
+  path(lib, 'react/react-with-addons.js'),
+  path(jsc, 'bundle/bundle.js')
 ]);
 
 module.exports = extend({}, common, {

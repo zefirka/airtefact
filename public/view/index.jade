@@ -8,18 +8,20 @@ block vars
 block content
   .container
     h1!=title
-  .container
-    .row
-      .col-md-8.col-lg-8.col-sm-12.col-xs-12
-        .b-game
-          canvas#play(resize)
-      .col-md-4.col-lg-4.col-sm-12.col-xs-12
-        h2 Моя команда
-        .b-controls
-            i.glyphicon.glyphicon-asterisk(id = 'summoner' )
-            textarea(rows=5, class="commandLine")
-            i.glyphicon.glyphicon-play(id='Go')
-          ul.b-players
+  
+  #appjs
+  //.container
+    //- .row
+    //-   .col-md-8.col-lg-8.col-sm-12.col-xs-12
+    //-     .b-game
+    //-       canvas#play(resize)
+    //-   .col-md-4.col-lg-4.col-sm-12.col-xs-12
+    //-     h2 Моя команда
+    //-     .b-controls
+    //-         i.glyphicon.glyphicon-asterisk(id = 'summoner' )
+    //-         textarea(rows=5, class="commandLine")
+    //-         i.glyphicon.glyphicon-play(id='Go')
+    //-       ul.b-players
 block footer
   footer
     .container

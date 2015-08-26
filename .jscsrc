@@ -37,6 +37,8 @@
     "validateIndentation": 2,
     "validateQuoteMarks": true,
     "excludeFiles" : [
-      "karma.conf.js"
+      "karma.conf.js",
+      "*.jsx",
+      "public/static/js/bundle/*"
     ]
 }
