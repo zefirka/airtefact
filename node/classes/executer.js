@@ -11,7 +11,7 @@ module.exports = {
 
 function ActAll() {
   module.exports.Elements.forEach(function(elem, i) {
-    elem.ThinkAlgorithm();
+    elem.ConsiderAlgorithm();
     elem.DoAction();
   });
 }

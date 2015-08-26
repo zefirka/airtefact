@@ -56,14 +56,15 @@ module.exports = {
 
     this.ConsiderAlgorithm = function() {
       if (this.Phase === 0) {
-        return 1;
+        this.AddAction(Idle);
+      } else if (this.Phase.Blocks !== undefined) {
+        this.Phase.Blocks.forEach(function(item, i) {
+          if(item.Condition(ItemsInMind[0])) {
+            this.AddAction(item.Action, ItemsInMind[0]);
+            this.Phase = item.NextPhase;
+          }
+        });
       }
-      this.Phase.Blocks.forEach(function(item, i) {
-        if(item.Condition(ItemsInMind[0])) {
-          this.AddAction(item.Action, ItemsInMind[0]);
-          this.Phase = item.NextPhase;
-        }
-      });
     };
     this.SetPhase = function (PhaseName, Params) {
       ItemsInMind = [];
