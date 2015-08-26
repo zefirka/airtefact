@@ -29,15 +29,15 @@ var Phases = {TestPhase : {
                   Condition : function(Params) {
                     return this.Speed !== undefined && dist(this, Params[0]) >= 10;
                   },
-                  Action : MoveToPosition,
-                  NextPhase : GoToPhase
+                  Action : module.exports.MoveToPosition,
+                  NextPhase : 'GoToPhase'
                 },
                 {
                   Condition : function(Params) {
                     return this.Speed !== undefined && dist(this, Params[0]) < 10;
                   },
                   Action : Idle,
-                  NextPhase : TestPhase
+                  NextPhase : 'TestPhase'
                 }],
                 Params : 0
               }
@@ -61,9 +61,20 @@ module.exports = {
       this.Phase.Blocks.forEach(function(item, i) {
         if(item.Condition(ItemsInMind[0])) {
           this.AddAction(item.Action, ItemsInMind[0]);
+          this.Phase = item.NextPhase;
         }
       });
-
+    };
+    this.SetPhase = function (PhaseName, Params) {
+      ItemsInMind = [];
+      this.Phase = PhaseName;
+      if(Params.length === undefined){
+        ItemsInMind.push(Params);
+      } else {
+        Params.forEach(function(item,i) {
+          ItemsInMind.push(item);
+        });
+      }
     };
     this.DoAction = function() {
       if (this.actions.length === 0) {

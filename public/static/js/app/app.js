@@ -8,6 +8,15 @@ paper.install(window);
 var InfoBag = {};
 
 $(function() {
+  $('#PlayGround').click(function() {
+    $('#PlayPane').css('display', 'block');
+    $('#Code').css('display', 'none');
+  });
+  $('#Console').click(function() {
+    $('#PlayPane').css('display', 'none');
+    $('#Code').css('display', 'block');
+  });
+
   var canvas = new Canvas(document.getElementById('play'));
   var mousePos;
   canvas.node.addEventListener('mousemove', function(evt) {
