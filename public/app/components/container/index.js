@@ -10,10 +10,16 @@ export default class Container extends Component {
     const store = createStore(reducers, initial);
 
     return (
-      <div className='container'>
-        <Provider store={ store }>
-          { () => <App /> }
-        </Provider>
+      <div className='app'>
+        <div className='container'>
+          <h1> Nadmozg </h1>
+        </div>
+
+        <div className='container'>
+          <Provider store={ store }>
+            { () => <App /> }
+          </Provider>
+        </div>
       </div>
     );
   }
