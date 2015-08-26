@@ -5,6 +5,7 @@ var gulp      = require('gulp'),
     bower     = require('gulp-bower'),
     jsdoc     = require('gulp-jsdoc'),
     reactify  = require('reactify'),
+    babelify  = require('babelify'),
     source    = require('vinyl-source-stream'),
     jasmine   = require('gulp-jasmine-phantom');
 
@@ -52,8 +53,11 @@ task('scripts:build', task('Building scripts', function() {
   var enter = _static + 'js/app/app.js';
   var b = bfy();
 
-  b.transform(reactify); // use the reactify transform
-  b.add(enter);
+  b .transform(babelify) // use babelify transform
+    .transform(reactify) // use reactify transform
+    .add(enter)
+    .on('error', function(err) {console.error(err.message); });
+
   return b.bundle()
         .pipe(source('bundle.js'))
         .pipe(gulp.dest(_static + '/js/bundle'));

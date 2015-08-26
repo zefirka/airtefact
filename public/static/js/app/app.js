@@ -1,14 +1,19 @@
-var models = require('./models/models'),
-    socket = require('./modules/socket'),
-    Canvas = require('./modules/canvas'),
-    UI     = require('./ui/app.jsx');
+import React from 'react';
+import Container from '../../../app/components/container';
 
-/* Первоначальная инициализация */
-socket.init();
+//var models = require('./models/models'),
+//    socket = require('./modules/socket'),
+//    Canvas = require('./modules/canvas'),
+//    UI     = require('./ui/app.jsx');
+
+// socket.init();
 paper.install(window);
 
-$(function() {
-  React.render(React.createElement(UI), document.getElementById('appjs'));
+React.render(<Container />, document.querySelector('.g-content'));
+
+/* Первоначальная инициализация */
+//$(function() {
+//  React.render(React.createElement(UI), document.getElementById('appjs'));
   //
   //
   // var canvas = new Canvas(document.getElementById('play'));
@@ -53,5 +58,4 @@ $(function() {
   // setInterval(function() {
   //   socket.emit('ping', InfoBag);
   // }, 500);
-
-});
+//});

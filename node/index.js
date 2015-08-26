@@ -1,6 +1,9 @@
+require('babel/register');
+
 var config = require('./config/config');
 var express = require('./app');
 var App = express.init();
+
 
 
 process.argv.forEach(function(arg){

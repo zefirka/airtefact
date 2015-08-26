@@ -2,7 +2,7 @@ var express         = require('express'),
     ws              = require('socket.io'),
     fs              = require('fs'),
     morgan,         // inited only in dev mode
-    color;          // inited only in dev mode
+    colors;          // inited only in dev mode
 
 var config          = require('./config/config.js'),
     expressUtils    = require('./utils/express.js');

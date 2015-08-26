@@ -2,9 +2,9 @@
 
 echo "Commit!"
 
-CSS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed  -n '/\.css$/p'`
-JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }'  | awk '{if ($1 ~ /.js$/ && $1 !~/.spec.js$/) print $1}'`
-TEST=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.test\.js$/p'`
+#CSS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed  -n '/\.css$/p'`
+#JS=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }'  | awk '{if ($1 ~ /.js$/ && $1 !~/.spec.js$/) print $1}'`
+#TEST=`git diff --cached --name-status | awk '$1 != "R" && $1 != "D" { print $2 }' | sed -n '/\.test\.js$/p'`
 
 # if [ "$CSS" ]; then
 #   ./tasks/lint-css $CSS || ERRORS=1
