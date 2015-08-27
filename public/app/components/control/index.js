@@ -16,7 +16,7 @@ export default class Control extends Component {
 
     return (
       <div className='b-control'>
-        <input className='form-control' id={ key } type='text' />
+        <input className='form-control' id={ key } type='text' value={this.props.id} />
         <button className='btn btn-danger' onClick={ this.remove.bind(this) }>x</button>
         <button className='btn' onClick={ this.edit.bind(this) }>edit</button>
       </div>

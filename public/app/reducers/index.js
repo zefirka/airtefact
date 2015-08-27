@@ -1,8 +1,12 @@
 import { clone } from 'ramda';
 
+var initial = [{
+  id: 0,
+  rules: [] }]
 
-export default function reducers(state = {elements: []}, action) {
+export default function reducers(state = {elements: initial}, action) {
   switch (action.type) {
+
   case 'ADD':
     state = clone(state);
     state.elements.push({
@@ -18,6 +22,7 @@ export default function reducers(state = {elements: []}, action) {
     return state;
 
   case 'START':
+    
     console.log('started');
 
   default:

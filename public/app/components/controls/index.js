@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import Control from '../control';
 import Console from '../console';
 
-
 const Element = connect()(Control);
 
 export default class Controls extends Component {

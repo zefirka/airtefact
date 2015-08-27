@@ -86,3 +86,11 @@ footer {
   margin-right: 10px;
   margin-top: 5px;
 }
+.b-console {
+  width: 100%;
+  margin-bottom: 10px;
+}
+.b-console textarea {
+  width: 100%;
+  font-family: monospace;
+}

@@ -65,7 +65,7 @@ task('scripts:build', task('Building scripts', function() {
 
 task('scripts', ['scripts:build']).
 
-task('build', ['bower', 'build:static', 'docs']).
+task('build', ['bower', 'build:static', /* 'docs' */ ]).
 
 task('build:static', ['scripts', 'styles']).
 
@@ -76,8 +76,14 @@ task('docs', task('Generation documentation', function () {
 })).
 
 task('default', function() {
+  gulp.watch('public/app/compontnst/**.*.js', ['scripts']);
+  gulp.watch('public/app/reducers/**.*.js', ['scripts']);
+  gulp.watch('public/app/compontnst/*.js', ['scripts']);
+  gulp.watch('public/app/reducers/*.js', ['scripts']);
+
   gulp.watch(_static + 'less/*.less', ['less']);
   gulp.watch(_static + 'less/**/*.less', ['less']);
+  gulp.watch(_static + 'js/app/**/*.js', ['scripts:build']);
   gulp.watch(_static + 'js/app/**/*.js', ['scripts:build']);
   gulp.watch(_static + 'js/app/**/*.jsx', ['scripts:build']);
   gulp.watch(_static + 'js/app/modules/**/*.js', ['scripts:build']);

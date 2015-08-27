@@ -1,4 +1,6 @@
-var App = require('../client/app');
+
+/* Isomorphic, lol */
+//var App = require('../flux/app');
 
 var extend = require('warden.js').Utils.extend;
 var common = require('./common');
@@ -18,5 +20,5 @@ common.scripts = common.scripts.concat([
 
 module.exports = extend({}, common, {
   route : 'index',
-  html : App.render()
+  html : '' //App.render() /* Isomorphic, lol */
 });
