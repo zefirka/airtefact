@@ -1,3 +1,6 @@
+var R     = require('ramda'),
+    utils = require('warden.js').utils;
+
 var logics = require('./executer.js');
 
 function getRandomArbitary(min, max)
@@ -7,134 +10,156 @@ function getRandomArbitary(min, max)
 
 
 function dist(a,b) {
-  return Math.sqrt((a.X - b.X) * (a.X - b.X) + (a.Y - b.Y) * (a.Y - b.Y));
+  return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 function len(vector) {
-  return (Math.sqrt(vector.X * vector.X + vector.Y * vector.Y));
+  return (Math.sqrt(vector.x * vector.x + vector.y * vector.y));
 }
 function Idle(){}
-var InfoBag = {MousePos : {X :0, Y :0}};
+
+
+var Pkg = {
+  mousePos : {X :0, Y :0}
+};
 
 
 var Phases = [
-  {Name : 'GoToPhase',
-    Blocks : [{
-      Condition : function(Params) {
-        return this.Speed !== undefined && dist(this, Params[0]) >= 10;
+  {
+    name : 'goToPhase',
+    blocks : [
+      {
+        condition : function(params) {
+          return this.speed !== undefined && dist(this, params[0]) >= 10;
+        },
+        action : 'moveToPosition',
+        nextPhase : 'goToPhase'
       },
-      Action : MoveToPosition,
-      NextPhase : 'GoToPhase'
-    },
-    {
-      Condition : function(Params) {
-        return this.Speed !== undefined && dist(this, Params[0]) < 10;
-      },
-      Action : Idle,
-      NextPhase : 'TestPhase'
-    }],
-    Params : 0
+      {
+        condition : function(params) {
+          return this.speed !== undefined && dist(this, params[0]) < 10;
+        },
+        action : idle,
+        nextPhase : 'testPhase'
+      }],
+    params : 0
   }
 ];
 
-var Module = {
+function Element(x, y){
+  this.position = {
+    x : x || 0,
+    y : y || 0
+  };
 
-  Element : function() {
-    this.position = {X :0, Y :0};
-    this.ID = logics.Elements.length + 1;
-    this.Action  = 0;
-    this.actions = [];
-    this.Phase = 0;
-    this.ItemsInMind = {};
-    this.Speed = 2;
+  this.id = logics.elements.length + 1;
+  this.action  = 0;
+  this.actions = [];
+  this.phase = 0;
+  this.itemsInMind = {};
+  this.speed = 2;
+}
 
-    this.ConsiderAlgorithm = function() {
-      if (this.Phase === 0) {
-        this.AddAction(Idle);
-      } else if (this.Phase.Blocks !== undefined) {
-        this.Phase.Blocks.forEach(function(item, i) {
-          if(item.Condition()) {
-            this.AddAction(Module[item.Action]);
-            this.Phase = Phases[item.NextPhase];
-          }
-        });
+Element.prototype.ConsiderAlgorithm = function () {
+  if (this.phase === 0) {
+    this.addAction(Idle);
+  } else if (this.phase.blocks !== undefined) {
+    this.phase.blocks.forEach(function(item, i) {
+      if(item.condition()) {
+        this.addAction(this[item.Action]);
+        this.phase = Phases[item.nextPhase];
       }
-    };
-    this.SetPhase = function (PhaseName) {
-      this.Phase = Phases[PhaseName];
-    };
-    this.DoAction = function() {
-      if (this.actions.length === 0) {
-        this.AddAction(Idle);
-      }
-      this.Action = this.actions[0];
-      this.Action.call(this);
-      this.actions.shift();
-
-    };
-    this.AbortActive = function() {
-      this.Action.Act = Idle;
-    };
-    this.SetAction = function(Act, params) {
-      this.Action.Act = Act;
-      this.Action.Params = params;
-    };
-    this.AddAction = function(Act) {
-      this.actions.push(Act);
-    };
-    return this;
-  },
-  GetElementsById : function(ID) {
-    return logics.Elements.filter(function(a) {
-      return a.ID == ID;
     });
-  },
-  UpdateInfo : function(infoCollection) {
-    for(var i = 0; i < infoCollection.length; i++) {
-      for(var e in infoCollection[i]) {
-        InfoBag[e] = infoCollection[i][e];
-      }
-    }
-  },
-
-  Move : function(vector) {
-    var X = vector.X /len(vector) * this.Speed;
-    var Y = vector.Y /len(vector) * this.Speed;
-    this.position.X += X;
-    this.position.Y += Y;
-  },
-  GoTo : function() {
-    var pos = this.ItemsInMind.position;
-    var vector = {X : pos.X - this.position.X, Y : pos.Y - this.position.Y};
-    var X = vector.X /len(vector) * this.Speed;
-    var Y = vector.Y /len(vector) * this.Speed;
-    this.position.X += X;
-    this.position.Y += Y;
-    if (dist(pos, this.position) > 10){
-      this.AddAction(Module.GoTo);
-    }
-  },
-  FollowCursor : function() {
-    //  console.log(InfoBag);
-    this.AddAction(Module.Move,
-      {X : InfoBag.MousePos.X - this.position.X,
-        Y : InfoBag.MousePos.Y - this.position.Y});
-  },
-  MoveToPosition : function() {
-    var pos = this.ItemsInMind.position;
-    this.AddAction(Module.Move,
-      {X : pos.X - this.position.X,
-        Y : pos.Y - this.position.Y});
-  },
-  FollowObject : function() {
-    var obj = this.ItemsInMind.follow;
-    this.AddAction(Module.Move,
-      {X : obj.position.X - this.position.X,
-        Y : obj.position.Y - this.position.Y});
-  },
-  MoveRandomly : function() {
-    this.ItemsInMind.position = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
-    this.AddAction(Module.GoTo);
   }
 };
 
-module.exports = Module;
+Element.prototype.setPhase = function (name){
+  this.phase = Phases[name];
+};
+
+Element.prototype.invoke = function () {
+  if (this.actions.length === 0) {
+    this.addAction(Idle);
+  }
+  this.action = this.actions[0];
+  this.action.call(this);
+  this.actions.shift();
+};
+
+Element.prototype.AbortActive = function() {
+  this.action.act = idle;
+};
+
+Element.prototype.SetAction = function(act, params) {
+  this.action.act = act;
+  this.action.params = params;
+};
+
+Element.prototype.AddAction = function(Act) {
+  this.actions.push(Act);
+};
+
+
+Element.prototype.getElementsById = function(id) {
+  return R.filter(R.eqProps(id, 'id'), logics.elements);
+};
+
+Element.prototype.updateInfo = function(infoCollection) {
+  infoCollection.forEach(R.partial(utils.extend(Pkg)));
+};
+
+Element.prototype.move = function(vector) {
+  var x = vector.x /len(vector) * this.Speed;
+  var y = vector.y /len(vector) * this.Speed;
+  this.position.x += x;
+  this.position.y += y;
+};
+
+Element.prototype.goto = function() {
+  var pos = this.itemsInMind.position;
+
+  this.move({
+    x : pos.x - this.position.x,
+    y : pos.y - this.position.y
+  });
+
+  if (dist(pos, this.position) > 10) {
+    this.addAction(this.goto);
+  }
+};
+
+Element.prototype.followCursor = function() {
+  this.addAction(this.move, {
+    x : Pkg.mousePos.x - this.position.x,
+    y : Pkg.mousePos.y - this.position.y
+  });
+};
+
+Element.prototype.moveToPosition = function() {
+  var pos = this.itemsInMind.position;
+
+  this.addAction(this.Move, {
+    x : pos.x - this.position.x,
+    y : pos.y - this.position.y
+  });
+};
+
+Element.prototype.followObject = function() {
+  var obj = this.itemsInMind.follow;
+
+  this.addAction(this.Move, {
+    x : obj.position.x - this.position.x,
+    y : obj.position.y - this.position.y
+  });
+};
+
+Element.prototype.moveRandomly = function() {
+  this.itemsInMind.position = {
+    x : getRandomArbitary(0, 300),
+    y : getRandomArbitary(0,300)
+  };
+
+  this.addAction(this.goto);
+};
+
+
+module.exports = new Element();
