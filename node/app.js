@@ -58,9 +58,7 @@ module.exports = {
   },
   initWebSocket : function(server){
     var io = ws(server);
-    io.sockets.on('connection', function (socket) {
-      WebSocketMaster(socket);
-    });
+    io.sockets.on('connection', WebSocketMaster);
   },
   destruct : function(){
     console.log('should destruct app');

@@ -11,10 +11,8 @@ module.exports = {
 
 function ActAll() {
   module.exports.Elements.forEach(function(elem, i) {
+    elem.ConsiderAlgorithm();
     elem.DoAction();
-    elem.Rules.forEach(function(rule,i) {
-      rule.Rule.call(elem, rule.Params);
-    });
   });
 }
 function DrawAll(socket) {

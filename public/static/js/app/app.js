@@ -9,6 +9,15 @@ paper.install(window);
 //var InfoBag = {};
 
 $(function() {
+  $('#PlayGround').click(function() {
+    $('#PlayPane').css('display', 'block');
+    $('#Code').css('display', 'none');
+  });
+  $('#Console').click(function() {
+    $('#PlayPane').css('display', 'none');
+    $('#Code').css('display', 'block');
+  });
+
   var canvas = new Canvas(document.getElementById('play'));
 
   // var mousePos;
@@ -58,6 +67,10 @@ $(function() {
   // setInterval(function() {
   //   socket.emit('ping', InfoBag);
   // }, 500);
+
+  $('#SendCode').click(function() {
+    socket.emit('save');
+  });
 
   /* Вот так я работаю с моделями на фронтенде */
   // var testShape = new models.Circle(40, 40, 15);

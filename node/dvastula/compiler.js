@@ -85,6 +85,56 @@ API.defn = define(3, function(name, params, body){
   return debug + API.def.fn.call(this, name, ['lambda', params, body]);
 });
 
+API.phase = define(3, function(name, blocks, params){
+  var PhaseName = name.toString();
+  var PhaseParams = params.toString();
+  var saverregexp = /\{(.*?)\}/g;
+
+  var item;
+  var splitted;
+  var condition;
+  var action;
+  var nextPhase;
+  var itemId;
+  var match = saverregexp.exec(blocks.toString());
+  var strblocks = blocks.toString();
+  var replacedIds = {};
+  while(match !== null) {
+    item = match[1];
+    itemId = getRandomInt(345,7160);
+    strblocks = strblocks.replace(match[1], itemId);
+    replacedIds[itemId] = match[1];
+    match = saverregexp.exec(strblocks);
+  }
+
+  var regexp = /\((.*?)\)/g;
+  var Blocks = [];
+  match = regexp.exec(strblocks);
+  while(match !== null) {
+    item = match[1];
+    splitted = item.split(',');
+    for(var i = 0; i < splitted.length; i++) {
+      for(var k in replacedIds){
+        splitted[i] = splitted[i].replace(k.toString(),replacedIds[k]);
+      }
+    }
+    condition =splitted[0];
+    action = splitted[1];
+    nextPhase = splitted[2];
+    Blocks.push({Condition : condition, Action : action, NextPhase : nextPhase});
+    match = regexp.exec(strblocks);
+  }
+  var Phase = {Name : PhaseName, Blocks : Blocks, Params : PhaseParams};
+  var result = 'Name:' + Phase.Name + ', \n Blocks = [';
+  Phase.Blocks.forEach(function(item,i) {
+    result = result + '{ Condition : ' + item.Condition + ',\n' +
+    'Action : ' + item.Action + ' , ' +
+    'NextPhase : ' + item.NextPhase + '},\n';
+  });
+  result = result + '] \n Params : ' + Phase.Params;
+  return result;
+});
+
 API['if'] = define(null, function(cond, then, _else){
   var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
 
@@ -170,6 +220,13 @@ function Compiler(source){
 
   return res;
 }
+
+// использование Math.round() даст неравномерное распределение!
+function getRandomInt(min, max)
+{
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 
 function compile(js, indexInParent, parent){
   if (is.array(js)){
