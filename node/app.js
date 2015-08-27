@@ -73,10 +73,10 @@ module.exports = {
             factory.GetElementsById(ID).map(function(a) {
               a.AddAction(Action, Params);
             });
-          } else if (elem.indexOf(':') > -1) {
+          } else if (elem.indexOf(';') > -1) {
             ID = elem.split(';')[0];
-            var RuleName =  elem.split(';')[1];
-            var RuleObj = RuleName.split('|')[1];
+            var PhaseName =  elem.split(';')[1];
+            var PhaseParams = RuleName.split('|')[1];
             if (RuleObj !== '')  {
               RuleObj = factory.GetElementsById(RuleObj);
             }

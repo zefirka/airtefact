@@ -56,6 +56,9 @@ $(function() {
     socket.emit('play',$('.commandLine').val());
 
   });
+  $('#SendCode').click(function() {
+    socket.emit('save');
+  });
   setInterval(function() {
     socket.emit('ping', InfoBag);
   }, 500);

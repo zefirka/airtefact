@@ -15,16 +15,8 @@ function len(vector) {
 function Idle(){}
 var InfoBag = {MousePos : {X :0, Y :0}};
 
-var Phases = {TestPhase : {
-                Blocks : [{
-                  Condition : function() {
-                    return 1;
-                  },
-                  Action : {Act : Idle, Params : 0},
-                }],
-                Params : 0
-              },
-              GoToPhase : {
+var Phases = [
+              {Name : 'GoToPhase',
                 Blocks : [{
                   Condition : function(Params) {
                     return this.Speed !== undefined && dist(this, Params[0]) >= 10;
@@ -41,7 +33,7 @@ var Phases = {TestPhase : {
                 }],
                 Params : 0
               }
-};
+];
 
 module.exports = {
 
