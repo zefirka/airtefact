@@ -8,9 +8,7 @@ export default class Console extends Component {
   render() {
     return (
       <div className='b-console'>
-        <textarea className="form-control" onInput={this.change.bind(this)}>
-# your code please
-</textarea>
+        <textarea className="form-control" onInput={this.change.bind(this)}># your code please</textarea>
       </div>
     );
   }
