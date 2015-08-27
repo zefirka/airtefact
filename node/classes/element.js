@@ -3,18 +3,18 @@ var R     = require('ramda'),
 
 var logics = require('./executer.js');
 
-function getRandomArbitary(min, max)
-{
+function getRandomArbitary(min, max){
   return Math.random() * (max - min) + min;
 }
-
 
 function dist(a,b) {
   return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
+
 function len(vector) {
   return (Math.sqrt(vector.x * vector.x + vector.y * vector.y));
 }
+
 function Idle(){}
 
 
