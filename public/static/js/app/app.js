@@ -32,7 +32,7 @@ $(function() {
       canvas.getElementById(elem.id).update(elem);
     });
 
-    canvas.redraw();
+    //canvas.redraw();
   });
 
   $('#summoner').click(function() {

@@ -21,4 +21,8 @@ Raster.prototype.animate = function() {
   this.instance.rotate(3);
 };
 
+Raster.prototype.move = function(){
+  this.instance.position.set(this.x, this.y);
+};
+
 module.exports = Raster;
