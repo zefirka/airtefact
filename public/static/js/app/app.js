@@ -53,6 +53,8 @@ $(function() {
     });
     var data = {
       code : code,
+      width : canvas.node.width,
+      height : canvas.node.height,
       elements : elements,
       time : new Date().getTime(),
       instance : instanceId++,

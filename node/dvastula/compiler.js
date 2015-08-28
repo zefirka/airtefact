@@ -179,8 +179,8 @@ API['for'] = define(2, function(name, rules){
   var debug = CUtils.comment('[for {{0}} {{1}}]', strarr(name), strarr(rules));
   var body = rules.map(compile).join(';\n');
 
-  return debug + '(function(){ ' + body + ' }).call(globalScope.getObject("' +
-    name + '").getScope());';
+  return debug + '(function(){' + body + ' }).call(this.getElement("' +
+    name + '").getScope())';
 });
 
 

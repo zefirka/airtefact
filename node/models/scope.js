@@ -43,4 +43,10 @@ Scope.prototype.resolve = function (name){
   })(this.store);
 };
 
+Scope.prototype.getElement = function (id) {
+  return this.store.elements.filter(function(i){
+    return i.id == id;
+  })[0] || null;
+};
+
 module.exports = Scope;

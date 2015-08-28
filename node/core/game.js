@@ -1,8 +1,7 @@
 var Scope     = require('../models/scope'),
     S2        = require('../dvastula/compiler'),
     Element   = require('../models/element'),
-    config    = require('../config/config'),
-    Executer  = require('../models/executer');
+    config    = require('../config/config');
 
 var fs    = require('fs'),
     R     = require('ramda'),

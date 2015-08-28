@@ -18,7 +18,7 @@ function idle(){}
 
 
 var Pkg = {
-  mousePos : {X :0, Y :0}
+  mousePos : {x :0, y :0}
 };
 
 
@@ -58,7 +58,11 @@ function Element(o){
   this.phase = 0;
   this.itemsInMind = {};
   this.speed = 2;
-  this.scope = new Scope();
+  this.scope = new Scope({
+    x : this.x,
+    y : this.y,
+    phase : this.phase
+  });
 }
 
 Element.prototype.considerAlgorithm = function () {
@@ -117,7 +121,6 @@ Element.prototype.updateInfo = function(infoCollection) {
 };
 
 Element.prototype.move = function(vector) {
-  console.log(vector);
   var x = vector.dx / len(vector) * this.speed;
   var y = vector.dy / len(vector) * this.speed;
   this.x += x;
@@ -171,5 +174,8 @@ Element.prototype.moveRandomly = function() {
   this.addAction(this.goto);
 };
 
+Element.prototype.getScope = function(){
+  return this.scope;
+};
 
 module.exports = Element;
