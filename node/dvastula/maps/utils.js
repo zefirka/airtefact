@@ -6,8 +6,8 @@ var utils = require('warden.js').Utils,
     toArray = utils.toArray,
     intp = utils.interpolate;
 
-var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n}\n\nmodule.exports = function(glob, scope){' +
-  '{{fname}}.call(scope, glob); ' +
+var wrapper = 'function {{fname}}(){\n\t{{body}}\n}\n\nmodule.exports = function(scope){' +
+  '{{fname}}.call(scope); ' +
   '}';
 var _throwError = '(function(){throw "Error"})();';
 

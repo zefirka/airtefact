@@ -9,7 +9,8 @@ paper.install(window);
 
 $(function() {
 
-  var id = 0;
+  var id         = 0,
+      instanceId = 0;
 
   $('#PlayGround').click(function() {
     $('#PlayPane').css('display', 'block');
@@ -50,12 +51,16 @@ $(function() {
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
-    console.log('Sending elements: ', elements);
-
-    socket.emit('play', {
+    var data = {
       code : code,
-      elements : elements
-    });
+      elements : elements,
+      time : new Date().getTime(),
+      instance : instanceId++,
+      uid : 'my-unique-id'
+    };
+
+    console.log('Sending elements: ', data);
+    socket.emit('play', data);
 
   });
 

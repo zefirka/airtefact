@@ -5,9 +5,11 @@
   @module node/socket
 */
 
+var forIn = require('../common/utils').forIn;
+
 var socket = null;
 
-var routes = require('./core/actions');
+var actions = require('./core/actions');
 
 /**
   Возвращает веб-сокет (по идее должен его конфигурировать)
@@ -15,12 +17,16 @@ var routes = require('./core/actions');
   @param {object} _ws_ - объект socket.io
   @return {object}
 */
-module.exports = function(_ws_){
-  socket = _ws_;
-  // console.log(routes);
-  routes.forEach(function(route){
-    route(socket);
-  });
+module.exports = function(sockets){
 
-  return socket;
+  sockets.on('connection', function(socket){
+    forIn(actions, function(callback, action){
+      socket.on(action, function(data){
+        callback(data, socket);
+      });
+    });
+  });
+  // console.log(routes);
+
+  return sockets;
 };
