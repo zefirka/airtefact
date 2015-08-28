@@ -12,6 +12,7 @@ function config(locale){
     root : rooty(''),
     public : rooty('public'),
     views : rooty('public/view'),
+    files : rooty('files'),
     static : 'static',
     port : 7778,
 

@@ -7,6 +7,8 @@
 
 var socket = null;
 
+var routes = require('./core/actions');
+
 /**
   Возвращает веб-сокет (по идее должен его конфигурировать)
   @public
@@ -15,5 +17,10 @@ var socket = null;
 */
 module.exports = function(_ws_){
   socket = _ws_;
+  // console.log(routes);
+  routes.forEach(function(route){
+    route(socket);
+  });
+
   return socket;
 };

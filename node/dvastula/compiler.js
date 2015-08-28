@@ -13,168 +13,151 @@ var utils       = require('warden.js').Utils,
     is          = utils.is,
     strarr      = CUtils.strarr;
 
+function define(arity, fn){
+  return {
+    arity : arity,
+    fn : fn
+  };
+}
+
 /**
   Language reference
   Здесь описывается сами директивы языка
   @access public
 */
-var API = {
-
-  def : {
-    fn : function(name, value){
-      // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
-      var debug = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
-
-      // если следующая директива - определение функции, то храним это значение в приватных данных lang
-      if(value[0] == 'lambda'){
-        lang.set('private', name, 'function');
-      }
-
-      // компилируем значение
-      value = compile(value);
-
-      /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
-      if (lang.derefReserved[name]){
-        return interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
-      }
-
-      lang.set('public', name, 'this.get("' + name + '")');
-
-      return debug + interpolate('this.set("{{name}}", {{value}})', {
-        name : name,
-        value : value
-      });
-    },
-    arity :  2
-  },
+var API = {};
 
 
-  lambda : {
-    fn :  function(params, body){
-      var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
+/* Функция def */
+API.def = define(2, function(name, value){
+  // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
+  var debug = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
 
-      params = params.join(',');
-
-      // null null нужны
-      // хз зачем
-      body = compile(body, null, null);
-
-      lines = body.split('\n');
-      lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
-      body = lines.join('\n');
-
-      return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.born())', {
-        params : params,
-        body : body
-      });
-    },
-    arity : 2
-  },
-
-  defn : {
-    fn : function(name, params, body){
-      var debug = CUtils.comment('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
-
-      lang.set('public', name, function(){
-        var myParams = strarr(toArray(arguments));
-        return 'this.get("' + name + '").call(this, ' + myParams + ')';
-      });
-
-      return debug + API.def.fn.call(this, name, ['lambda', params, body]);
-    },
-    arity : 3
-  },
-  'phase' : {
-    fn : function(name, blocks, params){
-          var PhaseName = name.toString();
-          var PhaseParams = params.toString();
-          var saverregexp = /\{(.*?)\}/g;
-
-          var item;
-          var splitted;
-          var condition;
-          var action;
-          var nextPhase;
-          var itemId;
-          var match = saverregexp.exec(blocks.toString());
-          var strblocks = blocks.toString();
-          var replacedIds = {};
-          while(match !== null) {
-            item = match[1];
-            itemId = getRandomInt(345,7160);
-            strblocks = strblocks.replace(match[1], itemId);
-            replacedIds[itemId] = match[1];
-            match = saverregexp.exec(strblocks);
-          }
-
-          var regexp = /\((.*?)\)/g;
-          var Blocks = [];
-          match = regexp.exec(strblocks);
-          while(match !== null) {
-            item = match[1];
-            splitted = item.split(',');
-            for(var i = 0; i < splitted.length; i++) {
-              for(var k in replacedIds){
-                splitted[i] = splitted[i].replace(k.toString(),replacedIds[k]);
-              }
-            }
-            condition =splitted[0];
-            action = splitted[1];
-            nextPhase = splitted[2];
-            Blocks.push({Condition : condition, Action : action, NextPhase : nextPhase});
-            match = regexp.exec(strblocks);
-          }
-          var Phase = {Name : PhaseName, Blocks : Blocks, Params : PhaseParams};
-          var result = 'Name:' + Phase.Name + ', \n Blocks = [';
-          Phase.Blocks.forEach(function(item,i) {
-            result = result + '{ Condition : ' + item.Condition + ',\n' +
-            'Action : ' + item.Action + ' , ' +
-            'NextPhase : ' + item.NextPhase + '},\n';
-          });
-          result = result + '] \n Params : ' + Phase.Params;
-          return result;
-        }
-  },
-  'if' : {
-    fn : function(cond, then, _else){
-      var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
-
-      var ar2Statement = 'if ({{condition}}) { return {{then}}}',
-          ar3Statement = ar2Statement + ' else {return {{_else}} }',
-          str = ar2Statement;
-
-      if (arguments.length == 3){
-        str = ar3Statement;
-      }
-
-      var res = interpolate(str, {
-        condition : compile(cond),
-        then : compile(then),
-        _else : compile(_else)
-      });
-
-      return debug + '(function(){ ' + res + ' }).call(this)';
-    }
-  },
-  'do' : {
-    fn : function(){
-      var comps = toArray(arguments);
-      comps = comps.map(compile);
-      return '(function(){' + comps.join('') +  '}).call(this)';
-    }
-  },
-  list : {
-    fn : function(){
-      return '[' + toArray(arguments).map(compile).join(', ') + ']';
-    }
-  },
-  '$goto' : {
-    fn : function(arg){
-      return '(function(arg){ return globalEng.call("goTo", arg);}).call(null, ' + compile(arg) + ')';
-    },
-    arity : 1
+  // если следующая директива - определение функции, то храним это значение в приватных данных lang
+  if(value[0] == 'lambda'){
+    lang.set('private', name, 'function');
   }
-};
+
+  // компилируем значение
+  value = compile(value);
+
+  /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
+  if (lang.derefReserved[name]){
+    return interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
+  }
+
+  lang.set('public', name, 'this.get("' + name + '")');
+
+  return debug + interpolate('this.set("{{name}}", {{value}})', {
+    name : name,
+    value : value
+  });
+});
+
+
+API.lambda = define(2, function(params, body){
+  var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
+
+  params = params.join(',');
+
+  // null null нужны
+  // хз зачем
+  body = compile(body, null, null);
+
+  lines = body.split('\n');
+  lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
+  body = lines.join('\n');
+
+  return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.born())', {
+    params : params,
+    body : body
+  });
+});
+
+API.defn = define(3, function(name, params, body){
+  var debug = CUtils.comment('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
+
+  lang.set('public', name, function(){
+    var myParams = strarr(toArray(arguments));
+    return 'this.get("' + name + '").call(this, ' + myParams + ')';
+  });
+
+  return debug + API.def.fn.call(this, name, ['lambda', params, body]);
+});
+
+API.phase = define(3, function(name, blocks, params){
+  var PhaseName = name.toString();
+  var PhaseParams = params.toString();
+  var saverregexp = /\{(.*?)\}/g;
+
+  var item;
+  var splitted;
+  var condition;
+  var action;
+  var nextPhase;
+  var itemId;
+  var match = saverregexp.exec(blocks.toString());
+  var strblocks = blocks.toString();
+  var replacedIds = {};
+  while(match !== null) {
+    item = match[1];
+    itemId = getRandomInt(345,7160);
+    strblocks = strblocks.replace(match[1], itemId);
+    replacedIds[itemId] = match[1];
+    match = saverregexp.exec(strblocks);
+  }
+
+  var regexp = /\((.*?)\)/g;
+  var Blocks = [];
+  match = regexp.exec(strblocks);
+  while(match !== null) {
+    item = match[1];
+    splitted = item.split(',');
+    for(var i = 0; i < splitted.length; i++) {
+      for(var k in replacedIds){
+        splitted[i] = splitted[i].replace(k.toString(),replacedIds[k]);
+      }
+    }
+    condition =splitted[0];
+    action = splitted[1];
+    nextPhase = splitted[2];
+    Blocks.push({Condition : condition, Action : action, NextPhase : nextPhase});
+    match = regexp.exec(strblocks);
+  }
+  var Phase = {Name : PhaseName, Blocks : Blocks, Params : PhaseParams};
+  var result = 'Name:' + Phase.Name + ', \n Blocks = [';
+  Phase.Blocks.forEach(function(item,i) {
+    result = result + '{ Condition : ' + item.Condition + ',\n' +
+    'Action : ' + item.Action + ' , ' +
+    'NextPhase : ' + item.NextPhase + '},\n';
+  });
+  result = result + '] \n Params : ' + Phase.Params;
+  return result;
+});
+
+API['if'] = define(null, function(cond, then, _else){
+  var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
+
+  var ar2Statement = 'if ({{condition}}) { return {{then}}}',
+      ar3Statement = ar2Statement + ' else {return {{_else}} }',
+      str = ar2Statement;
+
+  if (arguments.length == 3){
+    str = ar3Statement;
+  }
+
+  var res = interpolate(str, {
+    condition : compile(cond),
+    then : compile(then),
+    _else : compile(_else)
+  });
+
+  return debug + '(function(){ ' + res + ' }).call(this)';
+});
+
+API.list = define(null, function(){
+  return '[' + toArray(arguments).join(', ') + ']';
+});
 
 /* MATH MACHT FREI */
 (['+', '-', '*', '/', '>', '<', '>=', '<=', '&&', '&', '>>', '<<']).forEach(function(op){
@@ -188,32 +171,26 @@ var API = {
   };
 });
 
+API.eq = define(2, function(a, b){
+  return '(function(){ return ' + compile(a) + '==' + compile(b) + '; }).call(this)';
+});
 
-API['for'] = {
-  fn : function(name, rules){
-    var res = '';
-    var obj = compile(name);
-    rules = '[' + rules.map(compile).map(function(rule){
-      return CUtils.invokeForm(rule, false);
-    }).join(',') + ']';
-    var f = '/* FOR DIRECTIVE */\n';
-    f += '(function(){' + rules + '.forEach(this.setRule.bind(this));}).call(globalScope.getObject("' +
-      obj + '").getScope());';
-    return f;
-  },
-  arity : 2
-};
+API['for'] = define(2, function(name, rules){
+  var debug = CUtils.comment('[for {{0}} {{1}}]', strarr(name), strarr(rules));
+  var body = rules.map(compile).join(';\n');
 
-API['->'] = {
-  fn : function(){
-    var args = '[' + toArray(arguments).map(compile).join(', ') + '].';
-    return '(function(){' + args +
-               'reduce(function(result, current){ ' +
-               'return typeof current == "function" ? current.call(result || null) : current;' +
-               '}); }).call(this)';
-  }
-};
+  return debug + '(function(){ ' + body + ' }).call(globalScope.getObject("' +
+    name + '").getScope());';
+});
 
+
+API.when = define(2, function(phase, behavior){
+  return 'this.when("' + phase + '", function(){' +  behavior.map(compile).join(';\n') + '})';
+});
+
+API.phase = define(1, function(name){
+  return 'this.switchPhase("' + name + '")';
+});
 
 /* Вот здесь происходит определение языка на основе вышеизложенного API */
 var lang = require('./lang')(API);

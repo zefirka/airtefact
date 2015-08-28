@@ -1,4 +1,4 @@
-module.exports = {
+var Utils = {
   uid : function(){
     var store = {};
 
@@ -35,3 +35,19 @@ module.exports = {
     return length;
   }
 };
+
+Utils.forIn = function (hash, fn){
+  return Object.keys(hash).forEach(function(key){
+    fn(hash[key], key);
+  });
+};
+
+Utils.forMap = function (hash, fn){
+  var res = {};
+  Object.keys(hash).forEach(function(key){
+    res[key] = fn(hash[key], key);
+  });
+  return res;
+};
+
+module.exports = Utils;

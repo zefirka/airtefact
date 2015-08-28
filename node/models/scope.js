@@ -28,3 +28,5 @@ Scope.prototype.resolve = function (name){
     }
   })(this.store);
 };
+
+module.exports = Scope;
