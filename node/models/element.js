@@ -1,7 +1,6 @@
 var R     = require('ramda'),
-    utils = require('warden.js').utils;
-
-var logics = require('./executer.js');
+    utils = require('warden.js').utils,
+    Scope = require('./scope.js');
 
 function getRandomArbitary(min, max){
   return Math.random() * (max - min) + min;
@@ -12,10 +11,10 @@ function dist(a,b) {
 }
 
 function len(vector) {
-  return (Math.sqrt(vector.x * vector.x + vector.y * vector.y));
+  return (Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy));
 }
 
-function Idle(){}
+function idle(){}
 
 
 var Pkg = {
@@ -45,23 +44,26 @@ var Phases = [
   }
 ];
 
-function Element(x, y){
+function Element(o){
   this.position = {
-    x : x || 0,
-    y : y || 0
+    x : o.x || 0,
+    y : o.y || 0
   };
+  this.x = o.x || 0;
+  this.y = o.y || 0;
 
-  this.id = logics.elements.length + 1;
+  this.id = o.id || 0;
   this.action  = 0;
   this.actions = [];
   this.phase = 0;
   this.itemsInMind = {};
   this.speed = 2;
+  this.scope = new Scope();
 }
 
-Element.prototype.ConsiderAlgorithm = function () {
+Element.prototype.considerAlgorithm = function () {
   if (this.phase === 0) {
-    this.addAction(Idle);
+    this.addAction(idle);
   } else if (this.phase.blocks !== undefined) {
     this.phase.blocks.forEach(function(item, i) {
       if(item.condition()) {
@@ -77,30 +79,37 @@ Element.prototype.setPhase = function (name){
 };
 
 Element.prototype.invoke = function () {
-  if (this.actions.length === 0) {
-    this.addAction(Idle);
-  }
-  this.action = this.actions[0];
-  this.action.call(this);
-  this.actions.shift();
+  // if (this.actions.length) {
+  //   this.addAction(idle);
+  // }
+
+  /* waterfall async */
+  var self = this;
+  //var action = this.actions[0];//.shift();
+  this.actions.forEach(function(action){
+    self[action.action].call(self, action.params);
+  });
+  return this;
 };
 
-Element.prototype.AbortActive = function() {
+Element.prototype.abortActive = function() {
   this.action.act = idle;
 };
 
-Element.prototype.SetAction = function(act, params) {
+Element.prototype.setAction = function(act, params) {
   this.action.act = act;
   this.action.params = params;
 };
 
-Element.prototype.AddAction = function(Act) {
-  this.actions.push(Act);
+Element.prototype.addAction = function(action, params) {
+  this.actions.push({
+    action : action,
+    params : params
+  });
 };
 
-
 Element.prototype.getElementsById = function(id) {
-  return R.filter(R.eqProps(id, 'id'), logics.elements);
+  return R.filter(R.eqProps(id, 'id'), this.elements);
 };
 
 Element.prototype.updateInfo = function(infoCollection) {
@@ -108,10 +117,11 @@ Element.prototype.updateInfo = function(infoCollection) {
 };
 
 Element.prototype.move = function(vector) {
-  var x = vector.x /len(vector) * this.Speed;
-  var y = vector.y /len(vector) * this.Speed;
-  this.position.x += x;
-  this.position.y += y;
+  console.log(vector);
+  var x = vector.dx / len(vector) * this.speed;
+  var y = vector.dy / len(vector) * this.speed;
+  this.x += x;
+  this.y += y;
 };
 
 Element.prototype.goto = function() {
@@ -162,4 +172,4 @@ Element.prototype.moveRandomly = function() {
 };
 
 
-module.exports = new Element();
+module.exports = Element;

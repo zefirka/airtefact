@@ -1,7 +1,7 @@
 var Point = require('./Point.js');
 
-function Raster(name, options) {
-  this.name = name;
+function Raster(id, options) {
+  this.id = id;
   this.src = options.src;
   this.x = options.x;
   this.y = options.y;
@@ -10,17 +10,15 @@ function Raster(name, options) {
 Raster.prototype = new Point();
 
 Raster.prototype.draw = function(options) {
-  var self = this;
-  this.ctx.draw(function() {
-    self.present = new paper.Raster(self.src, {
-       x : self.x , y : self.y }
-    );
-    return self.present;
-  }, options);
+  this.instance = new paper.Raster(this.src, {
+    x : this.x ,
+    y : this.y
+  });
+  return this.instance;
 };
 
 Raster.prototype.animate = function() {
-  this.present.rotate(3);
+  this.instance.rotate(3);
 };
 
 module.exports = Raster;

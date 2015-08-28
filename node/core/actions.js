@@ -1,26 +1,51 @@
-var config = require('../config/config');
+// var config = require('../config/config');
+// var s2Compiler = require('../dvastula/compiler');
+// var fs = require('fs');
 
-var s2Compiler = require('../dvastula/compiler');
+var Core = require('./core');
 
-var fs = require('fs');
+var dicts =
 
 module.exports = [
 
   function (socket){
-    socket.on('play', function(code){
-      var js = s2Compiler(code);
-      var timestamp = new Date().getTime().toString().slice(3),
-          filename = config.files + '/myId.' + timestamp;
+    socket.on('play', function(data){
+      var commands = data.code.toString().split(',');
 
-      fs.writeFile(filename + '.js', js, function(err, data){
-
-        if(err){
-          console.log(err);
-          console.error('cant write file');
-        }
-
-        socket.emit('compile:ready', filename);
+      data.elements.forEach(function(element){
+        Core.createElement(element);
       });
+
+      commands.forEach(function(command, index) {
+        var id = 0,
+            action = null;
+
+        if (command.indexOf(':') >= 0) {
+          var path = command.split(':');
+
+          action = path.pop();
+          id = path.pop();
+
+          Core.setCommand({
+            id   : id,
+            name : action
+          });
+
+        }
+      });
+
+      Core.fix();
+
+      setInterval(function(){
+        Core.update(socket);
+      }, 30);
+
+    });
+
+  },
+
+  function (socket){
+    socket.on('create', function(id){
     });
   }
 

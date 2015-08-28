@@ -12,9 +12,6 @@ var InitMiddlewares     = require('./middlewares.js'),
     InitRoutes          = require('./router.js'),
     WebSocketMaster     = require('./socket.js');
 
-var factory = require('./classes/element.js');
-var logics = require('./classes/executer.js');
-
 var app = express();
 
 
@@ -40,15 +37,6 @@ if (env == 'dev'){
 
 /* Useragent enviroment configuration */
 app.use(express.static(config.public));
-
-var actionsDict = {MoveLeft : {Action : factory.Move, Params :  {posX : -5, posY : 0}},
-  MoveRight : {Action : factory.Move, Params :  {posX : 5, posY : 0}},
-  MoveDown : {Action : factory.Move, Params :  {posX : 0, posY : 5}},
-  MoveUp : {Action : factory.Move, Params :  {posX : 0, posY : -5}}
-};
-
-var RulesDict = {FollowCursor : {Rule : factory.FollowCursor},
-                  FollowObject : {Rule : factory.FollowObject}};
 
 module.exports = {
   init : function(router){

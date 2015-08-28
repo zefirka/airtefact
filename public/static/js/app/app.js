@@ -1,18 +1,21 @@
 var models = require('./models/models'),
     socket = require('./modules/socket'),
-    Canvas = require('./modules/canvas');
+    Canvas = require('./modules/canvas'),
+    utils  = require('../../../../common/utils.js');
 
 /* Первоначальная инициализация */
 socket.init();
 paper.install(window);
 
-//var InfoBag = {};
-
 $(function() {
+
+  var id = 0;
+
   $('#PlayGround').click(function() {
     $('#PlayPane').css('display', 'block');
     $('#Code').css('display', 'none');
   });
+
   $('#Console').click(function() {
     $('#PlayPane').css('display', 'none');
     $('#Code').css('display', 'block');
@@ -20,57 +23,49 @@ $(function() {
 
   var canvas = new Canvas(document.getElementById('play'));
 
-  // var mousePos;
-  // canvas.node.addEventListener('mousemove', function(evt) {
-  //   mousePos = getMousePos(canvas, evt);
-  //   InfoBag.MousePos = mousePos;
-  // }, false);
-  // function getMousePos(canvas, evt) {
-  //         var rect = canvas.node.getBoundingClientRect();
-  //         return {
-  //           X : evt.clientX - rect.left,
-  //           Y : evt.clientY - rect.top
-  //         };
-  //       }
-  // socket.on('appendInterface', function() {
-  //   var list = $('.b-players');
-  //   var id = list.children().length + 1;
-  //   $('ul.b-players').append('<li class="b-player">' +id +'</li>');
-  // });
-  //
-  // socket.on('drawElements', function(bag) {
-  //   //console.log(bag);
-  //   $('.actionList').text('');
-  //
-  //   /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
-  //   canvas.ctx.clearRect(0, 0, canvas.node.width, canvas.node.height);
-  //   for(var i = 0; i < bag.length; i++) {
-  //     var fig = bag[i];
-  //     canvas.ctx.fillRect(bag[i].X, bag[i].Y, 20,20);
-  //   }
-  // });
+
+  socket.on('tick', function(pkg) {
+    /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
+    canvas.clear();
+
+    utils.forIn(pkg, function(elem){
+      canvas.getElementById(elem.id).update(elem);
+    });
+
+    canvas.redraw();
+  });
 
   $('#summoner').click(function() {
-    socket.emit('create');
+    var el = new models.Raster(id++, {
+      src : 'static/img/bin.png',
+      x : 20 + (Math.random() * 100 >> 0),
+      y : 20 + (Math.random() * 100 >> 0)
+    });
+
+    canvas.assign(el).draw(el);
   });
 
-  $('#Go').click(function() {
+  $('#go').click(function() {
     var code = $('.commandLine').val();
+    var elements = canvas.objects.map(function(o){
+      return o.getBase();
+    });
+    console.log('Sending elements: ', elements);
 
-    socket.emit('play', code);
+    socket.emit('play', {
+      code : code,
+      elements : elements
+    });
+
   });
 
-  socket.on('compile:ready', function(filename){
-    alert(filename);
-  });
-
-  // setInterval(function() {
-  //   socket.emit('ping', InfoBag);
-  // }, 500);
-
-  $('#SendCode').click(function() {
-    socket.emit('save');
-  });
+  // socket.on('compile:ready', function(filename){
+  //   alert(filename);
+  // });
+  //
+  // $('#SendCode').click(function() {
+  //   socket.emit('save');
+  // });
 
   /* Вот так я работаю с моделями на фронтенде */
   // var testShape = new models.Circle(40, 40, 15);
