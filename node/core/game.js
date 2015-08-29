@@ -42,7 +42,10 @@ Game.prototype.start = function(data){
       //
       var fn = require(filePathName);
       fn(self.scope); // <- лол, точка входа в скомпелдированный код
+      console.log('#### GLOBAL SCOPE ####');
       console.log(self.scope.store);
+      console.log('#### LOCAL SCOPE OF ID=0 ####');
+      console.log(self.scope.store.elements[0].scope.store);
     });
 
   });

@@ -47,10 +47,12 @@ $(function() {
   });
 
   $('#go').click(function() {
+
     var code = $('.commandLine').val();
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
+
     var data = {
       code : code,
       width : canvas.node.width,
