@@ -21,11 +21,13 @@ Actions.play = function(data, socket){
 };
 
 /**
-
+  Сообщеает о том, что клиент ушел в оффлайн
+  @access public
+  @param {object} data
 */
 Actions.away = function(data, socket){
   var time  = data.timestamp,
       uid   = data.uid;
 };
 
-module.exports = Module;
+module.exports = Actions;

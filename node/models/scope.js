@@ -15,6 +15,7 @@ function Scope(store) {
 }
 
 /**
+  Получает значение перменной в scope
   @access public
   @param {string} name
   @return {mixed} result from store
@@ -23,6 +24,9 @@ Scope.prototype.get = function (name) {
   return this.store[name] || undefined;
 };
 
+/**
+
+  */
 Scope.prototype.set = function(name, value){
   this.store[name] = value;
   return value;

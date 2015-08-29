@@ -49,15 +49,17 @@ function Element(o){
     x : o.x || 0,
     y : o.y || 0
   };
+
   this.x = o.x || 0;
   this.y = o.y || 0;
-
   this.id = o.id || 0;
+
   this.action  = 0;
   this.actions = [];
-  this.phase = 0;
+  this.phase = null;
   this.itemsInMind = {};
   this.speed = 2;
+
   this.scope = new Scope({
     x : this.x,
     y : this.y,
