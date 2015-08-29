@@ -85,56 +85,6 @@ API.defn = define(3, function(name, params, body){
   return debug + API.def.fn.call(this, name, ['lambda', params, body]);
 });
 
-API.phase = define(3, function(name, blocks, params){
-  var PhaseName = name.toString();
-  var PhaseParams = params.toString();
-  var saverregexp = /\{(.*?)\}/g;
-
-  var item;
-  var splitted;
-  var condition;
-  var action;
-  var nextPhase;
-  var itemId;
-  var match = saverregexp.exec(blocks.toString());
-  var strblocks = blocks.toString();
-  var replacedIds = {};
-  while(match !== null) {
-    item = match[1];
-    itemId = getRandomInt(345,7160);
-    strblocks = strblocks.replace(match[1], itemId);
-    replacedIds[itemId] = match[1];
-    match = saverregexp.exec(strblocks);
-  }
-
-  var regexp = /\((.*?)\)/g;
-  var Blocks = [];
-  match = regexp.exec(strblocks);
-  while(match !== null) {
-    item = match[1];
-    splitted = item.split(',');
-    for(var i = 0; i < splitted.length; i++) {
-      for(var k in replacedIds){
-        splitted[i] = splitted[i].replace(k.toString(),replacedIds[k]);
-      }
-    }
-    condition =splitted[0];
-    action = splitted[1];
-    nextPhase = splitted[2];
-    Blocks.push({Condition : condition, Action : action, NextPhase : nextPhase});
-    match = regexp.exec(strblocks);
-  }
-  var Phase = {Name : PhaseName, Blocks : Blocks, Params : PhaseParams};
-  var result = 'Name:' + Phase.Name + ', \n Blocks = [';
-  Phase.Blocks.forEach(function(item,i) {
-    result = result + '{ Condition : ' + item.Condition + ',\n' +
-    'Action : ' + item.Action + ' , ' +
-    'NextPhase : ' + item.NextPhase + '},\n';
-  });
-  result = result + '] \n Params : ' + Phase.Params;
-  return result;
-});
-
 API['if'] = define(null, function(cond, then, _else){
   var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
 
@@ -188,8 +138,18 @@ API.when = define(2, function(phase, behavior){
   return 'this.when("' + phase + '", function(){' +  behavior.map(compile).join(';\n') + '})';
 });
 
-API.phase = define(1, function(name){
-  return 'this.switchPhase("' + name + '")';
+API.phase = define(null, function(name, source){
+  var debug = CUtils.comment('[phase {{0}} {{1}}]', name, source ? strarr(source) : '');
+  var res = '';
+
+  if(!source){
+    res = 'this.switchPhase("' + name + '")';
+  }else{
+    res = 'this.register("phase", "' + name + '", function(){' + source.map(compile) + '})';
+  }
+
+  return debug + res;
+
 });
 
 /* Вот здесь происходит определение языка на основе вышеизложенного API */

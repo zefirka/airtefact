@@ -2,16 +2,30 @@ var Core = require('./core');
 
 /* Список экшнов сокета */
 
-module.exports = {
-  play : function(data, socket){
-    Core.play(data).onSnapshot(function(pkg){
-      socket.emit('tick', pkg);
-    });
-  },
+/**
+  Список событий сокета, организует порядок работы в с веб-сокетом разных клиентов.
+  Все коллбэки получают последним аргументом объект сокет-сервера
+  @module Core/Actions
+*/
+var Actions = {};
 
-  away : function(data, socket){
-    var time  = data.timestamp,
-        uid   = data.uid;
-
-  }
+/**
+  Конфигурирует игру для текущего клиента (добавляет объекты или создает сессию, если объектов нет)
+  @access public
+  @param {object} data
+*/
+Actions.play = function(data, socket){
+  Core.play(data).onSnapshot(function(pkg){
+    socket.emit('tick', pkg);
+  });
 };
+
+/**
+
+*/
+Actions.away = function(data, socket){
+  var time  = data.timestamp,
+      uid   = data.uid;
+};
+
+module.exports = Module;
