@@ -60,6 +60,22 @@ module.exports = {
     var io = ws(server);
     io.sockets.on('connection', function (socket) {
       WebSocketMaster(socket);
+      setInterval(function() {
+        logics.Execute(socket);
+      },50);
+      socket.on('play', function(code) {
+        var directions = code.split(',');
+        directions.forEach(function(item,i) {
+          var id = item.split(':')[0];
+          var phase = item.split(':')[1];
+          factory.GetElementsById(id).forEach(function(item,i) {
+            item.SetPhase(phase);
+          });
+        });
+      });
+      socket.on('create', function () {
+        logics.Elements.push(new factory.Element());
+      });
     });
 
     //setInterval(function() {

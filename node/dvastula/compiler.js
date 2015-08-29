@@ -89,7 +89,6 @@ var API = {
           var PhaseName = name.toString();
           var PhaseParams = params.toString();
           var saverregexp = /\{(.*?)\}/g;
-
           var item;
           var splitted;
           var condition;
@@ -99,14 +98,15 @@ var API = {
           var match = saverregexp.exec(blocks.toString());
           var strblocks = blocks.toString();
           var replacedIds = {};
+          var resString = strblocks;
           while(match !== null) {
             item = match[1];
             itemId = getRandomInt(345,7160);
-            strblocks = strblocks.replace(match[1], itemId);
+            resString = resString.replace(match[1], itemId);
             replacedIds[itemId] = match[1];
             match = saverregexp.exec(strblocks);
           }
-
+          strblocks = resString;
           var regexp = /\((.*?)\)/g;
           var Blocks = [];
           match = regexp.exec(strblocks);
@@ -118,20 +118,20 @@ var API = {
                 splitted[i] = splitted[i].replace(k.toString(),replacedIds[k]);
               }
             }
-            condition =splitted[0];
+            condition =splitted[0].slice(1, splitted[0].length -1);
             action = splitted[1];
             nextPhase = splitted[2];
             Blocks.push({Condition : condition, Action : action, NextPhase : nextPhase});
             match = regexp.exec(strblocks);
           }
           var Phase = {Name : PhaseName, Blocks : Blocks, Params : PhaseParams};
-          var result = 'Name:' + Phase.Name + ', \n Blocks = [';
+          var result = '{Name:"' + Phase.Name + '", \n Blocks : [';
           Phase.Blocks.forEach(function(item,i) {
-            result = result + '{ Condition : ' + item.Condition + ',\n' +
-            'Action : ' + item.Action + ' , ' +
-            'NextPhase : ' + item.NextPhase + '},\n';
+            result = result + '{ Condition : function() { return (' + item.Condition + '); },\n' +
+            'Action : "' + item.Action + '" , ' +
+            'NextPhase : "' + item.NextPhase + '"},\n';
           });
-          result = result + '] \n Params : ' + Phase.Params;
+          result = result + '], \n Params : "' + Phase.Params + '"}';
           return result;
         }
   },
@@ -237,7 +237,7 @@ function Compiler(source){
     fname : 'comp',
     arg_name : 'globalEnv',
     body : body,
-    context : 'globalScope',
+    context : '',
     arg_values : 'void 0'
   });
 

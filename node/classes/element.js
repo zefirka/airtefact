@@ -1,4 +1,5 @@
 var logics = require('./executer.js');
+var phases = require('./phases.js');
 
 function getRandomArbitary(min, max)
 {
@@ -16,25 +17,7 @@ function Idle(){}
 var InfoBag = {MousePos : {X :0, Y :0}};
 
 
-var Phases = [
-              {Name : 'GoToPhase',
-                Blocks : [{
-                  Condition : function(Params) {
-                    return this.Speed !== undefined && dist(this, Params[0]) >= 10;
-                  },
-                  Action : 'MoveToPosition',
-                  NextPhase : 'GoToPhase'
-                },
-                {
-                  Condition : function(Params) {
-                    return this.Speed !== undefined && dist(this, Params[0]) < 10;
-                  },
-                  Action : Idle,
-                  NextPhase : 'TestPhase'
-                }],
-                Params : 0
-              }
-];
+
 
 module.exports = {
 
@@ -51,16 +34,20 @@ module.exports = {
       if (this.Phase === 0) {
         this.AddAction(Idle);
       } else if (this.Phase.Blocks !== undefined) {
+        var self = this;
         this.Phase.Blocks.forEach(function(item, i) {
-          if(item.Condition()) {
-            this.AddAction(module.exports[item.Action]);
-            this.Phase = Phases[item.NextPhase];
+          if(item.Condition.call(self)) {
+            self.AddAction(module.exports[item.Action]);
+            self.SetPhase(item.NextPhase);
           }
         });
       }
     };
     this.SetPhase = function (PhaseName) {
-      this.Phase = Phases[PhaseName];
+      var phase = (phases.Phases.filter(function(a) {
+        return a.Name == PhaseName;
+      }));
+      this.Phase = phase[0];
     };
     this.DoAction = function() {
       if (this.actions.length === 0) {
@@ -96,7 +83,8 @@ module.exports = {
     }
   },
 
-  Move : function(vector) {
+  Move : function() {
+    var vector = this.ItemsInMind.position;
     var X = vector.X /len(vector) * this.Speed;
     var Y = vector.Y /len(vector) * this.Speed;
     this.position.X += X;
@@ -134,5 +122,9 @@ module.exports = {
   MoveRandomly : function() {
     this.ItemsInMind.position = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
     this.AddAction(module.exports.GoTo);
+  },
+  MoveRandom : function() {
+    this.ItemsInMind.position = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
+    this.AddAction(module.exports.Move);
   }
 };
