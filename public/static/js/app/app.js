@@ -16,7 +16,6 @@ $(function() {
     $('#PlayPane').css('display', 'none');
     $('#Code').css('display', 'block');
   });
-
   var canvas = new Canvas(document.getElementById('play'));
   var mousePos;
   canvas.node.addEventListener('mousemove', function(evt) {
@@ -56,8 +55,9 @@ $(function() {
     socket.emit('play',$('.commandLine').val());
 
   });
-  $('#SendCode').click(function() {
-    socket.emit('save');
+  $('#SendVal').click(function() {
+    var code = $('#input').val();
+    socket.emit('save', code);
   });
   setInterval(function() {
     socket.emit('ping', InfoBag);

@@ -13,7 +13,6 @@ $(function(){
     //    hljs.highlightBlock(block);
     //    });
   }
-
   function trigger(emit){
     return function(value){
       $.post('/compile', {

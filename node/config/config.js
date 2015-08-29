@@ -14,7 +14,7 @@ function config(locale){
     views : rooty('public/view'),
     static : 'static',
     port : 7778,
-
+    files : '../',
     meta : {
       favicon : rooty('public/favicon.png'),
     },

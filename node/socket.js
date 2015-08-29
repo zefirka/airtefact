@@ -6,7 +6,7 @@
 */
 
 var socket = null;
-
+var routes = require('./core/actions.js');
 /**
   Возвращает веб-сокет (по идее должен его конфигурировать)
   @public
@@ -15,5 +15,10 @@ var socket = null;
 */
 module.exports = function(_ws_){
   socket = _ws_;
+  console.log('GOVNO');
+  routes.forEach(function(route){
+    console.log(routes);
+    route(socket);
+  });
   return socket;
 };

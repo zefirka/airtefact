@@ -58,52 +58,8 @@ module.exports = {
   },
   initWebSocket : function(server){
     var io = ws(server);
-    var infoCollector = [];
     io.sockets.on('connection', function (socket) {
-      socket.on('play', function(res) {
-        var commands = res.toString().split(',');
-        commands.forEach(function(elem,index) {
-          var ID = 0;
-          var Params = 0;
-          if (elem.indexOf(':') > -1) {
-            ID = elem.split(':')[0];
-            var ActionName =  elem.split(':')[1];
-            var Action = actionsDict[ActionName].Action;
-            Params =  actionsDict[ActionName].Params;
-            factory.GetElementsById(ID).map(function(a) {
-              a.AddAction(Action, Params);
-            });
-          } else if (elem.indexOf(';') > -1) {
-            ID = elem.split(';')[0];
-            var PhaseName =  elem.split(';')[1];
-            var PhaseParams = RuleName.split('|')[1];
-            if (RuleObj !== '')  {
-              RuleObj = factory.GetElementsById(RuleObj);
-            }
-            RuleName = RuleName.split('|')[0];
-            var Rule = RulesDict[RuleName].Rule;
-            factory.GetElementsById(ID).map(function(a) {
-              a.AddRule(Rule, RuleObj, RuleName);
-            });
-          }
-        });
-      });
-      socket.on('create', function() {
-        console.log('create ');
-        var el = new factory.Element();
-        logics.Elements.push(el);
-        socket.emit('appendInterface', {});
-        logics.Execute(io.sockets);
-      });
-      socket.on('ping', function(info) {
-        infoCollector.push(info);
-      });
       WebSocketMaster(socket);
-      setInterval(function() {
-        factory.UpdateInfo(infoCollector);
-        infoCollector = [];
-        logics.Execute(io.sockets);
-      },30);
     });
 
     //setInterval(function() {

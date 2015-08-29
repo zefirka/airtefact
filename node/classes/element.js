@@ -22,7 +22,7 @@ var Phases = [
                   Condition : function(Params) {
                     return this.Speed !== undefined && dist(this, Params[0]) >= 10;
                   },
-                  Action : MoveToPosition,
+                  Action : 'MoveToPosition',
                   NextPhase : 'GoToPhase'
                 },
                 {
