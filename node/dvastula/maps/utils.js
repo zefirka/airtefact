@@ -28,7 +28,7 @@ function derefForm(js, semicolon){
 }
 
 function globalForm(js, semicolon){
-  return 'globalScope.get("' + js.slice(1) + '")' + (semicolon ? ';' : '');
+  return 'this.get("game").' + js.slice(1) + (semicolon ? ';' : '');
 }
 
 function exprForm(js){
@@ -37,7 +37,7 @@ function exprForm(js){
               return 'this.get("' + a.slice(1)  + '")';
             })
             .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
-              return 'globalScope.get("' + a.slice(1)  + '")';
+              return 'this.get("game").' + a.slice(1);
             });
 }
 /**

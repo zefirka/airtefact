@@ -143,13 +143,18 @@ API.phase = define(null, function(name, source){
   var res = '';
 
   if(!source){
-    res = 'this.switchPhase("' + name + '")';
+    res = 'this.switchPhase(' + compile(name) + ')';
   }else{
-    res = 'this.register("phase", "' + name + '", function(){' + source.map(compile) + '})';
+    res = 'this.register("phases", "' + compile(name) + '", function(){' + source.map(compile).join(';\n') + '})';
   }
 
   return debug + res;
 
+});
+
+API['do'] = define(null, function(name){
+  var args = toArray(arguments).slice(1).map(compile).join(', ');
+  return 'this.api.call(this, "' + name + '"' + (args ? ', ' + args : '') +')';
 });
 
 /* Вот здесь происходит определение языка на основе вышеизложенного API */

@@ -1,6 +1,7 @@
-var R     = require('ramda'),
-    utils = require('warden.js').utils,
-    Scope = require('./scope.js');
+var R       = require('ramda'),
+    Warden  = require('warden.js'),
+    utils   = Warden.utils,
+    Scope   = require('./scope.js');
 
 function getRandomArbitary(min, max){
   return Math.random() * (max - min) + min;
@@ -44,7 +45,7 @@ var Phases = [
   }
 ];
 
-function Element(o){
+function Element(o, glob){
   this.position = {
     x : o.x || 0,
     y : o.y || 0
@@ -56,15 +57,21 @@ function Element(o){
 
   this.action  = 0;
   this.actions = [];
-  this.phase = null;
   this.itemsInMind = {};
   this.speed = 2;
+  this.phase = null;
+  this.game = glob;
 
   this.scope = new Scope({
     x : this.x,
     y : this.y,
-    phase : this.phase
+    phase : Warden(0).watch(),
+    game : glob
   });
+
+  this.scope.store.phase.listen(function(phase){
+    this.phase = this.scope.resolve(phase);
+  }.bind(this));
 }
 
 Element.prototype.considerAlgorithm = function () {

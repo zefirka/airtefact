@@ -1,6 +1,7 @@
 var Scope     = require('../models/scope'),
     S2        = require('../dvastula/compiler'),
     Element   = require('../models/element'),
+    api       = require('./api'),
     config    = require('../config/config');
 
 var fs    = require('fs'),
@@ -9,16 +10,20 @@ var fs    = require('fs'),
     mkdirp = require('mkdirp'),
     beautify = require('js-beautify');
 
+var apiFunction = function(method){
+  return api[method];
+};
 
 function Game(o){
   this.fps = 60 / 28;
   this.inited = false;
   this.elements = [];
-
+  this.api = api;
   this.scope = new Scope({
     width     : o.width,
     height    : o.height,
-    elements  : this.elements
+    elements  : this.elements,
+    api       : apiFunction
   });
 }
 
@@ -81,7 +86,7 @@ Game.prototype.takeSnapshot = function(){
 };
 
 Game.prototype.addElement = function(el){
-  var element = new Element(el);
+  var element = new Element(el, this.scope.store);
 
   // TODO добавить проверку на уникальность
 
