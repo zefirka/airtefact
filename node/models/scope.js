@@ -17,7 +17,6 @@ function Scope(store) {
 
 /**
   Получает значение перменной в scope
-  @access public
   @param {string} name
   @return {mixed} result from store
 */
@@ -26,8 +25,11 @@ Scope.prototype.get = function (name) {
 };
 
 /**
-
-  */
+  Назначает значение переменной
+  @param {string} name
+  @param {mixed} value
+  @return {mixed} value
+*/
 Scope.prototype.set = function(name, value){
   this.store[name] = value;
   return value;

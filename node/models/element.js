@@ -45,6 +45,11 @@ var Phases = [
   }
 ];
 
+/**
+  @constructor
+  @param {object} o
+  @param {object} glob
+*/
 function Element(o, glob){
   this.position = {
     x : o.x || 0,
@@ -74,6 +79,9 @@ function Element(o, glob){
   }.bind(this));
 }
 
+/**
+
+*/
 Element.prototype.considerAlgorithm = function () {
   if (this.phase === 0) {
     this.addAction(idle);
@@ -91,6 +99,10 @@ Element.prototype.setPhase = function (name){
   this.phase = Phases[name];
 };
 
+/**
+  Выполняет алгоритм изменения для конкретного элемента
+  @public
+*/
 Element.prototype.invoke = function () {
   // if (this.actions.length) {
   //   this.addAction(idle);
@@ -129,11 +141,20 @@ Element.prototype.updateInfo = function(infoCollection) {
   infoCollection.forEach(R.partial(utils.extend(Pkg)));
 };
 
+/**
+  Перемещает объект по вектору
+  @public
+  @param {object} vector
+  @param {number} vector[dx]
+  @param {number} vector[dy]
+  @return {object} instance
+*/
 Element.prototype.move = function(vector) {
   var x = vector.dx / len(vector) * this.speed;
   var y = vector.dy / len(vector) * this.speed;
   this.x += x;
   this.y += y;
+  return this;
 };
 
 Element.prototype.goto = function() {
