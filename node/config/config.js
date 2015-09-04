@@ -15,7 +15,6 @@ function config(locale){
     files : rooty('files'),
     static : 'static',
     port : 7778,
-
     meta : {
       favicon : rooty('public/favicon.png'),
     },

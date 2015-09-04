@@ -6,11 +6,7 @@
 */
 
 var forIn = require('../common/utils').forIn;
-
-var socket = null;
-
 var actions = require('./core/actions');
-
 /**
   Возвращает веб-сокет (по идее должен его конфигурировать)
   @public

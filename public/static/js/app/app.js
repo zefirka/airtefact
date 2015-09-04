@@ -21,7 +21,6 @@ $(function() {
     $('#PlayPane').css('display', 'none');
     $('#Code').css('display', 'block');
   });
-
   var canvas = new Canvas(document.getElementById('play'));
 
 
@@ -68,13 +67,10 @@ $(function() {
 
   });
 
-  // socket.on('compile:ready', function(filename){
-  //   alert(filename);
-  // });
-  //
-  // $('#SendCode').click(function() {
-  //   socket.emit('save');
-  // });
+  $('#SendVal').click(function() {
+    var code = $('#input').val();
+    socket.emit('save', code);
+  });
 
   /* Вот так я работаю с моделями на фронтенде */
   // var testShape = new models.Circle(40, 40, 15);

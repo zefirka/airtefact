@@ -1,5 +1,4 @@
 var socket = io();
-
 module.exports = {
   init : function () {
     socket.on('ready', function(msg){

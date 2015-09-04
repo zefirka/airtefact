@@ -160,8 +160,6 @@ API['do'] = define(null, function(name){
 /* Вот здесь происходит определение языка на основе вышеизложенного API */
 var lang = require('./lang')(API);
 
-
-
 /**
   Компилирует строку 2stula в JS
   @public
@@ -179,7 +177,7 @@ function Compiler(source){
     fname : 'comp',
     arg_name : 'globalEnv',
     body : body,
-    context : 'globalScope',
+    context : '',
     arg_values : 'void 0'
   });
 

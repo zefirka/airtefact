@@ -1,4 +1,11 @@
-var Core = require('./core');
+var fs            = require('fs');
+var beautify      = require('js-beautify').js_beautify;
+
+var config        = require('../config/config'),
+    s2Compiler    = require('../dvastula/compiler'),
+    Core          = require('./core');
+
+
 
 /* Список экшнов сокета */
 
@@ -28,6 +35,29 @@ Actions.play = function(data, socket){
 Actions.away = function(data, socket){
   var time  = data.timestamp,
       uid   = data.uid;
+};
+
+/**
+ Сохраняет скомпилированный код
+ @access public
+ @param {string} code
+ @param {object} socket
+ */
+Actions.save = function(code, socket){
+  var js = s2Compiler(code);
+  js = beautify(js);
+  var timestamp = new Date().getTime().toString().slice(3),
+      filename = config.files + '/myId.' + timestamp;
+
+  console.log('writing file ', filename);
+  fs.writeFile(filename + '.js', js, function(err, data){
+    if(err){
+      throw 'Fuck me plz';
+    }
+
+    socket.emit('compile:ready', filename);
+
+  });
 };
 
 module.exports = Actions;

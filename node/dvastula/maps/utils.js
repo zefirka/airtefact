@@ -6,9 +6,9 @@ var utils = require('warden.js').Utils,
     toArray = utils.toArray,
     intp = utils.interpolate;
 
-var wrapper = 'function {{fname}}(){\n\t{{body}}\n}\n\nmodule.exports = function(scope){' +
-  '{{fname}}.call(scope); ' +
-  '}';
+var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n}\n\nmodule.exports = function(scope){' +
+  ' return {{fname}}.call(scope); }';
+
 var _throwError = '(function(){throw "Error"})();';
 
 function evalForm(js){
