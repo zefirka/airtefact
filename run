@@ -1,2 +1,0 @@
-sudo gulp build
-node node/index.js
