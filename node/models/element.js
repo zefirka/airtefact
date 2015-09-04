@@ -1,6 +1,7 @@
-var R     = require('ramda'),
-    utils = require('warden.js').utils,
-    Scope = require('./scope.js');
+var R       = require('ramda'),
+    Warden  = require('warden.js'),
+    utils   = Warden.utils,
+    Scope   = require('./scope.js');
 
 function getRandomArbitary(min, max){
   return Math.random() * (max - min) + min;
@@ -18,7 +19,7 @@ function idle(){}
 
 
 var Pkg = {
-  mousePos : {X :0, Y :0}
+  mousePos : {x :0, y :0}
 };
 
 
@@ -44,23 +45,43 @@ var Phases = [
   }
 ];
 
-function Element(o){
+/**
+  @constructor
+  @param {object} o
+  @param {object} glob
+*/
+function Element(o, glob){
   this.position = {
     x : o.x || 0,
     y : o.y || 0
   };
+
   this.x = o.x || 0;
   this.y = o.y || 0;
-
   this.id = o.id || 0;
+
   this.action  = 0;
   this.actions = [];
-  this.phase = 0;
   this.itemsInMind = {};
   this.speed = 2;
-  this.scope = new Scope();
+  this.phase = null;
+  this.game = glob;
+
+  this.scope = new Scope({
+    x : this.x,
+    y : this.y,
+    phase : Warden(0).watch(),
+    game : glob
+  });
+
+  this.scope.store.phase.listen(function(phase){
+    this.phase = this.scope.resolve(phase);
+  }.bind(this));
 }
 
+/**
+
+*/
 Element.prototype.considerAlgorithm = function () {
   if (this.phase === 0) {
     this.addAction(idle);
@@ -78,6 +99,10 @@ Element.prototype.setPhase = function (name){
   this.phase = Phases[name];
 };
 
+/**
+  Выполняет алгоритм изменения для конкретного элемента
+  @public
+*/
 Element.prototype.invoke = function () {
   // if (this.actions.length) {
   //   this.addAction(idle);
@@ -116,12 +141,20 @@ Element.prototype.updateInfo = function(infoCollection) {
   infoCollection.forEach(R.partial(utils.extend(Pkg)));
 };
 
+/**
+  Перемещает объект по вектору
+  @public
+  @param {object} vector
+  @param {number} vector[dx]
+  @param {number} vector[dy]
+  @return {object} instance
+*/
 Element.prototype.move = function(vector) {
-  console.log(vector);
   var x = vector.dx / len(vector) * this.speed;
   var y = vector.dy / len(vector) * this.speed;
   this.x += x;
   this.y += y;
+  return this;
 };
 
 Element.prototype.goto = function() {
@@ -171,5 +204,8 @@ Element.prototype.moveRandomly = function() {
   this.addAction(this.goto);
 };
 
+Element.prototype.getScope = function(){
+  return this.scope;
+};
 
 module.exports = Element;

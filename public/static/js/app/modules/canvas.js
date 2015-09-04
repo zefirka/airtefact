@@ -32,11 +32,10 @@ function Canvas(node) {
 
   var self = this;
 
-
-
   paper.view.onFrame = function() {
     self.objects.forEach(function(o) {
       o.animate();
+      o.move();
     });
   };
 

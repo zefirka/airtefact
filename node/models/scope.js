@@ -1,32 +1,61 @@
-var utils = require('warden.js').Utils;
+var utils = require('warden.js').Utils,
+    extend = utils.extend;
 
-function Scope() {
-  this.store = {};
+/**
+  Реализует модель Scope, которая инкапсулирует и изолирует данные и может наследовать сама себя
+  @module Scope
+*/
+
+/**
+  @constructor
+  @param {object} store хранилище
+  @return {object} экземлпяр Scope
+*/
+function Scope(store) {
+  this.store = utils.extend({}, store || {});
 }
 
+/**
+  Получает значение перменной в scope
+  @param {string} name
+  @return {mixed} result from store
+*/
 Scope.prototype.get = function (name) {
   return this.store[name] || undefined;
 };
 
+/**
+  Назначает значение переменной
+  @param {string} name
+  @param {mixed} value
+  @return {mixed} value
+*/
 Scope.prototype.set = function(name, value){
   this.store[name] = value;
   return value;
 };
 
 Scope.prototype.born = function () {
-  var ns = new Scope();
-  utils.extend(ns.store, this.store);
+  var ns = new Scope(this.store);
   return ns;
 };
 
-Scope.prototype.resolve = function (name){
-  return  this.store[name] || (function(store){
-    for(var i in store){
-      if(store[i] instanceof Scope){
-        return store[i].resolve(name);
-      }
-    }
-  })(this.store);
+Scope.prototype.getElement = function (id) {
+  return this.store.elements.filter(function(i){
+    return i.id == id;
+  })[0] || null;
+};
+
+Scope.prototype.switchPhase = function (phaseName){
+  this.store.phase.value = this.phases ? this.phases[phaseName] :
+    ( this.game.phases ? this.game.phases[phaseName] : null );
+};
+
+Scope.prototype.register = function(domain, name, value){
+  var o = {};
+  o[name] = value;
+  this.set(domain, extend( {}, this.get(domain), o ));
+  console.log(this);
 };
 
 module.exports = Scope;

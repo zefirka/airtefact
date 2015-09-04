@@ -3,7 +3,7 @@ var socket = io();
 module.exports = {
   init : function () {
     socket.on('ready', function(msg){
-      console.log('Socker is ready!');
+      console.log('Socket is ready!');
     });
   },
   transmit : function (pipe, ctx) {

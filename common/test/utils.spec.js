@@ -39,4 +39,18 @@ describe('Module: Common/utils'.bold, function (){
 
   });
 
+  describe(':: forReduce', function (){
+      var ins = { a: 1, b: 2, c: 3 };
+
+      vals = forMap(ins, function(val, key){
+        return val + key;
+      });
+
+      it('should transform values', function(){
+        // TODO
+        expect(true).toEqual(true);
+      });
+
+  });
+
 });

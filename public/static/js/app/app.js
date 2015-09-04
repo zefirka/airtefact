@@ -9,7 +9,8 @@ paper.install(window);
 
 $(function() {
 
-  var id = 0;
+  var id         = 0,
+      instanceId = 0;
 
   $('#PlayGround').click(function() {
     $('#PlayPane').css('display', 'block');
@@ -32,7 +33,7 @@ $(function() {
       canvas.getElementById(elem.id).update(elem);
     });
 
-    canvas.redraw();
+    //canvas.redraw();
   });
 
   $('#summoner').click(function() {
@@ -46,16 +47,24 @@ $(function() {
   });
 
   $('#go').click(function() {
+
     var code = $('.commandLine').val();
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
-    console.log('Sending elements: ', elements);
 
-    socket.emit('play', {
+    var data = {
       code : code,
-      elements : elements
-    });
+      width : canvas.node.width,
+      height : canvas.node.height,
+      elements : elements,
+      time : new Date().getTime(),
+      instance : instanceId++,
+      uid : 'my-unique-id'
+    };
+
+    console.log('Sending elements: ', data);
+    socket.emit('play', data);
 
   });
 
