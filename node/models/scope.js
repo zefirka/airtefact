@@ -1,5 +1,6 @@
-var utils = require('warden.js').Utils,
-    extend = utils.extend;
+var forIn   = require('../../common/utils').forIn,
+    utils   = require('warden.js').Utils,
+    extend  = utils.extend;
 
 /**
   Реализует модель Scope, которая инкапсулирует и изолирует данные и может наследовать сама себя
@@ -11,8 +12,10 @@ var utils = require('warden.js').Utils,
   @param {object} store хранилище
   @return {object} экземлпяр Scope
 */
-function Scope(store) {
-  this.store = utils.extend({}, store || {});
+function Scope(scope) {
+  this.store = {
+    parent : scope || null
+  };
 }
 
 /**
@@ -21,7 +24,7 @@ function Scope(store) {
   @return {mixed} result from store
 */
 Scope.prototype.get = function (name) {
-  return this.store[name] || undefined;
+  return this.store[name];
 };
 
 /**

@@ -44,7 +44,6 @@ Game.prototype.start = function(data){
 
     console.log('Writing file:', pathName,  fileName);
     fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
-      //
       var fn = require(filePathName);
       fn(self.scope); // <- лол, точка входа в скомпелдированный код
       console.log('#### GLOBAL SCOPE ####');
