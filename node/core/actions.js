@@ -23,6 +23,7 @@ var Actions = {};
 */
 Actions.play = function(data, socket){
   Core.play(data).onSnapshot(function(pkg){
+    console.log('PUSH');
     socket.emit('tick', pkg);
   });
 };

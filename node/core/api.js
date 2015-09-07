@@ -3,7 +3,7 @@ var API = {
     name : 'move',
     params :  { dx : -5, dy : 0 }
   },
-  'move-rigth' : {
+  'move-right' : {
     name : 'move',
     params :  { dx : 5, dy : 0 }
   },
@@ -14,7 +14,16 @@ var API = {
   'move-up' : {
     name : 'move',
     params : { dx : 0, dy : -5 }
+  },
+  'follow' : {
+    name : 'follow',
+    params : ['%s']
   }
 };
 
-module.exports = API;
+module.exports = function(name){
+  var method = API[name].name,
+      params = API[name].params;
+
+  return this.instance[method].call(this.instance, params);
+};

@@ -13,16 +13,3 @@
 [for 0 [
   [phase [if [< @x [/ 2 $width]] 'right' 'left']]
 ]]
-
-
-[phase random-phase [
-    [if @speed
-        [do choose-random-point]
-        [phase move-phase]]
-]]
-
-[defn dist-]
-
-[phase move-phase
-  [if [&& @speed [do dist @ ]]
-    ( {this.Speed!==undefined&&dist(this,this.itemsInMind.moveToObject)>=10},MoveTo,movePhase),({this.Speed!==undefined&&dist(this,this.itemsInMind.moveToObject<10)},Idle,Idle)] {moveToObject}]]

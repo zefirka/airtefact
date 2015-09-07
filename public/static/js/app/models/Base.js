@@ -1,10 +1,20 @@
+/**
+ Базовая модель фронтового элемента
+ @constructor
+ @param {string} id
+ @return {Base}
+ */
 function Base(id){
   if (id) {
     this.id = id;
   }
 }
 
-Base.prototype.remove = function (fn) {
+/**
+ Удаляет элемент из 2D контекста
+ @public
+ */
+Base.prototype.remove = function () {
   this.ctx = null;
   ctx.removeObject(this);
   this.emit('remove');

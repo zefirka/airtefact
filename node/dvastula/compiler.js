@@ -27,6 +27,12 @@ function define(arity, fn){
 */
 var API = {};
 
+API.makeAliases = function(o){
+  for(var i in o){
+    this[o[i]] = this[i];
+  }
+};
+
 
 /* Функция def */
 API.def = define(2, function(name, value){
@@ -74,6 +80,9 @@ API.lambda = define(2, function(params, body){
   });
 });
 
+/**
+ @name defn
+ */
 API.defn = define(3, function(name, params, body){
   var debug = CUtils.comment('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
 
@@ -85,6 +94,9 @@ API.defn = define(3, function(name, params, body){
   return debug + API.def.fn.call(this, name, ['lambda', params, body]);
 });
 
+/**
+ @name if
+ */
 API['if'] = define(null, function(cond, then, _else){
   var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
 
@@ -110,7 +122,7 @@ API.list = define(null, function(){
 });
 
 /* MATH MACHT FREI */
-(['+', '-', '*', '/', '>', '<', '>=', '<=', '&&', '&', '>>', '<<']).forEach(function(op){
+(['+', '-', '*', '/', '>', '<', '>=', '<=', '&&', '&', '>>', '<<', '||']).forEach(function(op){
   API[op] = {
     fn : function(){
       var args = toArray(arguments).map(compile).join(', ');
@@ -121,8 +133,21 @@ API.list = define(null, function(){
   };
 });
 
+API.makeAliases({
+  '&&' : 'and',
+  '||' : 'or',
+  '>'  : 'gt',
+  '<'  : 'lt',
+  '>=' : 'gte',
+  '<=' : 'lte'
+});
+
 API.eq = define(2, function(a, b){
   return '(function(){ return ' + compile(a) + '==' + compile(b) + '; }).call(this)';
+});
+
+API.not = define(1, function(a){
+  return '(function(){ return !( ' + compile(a) + ' ); }).call(this)';
 });
 
 API['for'] = define(2, function(name, rules){
@@ -138,14 +163,18 @@ API.when = define(2, function(phase, behavior){
   return 'this.when("' + phase + '", function(){' +  behavior.map(compile).join(';\n') + '})';
 });
 
+/**
+
+ */
 API.phase = define(null, function(name, source){
   var debug = CUtils.comment('[phase {{0}} {{1}}]', name, source ? strarr(source) : '');
   var res = '';
 
   if(!source){
-    res = 'this.switchPhase(' + compile(name) + ')';
+    res = 'this.set("phase", ' + compile(name) + ')';
   }else{
-    res = 'this.register("phases", "' + compile(name) + '", function(){' + source.map(compile).join(';\n') + '})';
+    var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
+    res = 'this.push("phases", ' +  phase + ' )';
   }
 
   return debug + res;
@@ -154,7 +183,7 @@ API.phase = define(null, function(name, source){
 
 API['do'] = define(null, function(name){
   var args = toArray(arguments).slice(1).map(compile).join(', ');
-  return 'this.api.call(this, "' + name + '"' + (args ? ', ' + args : '') +')';
+  return 'this.get("api").call(this, "' + name + '"' + (args ? ', ' + args : '') +')';
 });
 
 /* Вот здесь происходит определение языка на основе вышеизложенного API */

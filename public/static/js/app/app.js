@@ -21,13 +21,13 @@ $(function() {
     $('#PlayPane').css('display', 'none');
     $('#Code').css('display', 'block');
   });
+
   var canvas = new Canvas(document.getElementById('play'));
 
 
   socket.on('tick', function(pkg) {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
     canvas.clear();
-
     utils.forIn(pkg, function(elem){
       canvas.getElementById(elem.id).update(elem);
     });
@@ -46,16 +46,16 @@ $(function() {
   });
 
   $('#go').click(function() {
-
     var code = $('.commandLine').val();
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
+    var $cnv  = $(canvas.node);
 
     var data = {
       code : code,
-      width : canvas.node.width,
-      height : canvas.node.height,
+      width : $cnv.width(),
+      height : $cnv.height(),
       elements : elements,
       time : new Date().getTime(),
       instance : instanceId++,

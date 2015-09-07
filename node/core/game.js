@@ -10,10 +10,15 @@ var fs    = require('fs'),
     mkdirp = require('mkdirp'),
     beautify = require('js-beautify');
 
-var apiFunction = function(method){
-  return api[method];
-};
 
+
+var LOCKED = false;
+
+/**
+  Инстанс игры
+  @public
+  @param {object} o - начальный объект игры (канвас и прочее)
+*/
 function Game(o){
   this.fps = 60 / 28;
   this.inited = false;
@@ -23,10 +28,14 @@ function Game(o){
     width     : o.width,
     height    : o.height,
     elements  : this.elements,
-    api       : apiFunction
+    api       : api
   });
 }
 
+/**
+ @public
+ @param {object} data - Конфигурационные данные
+*/
 Game.prototype.start = function(data){
   var self = this;
 
@@ -35,6 +44,8 @@ Game.prototype.start = function(data){
   var pathName = join(config.files, data.uid.toString());
   var fileName = [data.instance, data.time , 'js'].join('.');
   var filePathName = join(pathName, fileName);
+
+  this.lock();
 
   mkdirp(pathName, function(err) {
     if(err){
@@ -46,10 +57,16 @@ Game.prototype.start = function(data){
     fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
       var fn = require(filePathName);
       fn(self.scope); // <- лол, точка входа в скомпелдированный код
-      console.log('#### GLOBAL SCOPE ####');
-      console.log(self.scope.store);
-      console.log('#### LOCAL SCOPE OF ID=0 ####');
-      console.log(self.scope.store.elements[0].scope.store);
+      self.unlock();
+
+      try{
+        console.log('#### GLOBAL SCOPE ####');
+        console.log(self.scope.store);
+        console.log('#### LOCAL SCOPE OF ID=0 ####');
+        console.log(self.scope.store.elements[0].scope.store);
+      }catch(error){
+
+      }
     });
 
   });
@@ -59,14 +76,18 @@ Game.prototype.start = function(data){
   if(this.inited){
     return ;
   }else{
-    setInterval(this.update.bind(this), this.fps);
+    setInterval(function(){
+      if(!LOCKED){
+        self.update();
+      }
+    }, this.fps);
     this.inited = true;
   }
 };
 
 Game.prototype.update = function(callback){
-  this.elements = this.elements.map(function(elem, i){
-    return elem.invoke();
+  this.scope.store.elements.forEach(function(elem){
+    elem.invoke();
   });
 
   if(this.onFrameEnd) {
@@ -75,12 +96,8 @@ Game.prototype.update = function(callback){
 };
 
 Game.prototype.takeSnapshot = function(){
-  return this.elements.map(function(elem){
-    return {
-      id : elem.id,
-      x  : elem.x,
-      y  : elem.y
-    };
+  return this.scope.store.elements.map(function(elem){
+    return elem.snapshot();
   });
 };
 
@@ -90,6 +107,14 @@ Game.prototype.addElement = function(el){
   // TODO добавить проверку на уникальность
 
   this.elements.push(element);
+};
+
+Game.prototype.lock = function() {
+  LOCKED = true;
+};
+
+Game.prototype.unlock = function() {
+  LOCKED = false;
 };
 
 module.exports = Game;

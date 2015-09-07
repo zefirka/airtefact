@@ -3,6 +3,8 @@ var R       = require('ramda'),
     utils   = Warden.utils,
     Scope   = require('./scope.js');
 
+var api     = require('../core/api');
+
 function getRandomArbitary(min, max){
   return Math.random() * (max - min) + min;
 }
@@ -23,34 +25,12 @@ var Pkg = {
 };
 
 
-var Phases = [
-  {
-    name : 'goToPhase',
-    blocks : [
-      {
-        condition : function(params) {
-          return this.speed !== undefined && dist(this, params[0]) >= 10;
-        },
-        action : 'moveToPosition',
-        nextPhase : 'goToPhase'
-      },
-      {
-        condition : function(params) {
-          return this.speed !== undefined && dist(this, params[0]) < 10;
-        },
-        action : idle,
-        nextPhase : 'testPhase'
-      }],
-    params : 0
-  }
-];
-
 /**
   @constructor
   @param {object} o
-  @param {object} glob
+  @param {object} game
 */
-function Element(o, glob){
+function Element(o, game){
   this.position = {
     x : o.x || 0,
     y : o.y || 0
@@ -63,46 +43,27 @@ function Element(o, glob){
   this.action  = 0;
   this.actions = [];
   this.itemsInMind = {};
-  this.speed = 2;
+  this.speed = 1;
   this.phase = null;
-  this.game = glob;
+  this.game = game;
 
   this.scope = new Scope({
     x : this.x,
     y : this.y,
-    phase : Warden(0).watch(),
-    game : glob
+    phases : [],
+    phase : null,
+    game : game,
+    api : api
   });
 
-  this.scope.store.phase.listen(function(phase){
-    this.phase = this.scope.resolve(phase);
-  }.bind(this));
+  this.scope.instance = this;
 }
 
-/**
-
-*/
-Element.prototype.considerAlgorithm = function () {
-  if (this.phase === 0) {
-    this.addAction(idle);
-  } else if (this.phase.blocks !== undefined) {
-    this.phase.blocks.forEach(function(item, i) {
-      if(item.condition()) {
-        this.addAction(this[item.Action]);
-        this.phase = Phases[item.nextPhase];
-      }
-    });
-  }
-};
-
-Element.prototype.setPhase = function (name){
-  this.phase = Phases[name];
-};
 
 /**
-  Выполняет алгоритм изменения для конкретного элемента
-  @public
-*/
+ Выполняет алгоритм изменения для конкретного элемента
+ @public
+ */
 Element.prototype.invoke = function () {
   // if (this.actions.length) {
   //   this.addAction(idle);
@@ -110,10 +71,25 @@ Element.prototype.invoke = function () {
 
   /* waterfall async */
   var self = this;
-  //var action = this.actions[0];//.shift();
-  this.actions.forEach(function(action){
-    self[action.action].call(self, action.params);
-  });
+
+  if(!this.scope.store.phase){
+    return;
+  }
+
+  var store = this.scope.store;
+
+  var phases =  store.phases.length ?
+                store.phases :
+                store.game.phases;
+
+  var phaseName = store.phase;
+
+  phases.filter(function(phase){
+    return typeof phase[phaseName] == 'function';
+  }).forEach(function(phase){
+    phase[phaseName].call(this.scope);
+  }.bind(this));
+
   return this;
 };
 
@@ -152,8 +128,9 @@ Element.prototype.updateInfo = function(infoCollection) {
 Element.prototype.move = function(vector) {
   var x = vector.dx / len(vector) * this.speed;
   var y = vector.dy / len(vector) * this.speed;
-  this.x += x;
-  this.y += y;
+  var store = this.scope.store;
+  store.x += x;
+  store.y += y;
   return this;
 };
 
@@ -206,6 +183,17 @@ Element.prototype.moveRandomly = function() {
 
 Element.prototype.getScope = function(){
   return this.scope;
+};
+
+Element.prototype.snapshot = function() {
+  var store = this.scope.store;
+
+  return {
+    x : store.x,
+    y : store.y,
+    id : this.id
+  };
+
 };
 
 module.exports = Element;
