@@ -1,6 +1,6 @@
 var R       = require('ramda'),
     Warden  = require('warden.js'),
-    utils   = Warden.utils,
+    utils   = Warden.Utils,
     extend  = utils.extend,
     Scope   = require('./scope.js');
 
