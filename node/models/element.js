@@ -1,29 +1,10 @@
 var R       = require('ramda'),
     Warden  = require('warden.js'),
+    Scope   = require('./scope'),
+    Base    = require('./base'),
+    api     = require('../core/api'),
     utils   = Warden.utils,
-    Scope   = require('./scope.js');
-
-var api     = require('../core/api');
-
-function getRandomArbitary(min, max){
-  return Math.random() * (max - min) + min;
-}
-
-function dist(a,b) {
-  return Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
-}
-
-function len(vector) {
-  return (Math.sqrt(vector.dx * vector.dx + vector.dy * vector.dy));
-}
-
-function idle(){}
-
-
-var Pkg = {
-  mousePos : {x :0, y :0}
-};
-
+    math    = require('../utils/math');
 
 /**
   @constructor
@@ -31,34 +12,21 @@ var Pkg = {
   @param {object} game
 */
 function Element(o, game){
-  this.position = {
-    x : o.x || 0,
-    y : o.y || 0
-  };
-
   this.x = o.x || 0;
   this.y = o.y || 0;
   this.id = o.id || 0;
 
-  this.action  = 0;
-  this.actions = [];
-  this.itemsInMind = {};
   this.speed = 1;
+  this.phases = [];
   this.phase = null;
+
   this.game = game;
-
-  this.scope = new Scope({
-    x : this.x,
-    y : this.y,
-    phases : [],
-    phase : null,
-    game : game,
-    api : api
-  });
-
-  this.scope.instance = this;
+  this.api = api;
+  this.scope = new Scope();
 }
 
+extend(Element.prototype, new Base());
+Element.prototype.constructor = Element;
 
 /**
  Выполняет алгоритм изменения для конкретного элемента
@@ -93,64 +61,64 @@ Element.prototype.invoke = function () {
   return this;
 };
 
-Element.prototype.abortActive = function() {
-  this.action.act = idle;
-};
-
-Element.prototype.setAction = function(act, params) {
-  this.action.act = act;
-  this.action.params = params;
-};
-
-Element.prototype.addAction = function(action, params) {
-  this.actions.push({
-    action : action,
-    params : params
-  });
-};
-
 Element.prototype.getElementsById = function(id) {
   return R.filter(R.eqProps(id, 'id'), this.elements);
 };
 
-Element.prototype.updateInfo = function(infoCollection) {
-  infoCollection.forEach(R.partial(utils.extend(Pkg)));
+Element.prototype.updateInfo = function(info) {
+  info.forEach(R.partial(utils.extend(Pkg)));
 };
 
 /**
   Перемещает объект по вектору
   @public
   @param {object} vector
-  @param {number} vector[dx]
-  @param {number} vector[dy]
+  @param {number} vector.dx
+  @param {number} vector.dy
   @return {object} instance
 */
 Element.prototype.move = function(vector) {
-  var x = vector.dx / len(vector) * this.speed;
-  var y = vector.dy / len(vector) * this.speed;
-  var store = this.scope.store;
-  store.x += x;
-  store.y += y;
+  var x = vector.dx / math.len(vector) * this.speed;
+  var y = vector.dy / math.len(vector) * this.speed;
+
+  this.x += x;
+  this.y += y;
   return this;
 };
 
-Element.prototype.goto = function() {
-  var pos = this.itemsInMind.position;
-
+Element.prototype.goto = function(pos) {
   this.move({
-    x : pos.x - this.position.x,
-    y : pos.y - this.position.y
+    x : pos.x - this.x,
+    y : pos.y - this.y
   });
 
-  if (dist(pos, this.position) > 10) {
-    this.addAction(this.goto);
-  }
+  return math.dist(pos, this.position()) > 10;
 };
 
-Element.prototype.followCursor = function() {
-  this.addAction(this.move, {
-    x : Pkg.mousePos.x - this.position.x,
-    y : Pkg.mousePos.y - this.position.y
+/**
+ Возвращает {x, y} элемента
+ @return {object} position
+ @return {number} position.x
+ @return {number} position.y
+ */
+Element.prototype.position = function(){
+  return {
+    x : this.x,
+    y : this.y
+  };
+};
+
+/**
+ Действие преследования
+ @param {object} elem - {x, y} координата
+ @param {number} elem.x
+ @param {number} elem.y
+ @return {boolena}
+ */
+Element.prototype.follow = function(elem) {
+  return this.goto({
+    x : elem.x,
+    y : elem.y
   });
 };
 
@@ -185,15 +153,7 @@ Element.prototype.getScope = function(){
   return this.scope;
 };
 
-Element.prototype.snapshot = function() {
-  var store = this.scope.store;
 
-  return {
-    x : store.x,
-    y : store.y,
-    id : this.id
-  };
-
-};
+// Element.prototype.__base = Base.prototype
 
 module.exports = Element;

@@ -33,6 +33,7 @@ function Game(o){
 }
 
 /**
+ Запускает инстанс игры
  @public
  @param {object} data - Конфигурационные данные
 */
@@ -85,6 +86,10 @@ Game.prototype.start = function(data){
   }
 };
 
+/**
+ @public
+ @param {function} callback
+ */
 Game.prototype.update = function(callback){
   this.scope.store.elements.forEach(function(elem){
     elem.invoke();
@@ -97,7 +102,7 @@ Game.prototype.update = function(callback){
 
 Game.prototype.takeSnapshot = function(){
   return this.scope.store.elements.map(function(elem){
-    return elem.snapshot();
+    return elem.snapshot(['x', 'y', 'id']);
   });
 };
 
