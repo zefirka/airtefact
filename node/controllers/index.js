@@ -13,7 +13,10 @@ common.scripts = common.scripts.concat([
   path(lib, 'paper/dist/paper-full.js'),
   path(lib, 'highlightjs/highlight.pack.min.js'),
   path(lib, 'codemirror/lib/codemirror.js'),
-  path(lib, 'codemirror/mode/clojure/clojure.js'),
+  path(lib, 'codemirror/addon/edit/closebrackets.js'),
+  path(lib, 'codemirror/addon/edit/matchbrackets.js'),
+  path(lib, 'codemirror/addon/selection/active-line.js'),
+  path(jsc, 'dsl/ss2.js'),
   path(jsc, 'app.js'),
   path(jsc, 'compiler.js')
 ]);

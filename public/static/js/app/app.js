@@ -79,7 +79,8 @@ $(function() {
     theme : 'monokai',
     mode : 'clojure',
     styleActiveLine : true,
-    matchBrackets : true
+    matchBrackets : true,
+    autoCloseBrackets : true
   });
 
   $('#SendVal').click(function() {
