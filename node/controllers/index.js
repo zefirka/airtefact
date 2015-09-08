@@ -11,8 +11,17 @@ var jsc = path(config.static, 'js'),
 common.scripts = common.scripts.concat([
   path(lib, 'socket.io-client/socket.io.js'),
   path(lib, 'paper/dist/paper-full.js'),
+  path(lib, 'highlightjs/highlight.pack.min.js'),
+  path(lib, 'codemirror/lib/codemirror.js'),
+  path(lib, 'codemirror/mode/clojure/clojure.js'),
   path(jsc, 'app.js'),
   path(jsc, 'compiler.js')
+]);
+
+common.styles = common.styles.concat([
+  path(lib, 'highlightjs/styles/github.css'),
+  path(lib, 'codemirror/lib/codemirror.css'),
+  path(lib, 'codemirror/theme/monokai.css')
 ]);
 
 module.exports = extend({}, common, {

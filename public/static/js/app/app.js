@@ -12,15 +12,22 @@ $(function() {
   var id         = 0,
       instanceId = 0;
 
-  $('#PlayGround').click(function() {
-    $('#PlayPane').css('display', 'block');
-    $('#Code').css('display', 'none');
-  });
+  (function(){
+    var $pg = $('#PlayGround'),
+        $console = $('#Console'),
+        $pp = $('#PlayPane'),
+        $code = $('#Code');
 
-  $('#Console').click(function() {
-    $('#PlayPane').css('display', 'none');
-    $('#Code').css('display', 'block');
-  });
+    function toggle(){
+      $pp.toggle();
+      $code.toggle();
+    }
+
+    $pg.click(toggle);
+    $console.click(toggle);
+
+  })();
+
   var canvas = new Canvas(document.getElementById('play'));
 
 
@@ -67,6 +74,14 @@ $(function() {
 
   });
 
+  CodeMirror.fromTextArea(document.getElementById('code'), {
+    lineNumbers : true,
+    theme : 'monokai',
+    mode : 'clojure',
+    styleActiveLine : true,
+    matchBrackets : true
+  });
+
   $('#SendVal').click(function() {
     var code = $('#input').val();
     socket.emit('save', code);
@@ -83,5 +98,4 @@ $(function() {
   // });
   //
   // osama.attach(canvas).draw();
-
 });

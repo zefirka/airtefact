@@ -8,10 +8,10 @@ $(function(){
   var isDebug = checkBoxSwitches.grep('@prop("checked")').watch();
 
   function highlight(){
-    // hljs.initHighlightingOnLoad();
-    //  $('pre').each(function(i, block) {
-    //    hljs.highlightBlock(block);
-    //  });
+    hljs.initHighlightingOnLoad();
+    $('pre').each(function(i, block) {
+       hljs.highlightBlock(block);
+     });
   }
   function trigger(emit){
     return function(value){

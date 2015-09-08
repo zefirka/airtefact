@@ -21,11 +21,10 @@ block content
           canvas#play(resize)
       .col-md-4.col-lg-4.col-sm-12.col-xs-12
         h2 Моя команда
-        .b-controls
-            i#summoner.glyphicon.glyphicon-asterisk
-            textarea(rows=5, class="commandLine")
-            i#go.glyphicon.glyphicon-play
-          ul.b-players
+        form
+          textarea#code(rows=5, class="commandLine")
+        i#summoner.glyphicon.glyphicon-asterisk
+        i#go.glyphicon.glyphicon-play
   .container(id="Code")
     i.glyphicon.glyphicon-play(id='SendVal')
     .row
