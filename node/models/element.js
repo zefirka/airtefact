@@ -13,9 +13,9 @@ var R       = require('ramda'),
   @param {object} game
 */
 function Element(o, game){
-  this.x = o.x || 0;
-  this.y = o.y || 0;
-  this.id = o.id || 0;
+  this.x = Number(o.x) || 0;
+  this.y = Number(o.y) || 0;
+  this.id = String(o.id) || '0';
 
   this.speed = 1;
   this.phases = [];
@@ -23,7 +23,9 @@ function Element(o, game){
 
   this.game = game;
   this.api = api;
-  this.scope = new Scope();
+
+  // наследуем глобальный скоуп
+  this.store = new Scope(game.store);
 }
 
 extend(Element.prototype, new Base());
@@ -41,23 +43,17 @@ Element.prototype.invoke = function () {
   /* waterfall async */
   var self = this;
 
-  if(!this.scope.store.phase){
+  if(!this.phase){
     return;
   }
 
-  var store = this.scope.store;
-
-  var phases =  store.phases.length ?
-                store.phases :
-                store.game.phases;
-
-  var phaseName = store.phase;
+  var phases = this.phases.concat(this.game.phases);
 
   phases.filter(function(phase){
-    return typeof phase[phaseName] == 'function';
+    return typeof phase[self.phase] == 'function';
   }).forEach(function(phase){
-    phase[phaseName].call(this.scope);
-  }.bind(this));
+    phase[self.phase].call(self);
+  });
 
   return this;
 };
@@ -107,6 +103,17 @@ Element.prototype.position = function(){
     x : this.x,
     y : this.y
   };
+};
+
+Element.prototype.snapshot = function(keys){
+  var res = {},
+      self = this;
+
+  keys.forEach(function(key){
+    res[key] = self[key];
+  });
+
+  return res;
 };
 
 /**

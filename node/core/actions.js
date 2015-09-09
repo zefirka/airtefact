@@ -22,10 +22,17 @@ var Actions = {};
   @param {object} data
 */
 Actions.play = function(data, socket){
-  Core.play(data).onSnapshot(function(pkg){
-    console.log('PUSH');
-    socket.emit('tick', pkg);
-  });
+  Core.play(data)
+    .onSnapshot(function(pkg){
+      if(config.env == 'debug') {
+        Core.freeze();
+      }
+      socket.emit('tick', pkg);
+    });
+};
+
+Actions.ready = function(data, socket){
+  Core.unfreeze();
 };
 
 /**

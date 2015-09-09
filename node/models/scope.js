@@ -11,13 +11,17 @@ var forIn   = require('../../common/utils').forIn,
  @param {object} store
  @return {Scope}
 */
-function Scope(store) {
+function Scope(parent, store) {
   this.store = {};
-  forIn(store, function(value, key){
-    if (store.hasOwnProperty(key)){
-      this.store[key] = value;
-    }
-  }.bind(this));
+  this.parent = parent;
+
+  if (store) {
+    forIn(store, function(value, key){
+      if (store.hasOwnProperty(key)){
+        this.store[key] = value;
+      }
+    }.bind(this));
+  }
 }
 
 /**
@@ -26,7 +30,15 @@ function Scope(store) {
  @return {mixed} result from store
 */
 Scope.prototype.get = function (name) {
-  return this.store.hasOwnProperty(name) ? this.store[name] : null;
+  if(this.store.hasOwnProperty(name)){
+    return this.store[name];
+  }
+
+  if(this.parent && this.parent instanceof Scope){
+    return this.parent.get(name);
+  }
+
+  return null;
 };
 
 /**
@@ -93,16 +105,15 @@ Scope.prototype.splice = function(name, from, to){
 };
 
 /**
+ Создает новый скоуп
  @public
+ @param {object} store
+ @return {Scope}
  */
-Scope.prototype.inherit = function (c) {
-  var ns = new Scope();
-  ns.parent = this.store;
+Scope.prototype.inherit = function (store) {
+  var ns = new Scope(store);
+  ns.parent = this;
   return ns;
-};
-
-Scope.prototype.getElement = function (id) {
-  return R.filter(R.eqProps(id, 'id'), this.store.elements)[0] || null;
 };
 
 module.exports = Scope;

@@ -24,20 +24,20 @@ function invokeForm(js, semicolon){
 }
 
 function derefForm(js, semicolon){
-  return 'this.get("' + js.slice(1) + '")' + (semicolon ? ';' : '');
+  return 'this["' + js.slice(1) + '"]' + (semicolon ? ';' : '');
 }
 
 function globalForm(js, semicolon){
-  return 'this.get("game").' + js.slice(1) + (semicolon ? ';' : '');
+  return 'this.game["' + js.slice(1) +  '"]' + (semicolon ? ';' : '');
 }
 
 function exprForm(js){
   return js .slice(1,-1)
             .replace(/(@[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
-              return 'this.get("' + a.slice(1)  + '")';
+              return 'this.["' + a.slice(1)  + '"]';
             })
             .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
-              return 'this.get("game").' + a.slice(1);
+              return 'this.game["' + a.slice(1) + '"]';
             });
 }
 /**
@@ -49,7 +49,7 @@ function comment(){
 }
 
 function wrapInnerCall(fn, params){
-  return 'this.get("' + fn + '").call(this, ' + params.join(', ') + ')';
+  return 'this["' + fn + '"].call(this, ' + params.join(', ') + ')';
 }
 
 function strarr(arr){

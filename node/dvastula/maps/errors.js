@@ -13,7 +13,7 @@ var intp  = require('warden.js').Utils.interpolate;
   @return {string}
 */
 function ArityErrorMismatch(fname, expArity, realArity){
-  return intp('(function(){ throw(\"Arity Error: function {{0}} exptects {{1}} ' +
+  return intp('(function(){ this.throwError(\"Arity Error: function {{0}} exptects {{1}} ' +
   'arguments, but {{2}} was recieved.\")})();', fname, expArity, realArity);
 }
 

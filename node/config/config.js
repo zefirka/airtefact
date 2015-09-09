@@ -18,7 +18,7 @@ function config(locale){
     meta : {
       favicon : rooty('public/favicon.png'),
     },
-
+    env : process.env.ENV || 'debug',
     dev : {
       logTime : {
         repl : true,

@@ -24,12 +24,19 @@ function Game(o){
   this.inited = false;
   this.elements = [];
   this.api = api;
-  this.scope = new Scope({
-    width     : o.width,
-    height    : o.height,
-    elements  : this.elements,
-    api       : api
-  });
+  this.phases = [];
+
+  // хрень какая-то
+  var props = {
+    width : o.width,
+    height : o.height
+  };
+
+  this.game = props;
+  this.width = o.width;
+  this.height = o.heigth;
+
+  this.store = new Scope();
 }
 
 /**
@@ -57,33 +64,27 @@ Game.prototype.start = function(data){
     console.log('Writing file:', pathName,  fileName);
     fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
       var fn = require(filePathName);
-      fn(self.scope); // <- лол, точка входа в скомпелдированный код
-      self.unlock();
-
-      try{
-        console.log('#### GLOBAL SCOPE ####');
-        console.log(self.scope.store);
-        console.log('#### LOCAL SCOPE OF ID=0 ####');
-        console.log(self.scope.store.elements[0].scope.store);
-      }catch(error){
-
-      }
+      fn(self); // <- лол, точка входа в скомпелдированный код
+      self.unlock(self.startInterval);
     });
 
   });
 
   data.elements.forEach(this.addElement.bind(this));
 
-  if(this.inited){
-    return ;
-  }else{
-    setInterval(function(){
-      if(!LOCKED){
-        self.update();
-      }
-    }, this.fps);
-    this.inited = true;
-  }
+  return !this.inited && this.startInterval(config.env);
+};
+
+Game.prototype.startInterval = function(env){
+  var self = this;
+  setInterval(function(){
+    if(!LOCKED){
+      console.log('Updating');
+      self.update();
+    }
+  }, this.fps);
+
+  this.inited = true;
 };
 
 /**
@@ -91,23 +92,31 @@ Game.prototype.start = function(data){
  @param {function} callback
  */
 Game.prototype.update = function(callback){
-  this.scope.store.elements.forEach(function(elem){
+  this.elements.forEach(function(elem){
     elem.invoke();
   });
 
   if(this.onFrameEnd) {
     this.onFrameEnd.call(null, this.takeSnapshot());
   }
+
+  if (callback) {
+    callback.call(this);
+  }
+};
+
+Game.prototype.getElement = function(id){
+  return R.filter(R.propEq('id', id), this.elements)[0] || null;
 };
 
 Game.prototype.takeSnapshot = function(){
-  return this.scope.store.elements.map(function(elem){
+  return this.elements.map(function(elem){
     return elem.snapshot(['x', 'y', 'id']);
   });
 };
 
 Game.prototype.addElement = function(el){
-  var element = new Element(el, this.scope.store);
+  var element = new Element(el, this);
 
   // TODO добавить проверку на уникальность
 
@@ -118,8 +127,12 @@ Game.prototype.lock = function() {
   LOCKED = true;
 };
 
-Game.prototype.unlock = function() {
+Game.prototype.unlock = function(callback) {
   LOCKED = false;
+
+  if (callback) {
+    callback.call(this);
+  }
 };
 
 module.exports = Game;

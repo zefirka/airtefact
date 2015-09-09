@@ -49,12 +49,12 @@ API.def = define(2, function(name, value){
 
   /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
   if (lang.derefReserved[name]){
-    return interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', name);
+    return interpolate('this.throwError("Trying to rewrite reserved word {{0}}");', name);
   }
 
-  lang.set('public', name, 'this.get("' + name + '")');
+  lang.set('public', name, 'this.store.get("' + name + '")');
 
-  return debug + interpolate('this.set("{{name}}", {{value}})', {
+  return debug + interpolate('this.store.set("{{name}}", {{value}})', {
     name : name,
     value : value
   });
@@ -74,7 +74,7 @@ API.lambda = define(2, function(params, body){
   lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
   body = lines.join('\n');
 
-  return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.born())', {
+  return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.store.inherit())', {
     params : params,
     body : body
   });
@@ -88,7 +88,7 @@ API.defn = define(3, function(name, params, body){
 
   lang.set('public', name, function(){
     var myParams = strarr(toArray(arguments));
-    return 'this.get("' + name + '").call(this, ' + myParams + ')';
+    return 'this.store.get("' + name + '").call(this, ' + myParams + ')';
   });
 
   return debug + API.def.fn.call(this, name, ['lambda', params, body]);
@@ -152,10 +152,13 @@ API.not = define(1, function(a){
 
 API['for'] = define(2, function(name, rules){
   var debug = CUtils.comment('[for {{0}} {{1}}]', strarr(name), strarr(rules));
+
+  lang.context = 'e';
   var body = rules.map(compile).join(';\n');
+  lang.context = 'g';
 
   return debug + '(function(){' + body + ' }).call(this.getElement("' +
-    name + '").getScope())';
+    name + '"))';
 });
 
 
@@ -164,17 +167,23 @@ API.when = define(2, function(phase, behavior){
 });
 
 /**
-
+ Фазы
  */
 API.phase = define(null, function(name, source){
   var debug = CUtils.comment('[phase {{0}} {{1}}]', name, source ? strarr(source) : '');
   var res = '';
 
   if(!source){
-    res = 'this.set("phase", ' + compile(name) + ')';
+    if(lang.context == 'g'){
+      res = 'this.throwError("You can\'t set phase on global context ")';
+    }else{
+      res = 'this.phase = ' + compile(name);
+    }
   }else{
+    lang.context = 'e';
     var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
-    res = 'this.push("phases", ' +  phase + ' )';
+    res = 'this.phases.push(' +  phase + ')';
+    lang.context = 'g';
   }
 
   return debug + res;
@@ -183,7 +192,7 @@ API.phase = define(null, function(name, source){
 
 API['do'] = define(null, function(name){
   var args = toArray(arguments).slice(1).map(compile).join(', ');
-  return 'this.get("api").call(this, "' + name + '"' + (args ? ', ' + args : '') +')';
+  return 'this.api.call(this, "' + name + '"' + (args ? ', ' + args : '') +')';
 });
 
 /* Вот здесь происходит определение языка на основе вышеизложенного API */

@@ -25,5 +25,5 @@ module.exports = function(name){
   var method = API[name].name,
       params = API[name].params;
 
-  return this.instance[method].call(this.instance, params);
+  return this[method].call(this, params);
 };

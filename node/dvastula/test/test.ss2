@@ -1,12 +1,15 @@
+[def min-x 10]
+[def max-x [- $width 10]]
+
 [phase left [
   [do move-left]
-  [if [< @x 10]
+  [if [< @x min-x]
       [phase 'right']]
 ]]
 
 [phase right [
   [do move-right]
-  [if [> @x [- $width 10]]
+  [if [> @x max-x]
       [phase 'left']]
 ]]
 

@@ -40,6 +40,7 @@ function lang(referenceLanguage){
       dict[keyset][key] = value;
       return value;
     },
+    context : 'g',
     derefAll : function(token){
       return dict.public[token] || dict.reserved[token];
     },

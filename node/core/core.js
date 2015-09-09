@@ -20,6 +20,13 @@ var Core = {
   },
   onSnapshot : function(callback){
     GameSession.onFrameEnd = callback;
+  },
+  unfreeze : function(){
+    GameSession.unlock();
+    GameSession.update();
+  },
+  freeze : function(){
+    GameSession.lock();
   }
 
 };

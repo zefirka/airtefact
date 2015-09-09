@@ -38,7 +38,7 @@ $(function() {
       canvas.getElementById(elem.id).update(elem);
     });
 
-    //canvas.redraw();
+    socket.emit('ready', true);
   });
 
   $('#summoner').click(function() {
@@ -52,7 +52,7 @@ $(function() {
   });
 
   $('#go').click(function() {
-    var code = $('.commandLine').val();
+    var code = codeMirror.doc.getValue();
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
@@ -73,10 +73,10 @@ $(function() {
 
   });
 
-  CodeMirror.fromTextArea(document.getElementById('code'), {
+  var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
     lineNumbers : true,
     theme : 'monokai',
-    mode : 'clojure',
+    mode : 'ss2',
     styleActiveLine : true,
     matchBrackets : true,
     autoCloseBrackets : true
