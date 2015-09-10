@@ -97,9 +97,14 @@ API.lambda = define(2, function(params, body){
 
   params = params.join(',');
 
-  // null null нужны
-  // хз зачем
-  body = compile(body, null, null);
+
+  if(Array.isArray(body[0])){
+    body = body.map(compile).join('\n');
+  }else{
+    // null null нужны
+    // хз зачем
+    body = compile(body, null, null);
+  }
 
   lines = body.split('\n');
   lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
@@ -156,7 +161,7 @@ API['if'] = define(null, function(cond, then, _else){
 });
 
 API.list = define(null, function(){
-  return '[' + toArray(arguments).join(', ') + ']';
+  return '[' + toArray(arguments).map(compile).join(', ') + ']';
 });
 
 /* MATH MACHT FREI */
@@ -214,6 +219,10 @@ API['for'] = define(2, function(name, rules){
     name + '"))';
 });
 
+API.nth = define(2, function(collection, n){
+  var coll = compile(collection);
+  return coll + '[' + compile(n) +']';
+});
 
 API.when = define(2, function(phase, behavior){
   return 'this.when("' + phase + '", function(){' +  behavior.map(compile).join(';\n') + '})';

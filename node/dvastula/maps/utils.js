@@ -49,7 +49,7 @@ function comment(){
 }
 
 function wrapInnerCall(fn, params){
-  return 'this["' + fn + '"].call(this, ' + params.join(', ') + ')';
+  return 'this.store.get("' + fn + '").call(this, ' + params.join(', ') + ')';
 }
 
 function strarr(arr){
