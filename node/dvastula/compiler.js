@@ -182,7 +182,7 @@ API.phase = define(null, function(name, source){
   }else{
     lang.context = 'e';
     var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
-    res = 'this.phases.push(' +  phase + ')';
+    res = 'this.phases.push(' +  phase + ');';
     lang.context = 'g';
   }
 
