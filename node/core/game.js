@@ -10,8 +10,6 @@ var fs    = require('fs'),
     mkdirp = require('mkdirp'),
     beautify = require('js-beautify');
 
-
-
 var LOCKED = false;
 
 /**

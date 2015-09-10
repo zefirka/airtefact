@@ -18,12 +18,19 @@ var API = {
   'follow' : {
     name : 'follow',
     params : ['%s']
+  },
+  'dist-to' : {
+    name : 'dist'
+  },
+  'goto' : {
+    name : 'goto'
   }
 };
 
 module.exports = function(name){
+  var args = [].slice.call(arguments, 1);
   var method = API[name].name,
-      params = API[name].params;
+      params = (API[name].params ? [API[name].params] : []).concat(args);
 
-  return this[method].call(this, params);
+  return this[method].apply(this, params);
 };

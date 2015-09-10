@@ -13,6 +13,8 @@ var utils       = require('warden.js').Utils,
     is          = utils.is,
     strarr      = CUtils.strarr;
 
+utils.extend(utils, require('../../common/utils'));
+
 function define(arity, fn){
   return {
     arity : arity,
@@ -60,6 +62,35 @@ API.def = define(2, function(name, value){
   });
 });
 
+API.let = define(null, function(name, value){
+  var debug = CUtils.comment('[let {{0}} {{1}}]', name, strarr(value));
+
+  value = compile(value);
+
+  /* При попытке переписать зарезервированный идентификатор бросаем эксепшн. */
+  if (lang.derefReserved[name]){
+    return interpolate('this.throwError("Trying to rewrite reserved word {{0}}");', name);
+  }
+
+  var cname = utils.camelCase(name);
+
+  lang.set('private', name, cname );
+
+  return debug + 'var ' + cname + ' = ' + value + ';' + toArray(arguments).slice(2).map(compile);
+});
+
+
+API['rand-int'] = define(null, function(from, to){
+  if(!to){
+    to = from;
+    from = 1;
+  }
+
+  from = compile(String(from));
+  to = compile(String(to));
+
+  return '(' + from + ' + ( Math.random() * (' + to +' - ' + from + ') >> 0 ) )';
+});
 
 API.lambda = define(2, function(params, body){
   var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
@@ -78,6 +109,13 @@ API.lambda = define(2, function(params, body){
     params : params,
     body : body
   });
+});
+
+
+API.idle = define(null, function(){
+  var debug = CUtils.comment('[idle]');
+
+  return debug + 'this.phase = null';
 });
 
 /**
@@ -142,6 +180,21 @@ API.makeAliases({
   '<=' : 'lte'
 });
 
+API.hash = define(null, function(){
+  var args = toArray(arguments);
+  var res = '';
+  for(var i = 0, l = args.length; i < l; i += 2){
+    var name = args[i],
+        value = compile(args[i + 1]);
+
+    res += '"' + name + '" : ' + value + ' ,';
+  }
+
+  res.slice(0, -1);
+
+  return '{ ' + res + ' }';
+});
+
 API.eq = define(2, function(a, b){
   return '(function(){ return ' + compile(a) + '==' + compile(b) + '; }).call(this)';
 });
@@ -181,6 +234,9 @@ API.phase = define(null, function(name, source){
     }
   }else{
     lang.context = 'e';
+
+    lang.set('public', name, '"' + name + '"');
+
     var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
     res = 'this.phases.push(' +  phase + ');';
     lang.context = 'g';
@@ -276,6 +332,9 @@ function compile(js, indexInParent, parent){
     }else{
       if (lang.derefReserved(js)){
         js = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', js);
+      }else
+      if (lang.derefPrivate(js)){
+        js = lang.derefPrivate(js) || 'dnsoadn';
       }else{
         js = lang.derefPublic(js) || js;
       }

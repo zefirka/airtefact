@@ -1,11 +1,11 @@
 extend ./layout.jade
 
 block vars
-  - var rows = new Array(10)
-  - var cols = new Array(15);
-
+  - var env = locals.env;
 
 block content
+  script(type='text/javascript')
+    |  window.ENV = '#{env}';
   ul.nav.nav-tabs
     li
       a(id="PlayGround") Playground

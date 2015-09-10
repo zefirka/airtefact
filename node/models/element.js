@@ -85,8 +85,8 @@ Element.prototype.move = function(vector) {
 
 Element.prototype.goto = function(pos) {
   this.move({
-    x : pos.x - this.x,
-    y : pos.y - this.y
+    dx : pos.x - this.x,
+    dy : pos.y - this.y
   });
 
   return math.dist(pos, this.position()) > 10;
@@ -103,6 +103,10 @@ Element.prototype.position = function(){
     x : this.x,
     y : this.y
   };
+};
+
+Element.prototype.dist = function(pos){
+  return math.dist(pos, this.position());
 };
 
 Element.prototype.snapshot = function(keys){

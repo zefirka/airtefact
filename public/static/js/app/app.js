@@ -38,7 +38,9 @@ $(function() {
       canvas.getElementById(elem.id).update(elem);
     });
 
-    socket.emit('ready', true);
+    if (window.ENV == 'debug') {
+      socket.emit('ready', true);
+    }
   });
 
   $('#summoner').click(function() {
