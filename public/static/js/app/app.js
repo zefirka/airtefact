@@ -29,7 +29,16 @@ $(function() {
   })();
 
   var canvas = new Canvas(document.getElementById('play'));
+  var $cnv  = $(canvas.node);
+  var data = {
+    width : $cnv.width(),
+    height : $cnv.height(),
+    time : new Date().getTime(),
+    instance : instanceId++,
+    uid : 'my-unique-id'
+  };
 
+  socket.emit('play', data);
 
   socket.on('tick', function(pkg) {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
@@ -44,35 +53,37 @@ $(function() {
   });
 
   $('#summoner').click(function() {
-    var el = new models.Raster(id++, {
-      src : 'static/img/bin.png',
+    var el = new models.Circle(id++, {
       x : 20 + (Math.random() * 100 >> 0),
-      y : 20 + (Math.random() * 100 >> 0)
+      y : 20 + (Math.random() * 100 >> 0),
+      radius:10
     });
 
     canvas.assign(el).draw(el);
-  });
-
-  $('#go').click(function() {
-    var code = codeMirror.doc.getValue();
     var elements = canvas.objects.map(function(o){
       return o.getBase();
     });
-    var $cnv  = $(canvas.node);
+    var data = {
+      elements : elements,
+    };
+    socket.emit('addElement', data);
+  });
+  $('#refresh').click(function() {
+    socket.emit('clear');
+  })
+  $('#go').click(function() {
+    var code = codeMirror.doc.getValue();
 
     var data = {
       code : code,
       width : $cnv.width(),
       height : $cnv.height(),
-      elements : elements,
       time : new Date().getTime(),
       instance : instanceId++,
       uid : 'my-unique-id'
     };
 
-    console.log('Sending elements: ', data);
-    socket.emit('play', data);
-
+    socket.emit('writeCode', data);
   });
 
   var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {

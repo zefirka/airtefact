@@ -18,7 +18,7 @@ var LOCKED = false;
   @param {object} o - начальный объект игры (канвас и прочее)
 */
 function Game(o){
-  this.fps = 60 / 28;
+  this.fps = 500;
   this.inited = false;
   this.elements = [];
   this.api = api;
@@ -35,6 +35,7 @@ function Game(o){
   this.height = o.heigth;
 
   this.store = new Scope();
+  this.startInterval(config.env);
 }
 
 /**
@@ -42,7 +43,7 @@ function Game(o){
  @public
  @param {object} data - Конфигурационные данные
 */
-Game.prototype.start = function(data){
+Game.prototype.writeCode = function(data){
   var self = this;
 
   var code = data.code;
@@ -51,35 +52,34 @@ Game.prototype.start = function(data){
   var fileName = [data.instance, data.time , 'js'].join('.');
   var filePathName = join(pathName, fileName);
 
-  this.lock();
-
   mkdirp(pathName, function(err) {
-    if(err){
-      console.trace();
-      throw err;
-    }
-
-    console.log('Writing file:', pathName,  fileName);
-    fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
-      var fn = require(filePathName);
-      fn(self); // <- лол, точка входа в скомпелдированный код
-      self.unlock(self.startInterval);
-    });
-
+    fs.writeFile(filePathName, beautify(js, {indent_size : 2}));
   });
-
-  data.elements.forEach(this.addElement.bind(this));
-
-  return !this.inited && this.startInterval(config.env);
 };
+
+function getUpdates(self) {
+  var directories = fs.readdirSync(config.files);
+  directories.forEach(function(dirName) {
+    var tmpFiles = fs.readdirSync(config.files + '/' + dirName);
+    tmpFiles.forEach(function(item) {
+      var tmpFile = require(config.files + '/' + dirName + '/' + item);
+      try {
+          var res = tmpFile(self);
+      } catch (e) {
+          console.log('error compiling ' + item + " " + e);
+      } finally {
+          fs.unlinkSync(config.files + '/' + dirName + '/' + item);
+      }
+    });
+  });
+}
 
 Game.prototype.startInterval = function(env){
   var self = this;
   setInterval(function(){
-    if(!LOCKED){
-      console.log('Updating');
-      self.update();
-    }
+    console.log('Updating');
+    getUpdates(self);
+    self.update();
   }, this.fps);
 
   this.inited = true;

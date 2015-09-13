@@ -140,24 +140,22 @@ API.defn = define(3, function(name, params, body){
 /**
  @name if
  */
-API['if'] = define(null, function(cond, then, _else){
-  var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
-
-  var ar2Statement = 'if ({{condition}}) { return {{then}}}',
-      ar3Statement = ar2Statement + ' else {return {{_else}} }',
-      str = ar2Statement;
-
-  if (arguments.length == 3){
-    str = ar3Statement;
+API['cond'] = define(null, function(cond){
+  var debug = CUtils.comment('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
+  var actions = [];
+  for(var i = 1; i < arguments.length; i++) {
+    actions.push(compile(arguments[i]));
   }
+  var then = actions.join(';\n');
+  var ar2Statement = 'if ({{condition}}) { {{then}}; return true; }',
+      str = ar2Statement;
 
   var res = interpolate(str, {
     condition : compile(cond),
-    then : compile(then),
-    _else : compile(_else)
+    then : compile(then)
   });
 
-  return debug + '(function(){ ' + res + ' }).call(this)';
+  return res;
 });
 
 API.list = define(null, function(){
@@ -247,7 +245,7 @@ API.phase = define(null, function(name, source){
     lang.set('public', name, '"' + name + '"');
 
     var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
-    res = 'this.phases.push(' +  phase + ');';
+    res = 'this.phases.push(' +  phase + ')';
     lang.context = 'g';
   }
 
@@ -273,7 +271,7 @@ function Compiler(source){
   var translatedJs = Parser(source);
   var body = translatedJs.map(compile);
   if (body[body.length - 1 ].slice(0, 6) !== 'return'){
-    body[body.length - 1 ] = 'return ( ' + body[body.length - 1] + ' )';
+    body[body.length - 1 ] = ' debugger; return ( ' + body[body.length - 1] + ' )';
   }
   body = body.join('\n\n');
   var res = interpolate(CUtils.functionWrapper, {
