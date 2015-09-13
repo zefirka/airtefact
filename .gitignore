@@ -18,3 +18,5 @@ public/static/js/app.js
 public/static/js/bundle/
 run
 *.sublime*
+
+node/dvastula/test/results/*

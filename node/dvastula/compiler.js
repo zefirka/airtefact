@@ -264,7 +264,7 @@ API['do'] = define(null, function(name){
 var lang = require('./lang')(API);
 
 /**
-  Компилирует строку 2stula в JS
+  Компилирует строку ss2 в js
   @public
   @param {string} source код ss2
   @return {string} код на js
@@ -272,8 +272,11 @@ var lang = require('./lang')(API);
 function Compiler(source){
   var translatedJs = Parser(source);
   var body = translatedJs.map(compile);
+
+  var jsSource = body[body.length - 1];
+
   if (body[body.length - 1 ].slice(0, 6) !== 'return'){
-    body[body.length - 1 ] = 'return ( ' + body[body.length - 1] + ' )';
+    body[body.length - 1 ] = 'return ( ' + (jsSource || 'undefined') + ' )';
   }
   body = body.join('\n\n');
   var res = interpolate(CUtils.functionWrapper, {
