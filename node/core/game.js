@@ -36,6 +36,13 @@ function Game(o){
 
   this.store = new Scope();
   this.startInterval(config.env);
+  var self = this;
+  setInterval(
+    function() {
+    if(self.onFrameEnd) {
+      self.onFrameEnd.call(null, self.takeSnapshot());
+    }
+  }, 500);
 }
 
 /**
@@ -64,11 +71,11 @@ function getUpdates(self) {
     tmpFiles.forEach(function(item) {
       var tmpFile = require(config.files + '/' + dirName + '/' + item);
       try {
-          var res = tmpFile(self);
+        var res = tmpFile(self);
       } catch (e) {
-          console.log('error compiling ' + item + " " + e);
+        console.log('error compiling ' + item + ' '  + e);
       } finally {
-          fs.unlinkSync(config.files + '/' + dirName + '/' + item);
+        fs.unlinkSync(config.files + '/' + dirName + '/' + item);
       }
     });
   });
@@ -94,9 +101,6 @@ Game.prototype.update = function(callback){
     elem.invoke();
   });
 
-  if(this.onFrameEnd) {
-    this.onFrameEnd.call(null, this.takeSnapshot());
-  }
 
   if (callback) {
     callback.call(this);
