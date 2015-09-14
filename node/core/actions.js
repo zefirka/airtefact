@@ -31,14 +31,17 @@ Actions.play = function(data, socket){
     });
 };
 
+Actions.clear = function() {
+  Core.game.elements = [];
+};
+
 Actions.writeCode = function(data, socket) {
   Core.game.writeCode(data);
-}
+};
 
 Actions.addElement = function(data,socket) {
-  debugger;
-  Core.game.addElement(data.elements[data.elements.length-1]);
-}
+  Core.game.addElement(data.elements[data.elements.length -1]);
+};
 
 Actions.ready = function(data, socket){
   Core.unfreeze();

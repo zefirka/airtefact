@@ -56,7 +56,7 @@ $(function() {
     var el = new models.Circle(id++, {
       x : 20 + (Math.random() * 100 >> 0),
       y : 20 + (Math.random() * 100 >> 0),
-      radius:10
+      radius :10
     });
 
     canvas.assign(el).draw(el);
@@ -69,8 +69,11 @@ $(function() {
     socket.emit('addElement', data);
   });
   $('#refresh').click(function() {
+    canvas.objects = [];
+    id = 0;
+    paper.project.activeLayer.removeChildren();
     socket.emit('clear');
-  })
+  });
   $('#go').click(function() {
     var code = codeMirror.doc.getValue();
 
