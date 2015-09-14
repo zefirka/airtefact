@@ -18,7 +18,7 @@ var LOCKED = false;
   @param {object} o - начальный объект игры (канвас и прочее)
 */
 function Game(o){
-  this.fps = 60 / 28;
+  this.fps = 100;
   this.inited = false;
   this.elements = [];
   this.api = api;

@@ -18,7 +18,7 @@ function Element(o, game){
   this.id = String(o.id) || '0';
 
   this.speed = 1;
-  this.phases = [];
+  this.phases = {};
   this.phase = null;
 
   this.game = game;
@@ -47,13 +47,7 @@ Element.prototype.invoke = function () {
     return;
   }
 
-  var phases = this.phases.concat(this.game.phases);
-
-  phases.filter(function(phase){
-    return typeof phase[self.phase] == 'function';
-  }).forEach(function(phase){
-    phase[self.phase].call(self);
-  });
+  this.game.phases[this.phase].call(self);
 
   return this;
 };
