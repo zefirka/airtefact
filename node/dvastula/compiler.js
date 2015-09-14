@@ -140,7 +140,7 @@ API.defn = define(3, function(name, params, body){
 /**
  @name if
  */
-API['cond'] = define(null, function(cond){
+API.cond = define(null, function(cond){
   var debug = CUtils.comment('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
   var actions = [];
   for(var i = 1; i < arguments.length; i++) {
@@ -244,8 +244,8 @@ API.phase = define(null, function(name, source){
 
     lang.set('public', name, '"' + name + '"');
 
-    var phase = '{ "' + name + '" : function(){' + source.map(compile).join(';\n') + '} }';
-    res = 'this.phases.push(' +  phase + ')';
+    var phase = ' function(){' + source.map(compile).join(';\n') + '} ';
+    res = 'this.phases["' + name + '"] = ' +  phase + '';
     lang.context = 'g';
   }
 

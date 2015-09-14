@@ -18,7 +18,7 @@ var LOCKED = false;
   @param {object} o - начальный объект игры (канвас и прочее)
 */
 function Game(o){
-  this.fps = 500;
+  this.fps = 100;
   this.inited = false;
   this.elements = [];
   this.api = api;
@@ -42,7 +42,7 @@ function Game(o){
     if(self.onFrameEnd) {
       self.onFrameEnd.call(null, self.takeSnapshot());
     }
-  }, 500);
+  }, 100);
 }
 
 /**
