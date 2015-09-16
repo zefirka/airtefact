@@ -155,7 +155,7 @@ API['if'] = define(null, function(cond, then, _else){
     then = then.map(compile).join('\n');
   }
 
-  if(Array.isArray(_else[0])){
+  if(_else && Array.isArray(_else[0])){
     _else = _else.map(compile).join('\n');
   }
 
