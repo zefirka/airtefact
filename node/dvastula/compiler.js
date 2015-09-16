@@ -140,6 +140,38 @@ API.defn = define(3, function(name, params, body){
 /**
  @name if
  */
+API['if'] = define(null, function(cond, then, _else){
+  var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
+
+  var ar2Statement = 'if ({{condition}}) { {{then}}}',
+      ar3Statement = ar2Statement + ' else { {{_else}} }',
+      str = ar2Statement;
+
+  if (arguments.length == 3){
+    str = ar3Statement;
+  }
+
+  if(Array.isArray(then[0])){
+    then = then.map(compile).join('\n');
+  }
+
+  if(Array.isArray(_else[0])){
+    _else = _else.map(compile).join('\n');
+  }
+
+
+  var res = interpolate(str, {
+    condition : compile(cond),
+    then : compile(then),
+    _else : compile(_else)
+  });
+
+  return debug + '(function(){ ' + res + ' }).call(this)';
+});
+
+/**
+ @name cond
+ */
 API.cond = define(null, function(cond){
   var debug = CUtils.comment('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
   var actions = [];
