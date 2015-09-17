@@ -111,9 +111,9 @@ Scope.prototype.splice = function(name, from, to){
  @return {Scope}
  */
 Scope.prototype.inherit = function (store) {
-  var ns = new Scope(store);
-  ns.parent = this;
-  return ns;
+  return {
+    store : new Scope(this, store || this.store)
+  };
 };
 
 module.exports = Scope;

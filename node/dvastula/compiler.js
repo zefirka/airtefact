@@ -137,7 +137,7 @@ API.defn = define(3, function(name, params, body){
 
   lang.set('public', name, function(){
     var myParams = strarr(toArray(arguments));
-    return 'this.store.get("' + name + '").call(this, ' + myParams + ')';
+    return 'this.store.get("' + name + '")(' + myParams + ')';
   });
 
   return debug + API.def.fn.call(this, name, ['lambda', params, body]);
