@@ -1,7 +1,13 @@
+/**
+ * @constructor
+ * @param {string} id - id элемента
+ * @return {Base}
+ */
 function Base(id){
   if (id) {
     this.id = id;
   }
+  this.mixins = [];
 }
 
 Base.prototype.remove = function (fn) {
@@ -10,6 +16,10 @@ Base.prototype.remove = function (fn) {
   this.emit('remove');
 };
 
+/**
+ * @public
+ * @return {object}
+ */
 Base.prototype.getBase = function(){
   var res = {};
   for(var propName in this){
@@ -36,6 +46,10 @@ Base.prototype.update = function(elem){
   }
 };
 
+Base.prototype.animate = function(){
+
+};
+
 Base.prototype.redraw = function(elem){
   this.instance.remove();
   this.draw();
@@ -46,6 +60,13 @@ Base.prototype.attach = function attach(ctx) {
   ctx.addObject(this);
   this.emit('attach');
   return this;
+};
+
+Base.prototype.mix = function(object, formula) {
+  this.mixins.push({
+    object : object,
+    formula : formula
+  });
 };
 
 module.exports = Warden(Base);
