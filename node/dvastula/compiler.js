@@ -22,6 +22,12 @@ function define(arity, fn){
   };
 }
 
+function compileWithLastValue(list){
+  var strings = list.map(compile);
+  strings[strings.length - 1] = 'return (' + strings[strings.length - 1] +  ')';
+  return strings.join('\n');
+}
+
 /**
   Language reference
   Здесь описывается сами директивы языка
@@ -152,18 +158,22 @@ API['if'] = define(null, function(cond, then, _else){
   }
 
   if(Array.isArray(then[0])){
-    then = then.map(compile).join('\n');
+    then = compileWithLastValue(then);
+  }else{
+    then = 'return (' + compile(then) + ')';
   }
 
   if(_else && Array.isArray(_else[0])){
-    _else = _else.map(compile).join('\n');
+    _else = compileWithLastValue(_else);
+  }else{
+    _else = 'return (' + compile(_else) + ')';
   }
 
 
   var res = interpolate(str, {
     condition : compile(cond),
-    then : compile(then),
-    _else : compile(_else)
+    then : then,
+    _else : _else
   });
 
   return debug + '(function(){ ' + res + ' }).call(this)';

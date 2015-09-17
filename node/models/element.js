@@ -46,8 +46,8 @@ Element.prototype.invoke = function () {
   if(!this.phase){
     return;
   }
-
-  this.game.phases[this.phase].call(self);
+  var phase = this.phases[phase] || this.game.phases[this.phase];
+  phase.call(self);
 
   return this;
 };

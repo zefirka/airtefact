@@ -22,7 +22,7 @@ function Game(o){
   this.inited = false;
   this.elements = [];
   this.api = api;
-  this.phases = [];
+  this.phases = {};
 
   // хрень какая-то
   var props = {
