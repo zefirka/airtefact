@@ -1,12 +1,9 @@
 ;; goes to the random point on canvas
 
-[let gx $width]
-[let gy $height]
-
 [defn random-point[]
   [hash 
-    x [rand-int 0 gx]
-    y [rand-int 0 gy]
+    x [rand-int 0 $width]
+    y [rand-int 0 $height]
   ]
 ]
 

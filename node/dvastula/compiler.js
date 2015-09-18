@@ -68,6 +68,11 @@ API.def = define(2, function(name, value){
   });
 });
 
+API.log = define(null, function(){
+  console.log(toArray(arguments).map(compile));
+  return '';
+});
+
 API.let = define(null, function(name, value){
   var debug = CUtils.comment('[let {{0}} {{1}}]', name, strarr(value));
 
@@ -116,7 +121,7 @@ API.lambda = define(2, function(params, body){
   lines[lines.length - 1] =  'return ' + lines[lines.length - 1];
   body = lines.join('\n');
 
-  return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t}).bind(this.store.inherit())', {
+  return debug + interpolate('(function({{params}}){\n\t {{body}} \n\t})', {
     params : params,
     body : body
   });

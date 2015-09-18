@@ -5,6 +5,19 @@ var forIn   = require('../../common/utils').forIn,
     toArray = utils.toArray,
     extend  = utils.extend;
 
+var id = (function(){
+  var uid = 0;
+
+  return function (){
+    var res = uid.toString(16);
+    uid++;
+    return res;
+  };
+
+})();
+
+var STORES = {};
+
 /**
  Реализует модель Scope, которая инкапсулирует и изолирует данные и может наследовать сама себя
  @constructor
@@ -12,6 +25,8 @@ var forIn   = require('../../common/utils').forIn,
  @return {Scope}
 */
 function Scope(parent, store) {
+  this.id = id();
+  this.dsl = STORES;
   this.store = {};
   this.parent = parent;
 
@@ -22,6 +37,8 @@ function Scope(parent, store) {
       }
     }.bind(this));
   }
+
+  STORES[this.id] = this;
 }
 
 /**
@@ -52,8 +69,11 @@ Scope.prototype.setVal = function(name, value, safe){
   if(safe && this.get(name)){
     throw 'Error: ' + name + ' is a static property';
   }
-
-  this.store[name] = value;
+  if (!this.store[name] && this.store.parent && this.store.parent[name]){
+    this.store.parent[name] = value;
+  }else{
+    this.store[name] = value;
+  }
   return value;
 };
 
@@ -112,7 +132,7 @@ Scope.prototype.splice = function(name, from, to){
  */
 Scope.prototype.inherit = function (store) {
   return {
-    store : new Scope(this, store || this.store)
+    store : new Scope(this, store)
   };
 };
 
