@@ -62,7 +62,7 @@ Game.prototype.start = function(data){
     console.log('Writing file:', pathName,  fileName);
     fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
       var fn = require(filePathName);
-      fn(self); // <- лол, точка входа в скомпелдированный код
+      fn(self, self.game); // <- лол, точка входа в скомпелдированный код
       self.unlock(self.startInterval);
     });
 

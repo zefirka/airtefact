@@ -6,8 +6,8 @@ var utils = require('warden.js').Utils,
     toArray = utils.toArray,
     intp = utils.interpolate;
 
-var wrapper = 'function {{fname}}({{context}}){\n\t{{body}}\n}\n\nmodule.exports = function(scope){' +
-  ' return {{fname}}.call(scope); }';
+var wrapper = 'function {{fname}}(GAME){\n\t{{body}}\n}\n\nmodule.exports = function(scope, game){' +
+  ' return {{fname}}.call(scope, game); }';
 
 var _throwError = '(function(){throw "Error"})();';
 
@@ -28,7 +28,7 @@ function derefForm(js, semicolon){
 }
 
 function globalForm(js, semicolon){
-  return 'this.game["' + js.slice(1) +  '"]' + (semicolon ? ';' : '');
+  return 'GAME["' + js.slice(1) +  '"]' + (semicolon ? ';' : '');
 }
 
 function exprForm(js){
@@ -37,7 +37,7 @@ function exprForm(js){
               return 'this.["' + a.slice(1)  + '"]';
             })
             .replace(/(\$[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
-              return 'this.game["' + a.slice(1) + '"]';
+              return 'GAME["' + a.slice(1) + '"]';
             });
 }
 /**
