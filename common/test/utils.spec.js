@@ -76,4 +76,44 @@ describe('Module: Common/utils'.bold, function (){
     });
   });
 
+  describe(':: forWhile', function () {
+    var arr = [1,2,3,4,5,6,7,8,9,10];
+
+    var forWhile = utils.forWhile;
+
+    it('should return value', function () {
+      var res = [];
+      forWhile(arr, function(value){
+        res.push(value);
+        return value;
+      }, 5);
+      expect(res).toEqual([1,2,3,4,5]);
+    });
+
+    it('should return exception value', function () {
+      var res = forWhile(arr, function(value){
+        return value;
+      }, 0, 'test');
+      expect(res).toBe('test');
+    });
+
+    it('should work with functions', function () {
+      var res = []
+      forWhile(arr, function(value){
+        res.push(value);
+
+        if (value == 5){
+          return 10;
+        }
+        return value;
+      }, function(fnValue, value, index){
+        return value !== fnValue;
+      });
+      expect(res).toEqual([1,2,3,4,5]);
+    });
+
+
+
+  });
+
 });
