@@ -17,4 +17,4 @@ public/static/bundle
 public/static/js/app.js
 public/static/js/bundle/
 run
-*.sublime*
+*sublime*
