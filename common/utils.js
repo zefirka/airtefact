@@ -166,9 +166,13 @@ Utils.not = function(predicate){
   };
 };
 
-
+/**
+ * Возвращает массив сделанный из чего угодно
+ * @param {mixed} a
+ * @return {array}
+ */
 Utils.toArray = function(a){
-  if(is.obj(a) && !is.exist(a.length)){
+  if (!a.length){
     a.length = Object.keys(a).length;
   }
   return Array.prototype.slice.call(a);
