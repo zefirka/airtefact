@@ -3,7 +3,7 @@ var jade = require('jade'),
 
 var Ctrl = require('./ctrl.js'),
     config = require('./config/config'),
-    extend = require('warden.js').Utils.extend;
+    extend = require('../common/utils').Utils.extend;
 
 /**
   Модуль выполняющий логику роутинга веб-приложения.

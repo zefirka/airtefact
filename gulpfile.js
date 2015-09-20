@@ -61,7 +61,14 @@ task('build', ['bower', 'build:static', 'docs']).
 task('build:static', ['scripts', 'styles']).
 
 task('docs', task('Generation documentation', function () {
-  gulp.src(['./node/*.js', './node/**/*.js', './common/**/*.js'])
+  var sources = [
+    './node/*.js',
+    './node/**/*.js',
+    './common/**/*.js',
+    './public/static/js/app/**/*.js'
+  ];
+
+  gulp.src(sources)
       .pipe(jsdoc.parser())
       .pipe(jsdoc.generator('./docs'));
 })).

@@ -4,7 +4,7 @@
   @memberof Node
 */
 
-var extend = require('warden.js').Utils.extend;
+var extend = require('../common/utils').extend;
 var config = require('./config/config.js');
 
 /**

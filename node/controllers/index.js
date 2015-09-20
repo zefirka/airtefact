@@ -1,4 +1,4 @@
-var extend = require('warden.js').Utils.extend;
+var extend = require('../../common/utils').extend;
 var common = require('./common');
 
 var config   = require('../config/config.js'),
