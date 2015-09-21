@@ -1,20 +1,27 @@
 /**
   Модуль реализующий комплияцию кода на 2stula в JavaScript
-  @module 2Stula/compiler
+  @namespace 2Stula/compiler
 */
 
 var Errors  = require('./maps/errors'),
     Parser  = require('./s2.js'),
-    CUtils  = require('./maps/utils');
+    compilerUtils  = require('./maps/utils'),
+    utils       = require('../../common/utils');
 
-var utils       = require('warden.js').Utils,
-    toArray     = utils.toArray,
+var toArray     = utils.toArray,
     interpolate = utils.interpolate,
     is          = utils.is,
-    strarr      = CUtils.strarr;
+    strarr      = compilerUtils.strarr,
+    commentCode = compilerUtils.comment;
 
-utils.extend(utils, require('../../common/utils'));
-
+/**
+ * Короткий алиас, позволяющий определять функции для компилятора
+ * Если arity == null, то функция может принимать разное количество аргументов
+ * @private
+ * @param {number} arity
+ * @param {function} fn
+ * @return {object}
+ */
 function define(arity, fn){
   return {
     arity : arity,
@@ -22,10 +29,21 @@ function define(arity, fn){
   };
 }
 
+/**
+ * Если list - массив массивов, то компилирует каждый элемент как отдельный список
+ * Иначе компилирует как выражение SS2
+ * @private
+ * @param {array} list - ss2 code
+ * @return {string} js code
+ */
 function compileWithLastValue(list){
-  var strings = list.map(compile);
-  strings[strings.length - 1] = 'return (' + strings[strings.length - 1] +  ')';
-  return strings.join('\n');
+  if(Array.isArray(list[0])){
+    var strings = list.map(compile);
+    strings[strings.length - 1] = 'return (' + strings[strings.length - 1] +  ')';
+    return strings.join('\n');
+  }else{
+    return compile(list);
+  }
 }
 
 /**
@@ -41,11 +59,16 @@ API.makeAliases = function(o){
   }
 };
 
-
-/* Функция def */
+/**
+ * Вычисляет value и в засовыывает в стор соответствующее значение
+ * @name def
+ * @access public
+ * @param {symbol} name
+ * @param {mixed} value
+ */
 API.def = define(2, function(name, value){
   // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
-  var debug = CUtils.comment('[def {{0}} {{1}}]', name, strarr(value));
+  var debug = commentCode('[def {{0}} {{1}}]', name, strarr(value));
 
   // если следующая директива - определение функции, то храним это значение в приватных данных lang
   if(value[0] == 'lambda'){
@@ -74,7 +97,7 @@ API.log = define(null, function(){
 });
 
 API.let = define(null, function(name, value){
-  var debug = CUtils.comment('[let {{0}} {{1}}]', name, strarr(value));
+  var debug = commentCode('[let {{0}} {{1}}]', name, strarr(value));
 
   value = compile(value);
 
@@ -104,7 +127,7 @@ API['rand-int'] = define(null, function(from, to){
 });
 
 API.lambda = define(2, function(params, body){
-  var debug = CUtils.comment('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
+  var debug = commentCode('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
 
   params = params.join(',');
 
@@ -129,7 +152,7 @@ API.lambda = define(2, function(params, body){
 
 
 API.idle = define(null, function(){
-  var debug = CUtils.comment('[idle]');
+  var debug = commentCode('[idle]');
 
   return debug + 'this.phase = null';
 });
@@ -138,7 +161,7 @@ API.idle = define(null, function(){
  @name defn
  */
 API.defn = define(3, function(name, params, body){
-  var debug = CUtils.comment('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
+  var debug = commentCode('[defn {{0}} {{1}} {{2}}]', name, strarr(params), strarr(body));
 
   lang.set('public', name, function(){
     var myParams = strarr(toArray(arguments));
@@ -152,7 +175,7 @@ API.defn = define(3, function(name, params, body){
  @name if
  */
 API['if'] = define(null, function(cond, then, _else){
-  var debug = CUtils.comment('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
+  var debug = commentCode('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
 
   var ar2Statement = 'if ({{condition}}) { {{then}}}',
       ar3Statement = ar2Statement + ' else { {{_else}} }',
@@ -188,7 +211,7 @@ API['if'] = define(null, function(cond, then, _else){
  @name cond
  */
 API.cond = define(null, function(cond){
-  var debug = CUtils.comment('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
+  var debug = commentCode('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
   var actions = [];
   for(var i = 1; i < arguments.length; i++) {
     actions.push(compile(arguments[i]));
@@ -219,7 +242,7 @@ API.list = define(null, function(){
   API[op] = {
     fn : function(){
       var args = toArray(arguments).map(compile).join(', ');
-      var debug = CUtils.comment('[' + op + ' ' +  strarr(args) + ']');
+      var debug = commentCode('[' + op + ' ' +  strarr(args) + ']');
       return debug + '(function(){ return Array.prototype.slice.call(arguments).reduce(function(a, b){ return a ' +
         op + ' b;}) }).call(null, ' + args +  ')';
     }
@@ -259,7 +282,7 @@ API.not = define(1, function(a){
 });
 
 API['for'] = define(2, function(name, rules){
-  var debug = CUtils.comment('[for {{0}} {{1}}]', strarr(name), strarr(rules));
+  var debug = commentCode('[for {{0}} {{1}}]', strarr(name), strarr(rules));
 
   lang.context = 'e';
   var body = rules.map(compile).join(';\n');
@@ -282,7 +305,7 @@ API.when = define(2, function(phase, behavior){
  Фазы
  */
 API.phase = define(null, function(name, source){
-  var debug = CUtils.comment('[phase {{0}} {{1}}]', name, source ? strarr(source) : '');
+  var debug = commentCode('[phase {{0}} {{1}}]', name, source ? strarr(source) : '');
   var res = '';
 
   if(!source){
@@ -326,7 +349,7 @@ function Compiler(source){
     body[body.length - 1 ] = 'return ( ' + body[body.length - 1] + ' )';
   }
   body = body.join('\n\n');
-  var res = interpolate(CUtils.functionWrapper, {
+  var res = interpolate(compilerUtils.functionWrapper, {
     fname : 'comp',
     arg_name : 'globalEnv',
     body : body,
@@ -357,14 +380,14 @@ function compile(js, indexInParent, parent){
       }
 
       if (pos === 0 && !( is.fn(token)  || lang.isFn(token) )  ){
-        return CUtils.errorWrapper;
+        return compilerUtils.errorWrapper;
       }
 
       if (pos === 0) {
         if (is.fn(token) ) {
           js = token.apply(null, js.slice(1));
         }else{
-          return CUtils.wrapInnerCall(token, js.slice(1).map(compile));
+          return compilerUtils.wrapInnerCall(token, js.slice(1).map(compile));
         }
       }else{
         if (is.array(token)){
@@ -381,13 +404,13 @@ function compile(js, indexInParent, parent){
   }else{
 
     if ( /^\{.+\}$/.test(js) ){
-      return CUtils.funcForm(js);
+      return compilerUtils.funcForm(js);
     } else
     if (/^\$.+$/.test(js) ){
-      return CUtils.globalForm(js);
+      return compilerUtils.globalForm(js);
     } else
     if (/^\@.+$/.test(js)) {
-      return CUtils.derefForm(js);
+      return compilerUtils.derefForm(js);
     }else{
       if (lang.derefReserved(js)){
         js = interpolate('globalScope.throwError("Trying to rewrite reserved word {{0}}");', js);

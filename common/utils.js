@@ -1,6 +1,6 @@
 /**
  * Модуль утилит
- * @module Utils
+ * @namespace Utils
  */
 
 var Utils = {};
@@ -225,7 +225,7 @@ Utils.resolve = function(data, s){
     return data;
   }
 
-  s.split('/').each(function(elem){
+  s.split('/').forEach(function(elem){
     if(!is.exist(data)){
       return data;
     }
