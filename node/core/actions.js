@@ -1,3 +1,9 @@
+/**
+  Список событий сокета, организует порядок работы в с веб-сокетом разных клиентов.
+  Все коллбэки получают последним аргументом объект сокет-сервера
+  @module Core/Actions
+*/
+
 var fs            = require('fs');
 var beautify      = require('js-beautify').js_beautify;
 
@@ -5,15 +11,6 @@ var config        = require('../config/config'),
     s2Compiler    = require('../dvastula/compiler'),
     Core          = require('./core');
 
-
-
-/* Список экшнов сокета */
-
-/**
-  Список событий сокета, организует порядок работы в с веб-сокетом разных клиентов.
-  Все коллбэки получают последним аргументом объект сокет-сервера
-  @module Core/Actions
-*/
 var Actions = {};
 
 /**
@@ -29,6 +26,7 @@ Actions.play = function(data, socket){
       }
       socket.emit('tick', pkg);
     });
+  return Core;
 };
 
 Actions.clear = function() {

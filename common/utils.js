@@ -185,7 +185,6 @@ Utils.toArray = function(array){
   return Array.prototype.slice.call(array);
 };
 
-
 Utils.extend = function () {
   function _extend(origin, add) {
     if (!add || typeof add !== 'object') {

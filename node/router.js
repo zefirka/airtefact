@@ -44,7 +44,6 @@ function router(app) {
 
   app.post('/compile', function(req, res, next) {
     var code = req.body.data;
-
     var compile = require('./dvastula/compiler');
     var beautify = require('js-beautify').js_beautify;
     if (req.body.debug === 'true'){
