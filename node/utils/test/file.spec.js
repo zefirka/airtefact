@@ -9,10 +9,14 @@ describe('Module: node/utils/file'.bold, function() {
     expect(file.ext(0, 0)).toBe('0.0');
   });
 
-  it(':: path', function(){
-    expect(file.path('a', 'b', 'c')).toBe('a/b/c');
-    expect(file.path('/a/', '/b/', '/c/')).toBe('/a///b///c/');
-    expect(file.path('a', 1, 2)).toBe('a/1/2');
+  it(':: isFileExist', function (done) {
+    file.isFileExist('./file.spec.js', function(){
+      expect(true).toBe(true);
+      done();
+    }, function(){
+
+    });
+
   });
 
 });

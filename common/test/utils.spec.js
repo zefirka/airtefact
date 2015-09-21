@@ -234,4 +234,9 @@ describe('Module: Common/utils'.bold, function (){
     });
 
   });
+
+  describe(':: interpolate', function () {
+    var intp = utils.interpolate;
+    
+  });
 });

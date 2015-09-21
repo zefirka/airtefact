@@ -1,30 +1,16 @@
-var jade = require('jade'),
-    fs   = require('fs');
-
-var Ctrl = require('./ctrl.js'),
-    config = require('./config/config'),
-    extend = require('../common/utils').extend;
-
 /**
   Модуль выполняющий логику роутинга веб-приложения.
   Все роуты, должны быть описанны в этом модуле или подключаться сюда.
   @module node/router
 */
+var jade = require('jade'),
+    fs   = require('fs');
 
-/**
-  Проверяет существует ли данный файл.
-
-  @todo Выделить в отдельный util, чтобы потом можно было пользоваться
-
-  @param {string} url Адрес файла в fs
-  @param {function} yes Коллбэк, вызывается, если файл найден
-  @param {function} no Коллбэк, вызывается, если файл не найден
-*/
-function isFileExist(url, yes, no){
-  return fs.stat(url, function(err){
-    return err ? yes() : no();
-  });
-}
+var Ctrl = require('./ctrl.js'),
+    config = require('./config/config'),
+    utils  = require('../common/utils'),
+    extend = utils.extend,
+    isFileExist = require('./utils/file').isFileExist;
 
 /**
   Принимает объект приложения и задает ему роутинги.
@@ -55,6 +41,7 @@ function router(app) {
   app.get('/compiler', function(req, res, next){
     res.render('compiler.jade', Ctrl('compiler', req));
   });
+
   app.post('/compile', function(req, res, next) {
     var code = req.body.data;
 

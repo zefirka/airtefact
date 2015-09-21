@@ -3,7 +3,7 @@ var extend = require('../../common/utils').Utils.extend;
 var common = require('./common');
 
 var config   = require('../config/config.js'),
-    path     = require('../utils/file.js').path,
+    path     = require('.path').join,
     lib = path(config.static, 'lib'),
     jsc = path(config.static, 'js');
 

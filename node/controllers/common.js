@@ -1,5 +1,5 @@
 var config   = require('../config/config.js'),
-    path     = require('../utils/file.js').path;
+    path     = require('path').join;
 
 var scripts = [];
 
