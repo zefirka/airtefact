@@ -18,6 +18,7 @@ if (env == 'prod') {
 }
 
 module.exports = {
+  route : 'common',
   scripts : scripts,
   styles : [
     path(lib, 'bootstrap/dist/css/bootstrap.min.css'),
