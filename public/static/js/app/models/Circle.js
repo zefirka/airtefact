@@ -1,27 +1,22 @@
 var Point = require('./Point.js');
 
-function Circle(x, y, r){
-  this.id = Math.random();
-  this.x = x;
-  this.y = y;
-  this.radius = r;
+function Circle(id, options){
+  this.id = id;
+  this.x = options.x;
+  this.y = options.y;
+  this.radius = options.radius;
 }
 
 Circle.prototype = new Point();
 
 Circle.prototype.draw = function(options){
-  var self = this;
-  this.ctx.draw(function(){
-    self.present = new paper.Path.Circle({
-      center : [self.x, self.y],
-      radius : self.radius
-    });
-    return self.present;
-  }, options);
+  this.instance = new paper.Path.Circle(new Point(this.x, this.y), this.radius);
+  this.instance.fillColor = 'black';
+  return this.instance;
 };
 
 Circle.prototype.animate = function(){
-  this.present.fillColor.hue += 1;
+  this.instance.fillColor = 'black';
 };
 
 module.exports = Circle;

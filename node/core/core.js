@@ -12,10 +12,8 @@ var GameSession = {};
 var Core = {
   game : GameSession,
   play : function (data){
-    if (!GameSession.inited){
-      GameSession = new Game(data);
-    }
-    GameSession.start(data);
+    GameSession = new Game(data);
+    this.game = GameSession;
     return Core;
   },
   onSnapshot : function(callback){

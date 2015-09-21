@@ -17,7 +17,7 @@ function Element(o, game){
   this.y = Number(o.y) || 0;
   this.id = String(o.id) || '0';
 
-  this.speed = 1;
+  this.speed = 5;
   this.phases = {};
   this.phase = null;
 
@@ -46,6 +46,7 @@ Element.prototype.invoke = function () {
   if(!this.phase){
     return;
   }
+
   var phase = this.phases[phase] || this.game.phases[this.phase];
   phase.call(self);
 

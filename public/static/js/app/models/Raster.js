@@ -41,6 +41,9 @@ Raster.prototype.animate = function() {
   this.instance.rotate(3);
 };
 
+/**
+ *
+ */
 Raster.prototype.move = function(x, y){
   this.mixins.forEach(function(mixin){
     mixin.object.move(mixin.formula(this.x, this.y));

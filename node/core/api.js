@@ -1,19 +1,23 @@
 var API = {
   'move-left' : {
     name : 'move',
-    params :  { dx : -5, dy : 0 }
+    params :  { dx : -1, dy : 0 },
+    paramName : 'speed'
   },
   'move-right' : {
     name : 'move',
-    params :  { dx : 5, dy : 0 }
+    params :  { dx : 1, dy : 0 },
+    paramName : 'speed'
   },
   'move-down' : {
     name : 'move',
-    params :  { dx : 0, dy : 5 }
+    params :  { dx : 0, dy : 1 },
+    paramName : 'speed'
   },
   'move-up' : {
     name : 'move',
-    params : { dx : 0, dy : -5 }
+    params : { dx : 0, dy : -1 },
+    paramName : 'speed'
   },
   'follow' : {
     name : 'follow',

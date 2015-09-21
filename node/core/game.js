@@ -35,6 +35,7 @@ function Game(o){
   this.height = o.heigth;
 
   this.store = new Scope();
+  this.startInterval(config.env);
 }
 
 /**
@@ -42,7 +43,7 @@ function Game(o){
  @public
  @param {object} data - Конфигурационные данные
 */
-Game.prototype.start = function(data){
+Game.prototype.writeCode = function(data){
   var self = this;
 
   var code = data.code;
@@ -51,31 +52,29 @@ Game.prototype.start = function(data){
   var fileName = [data.instance, data.time , 'js'].join('.');
   var filePathName = join(pathName, fileName);
 
-  this.lock();
+  this.lock(this.pause);
 
   mkdirp(pathName, function(err) {
     if(err){
-      console.trace();
-      throw err;
+      throw (new Error(err));
     }
 
     console.log('Writing file:', pathName,  fileName);
     fs.writeFile(filePathName, beautify(js, {indent_size : 2}), function(err, data){
+      if(err){
+        throw (new Error(err));
+      }
+
       var fn = require(filePathName);
       fn(self, self.game); // <- лол, точка входа в скомпелдированный код
       self.unlock(self.startInterval);
     });
-
   });
-
-  data.elements.forEach(this.addElement.bind(this));
-
-  return !this.inited && this.startInterval(config.env);
 };
 
 Game.prototype.startInterval = function(env){
   var self = this;
-  setInterval(function(){
+  this.interval = setInterval(function(){
     if(!LOCKED){
       console.log('Updating');
       self.update();
@@ -83,6 +82,11 @@ Game.prototype.startInterval = function(env){
   }, this.fps);
 
   this.inited = true;
+};
+
+
+Game.prototype.pause = function(){
+  clearInterval(this.interval);
 };
 
 /**
@@ -94,12 +98,8 @@ Game.prototype.update = function(callback){
     elem.invoke();
   });
 
-  if(this.onFrameEnd) {
+  if(this.onFrameEnd){
     this.onFrameEnd.call(null, this.takeSnapshot());
-  }
-
-  if (callback) {
-    callback.call(this);
   }
 };
 
@@ -121,8 +121,12 @@ Game.prototype.addElement = function(el){
   this.elements.push(element);
 };
 
-Game.prototype.lock = function() {
+Game.prototype.lock = function(callback) {
   LOCKED = true;
+
+  if (callback) {
+    callback.call(this);
+  }
 };
 
 Game.prototype.unlock = function(callback) {

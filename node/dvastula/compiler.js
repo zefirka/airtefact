@@ -221,7 +221,7 @@ API['if'] = define(null, function(cond, then, _else){
  @name cond
  */
 API.cond = define(null, function(cond){
-  var debug = commentCode('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
+  var debug = CUtils.comment('[cond {{0}} {{1}} {{2}}]', strarr(cond), strarr(arguments[1]));
   var actions = [];
   for(var i = 1; i < arguments.length; i++) {
     actions.push(compile(arguments[i]));
@@ -230,17 +230,12 @@ API.cond = define(null, function(cond){
   var ar2Statement = 'if ({{condition}}) { {{then}}; return true; }',
       str = ar2Statement;
 
-  if (arguments.length == 3){
-    str = ar3Statement;
-  }
-
   var res = interpolate(str, {
     condition : compile(cond),
-    then : compile(then),
-    _else : compile(_else)
+    then : compile(then)
   });
 
-  return debug + '(function(){ ' + res + ' }).call(this)';
+  return res;
 });
 
 API.list = define(null, function(){
@@ -356,7 +351,7 @@ function Compiler(source){
   var translatedJs = Parser(source);
   var body = translatedJs.map(compile);
   if (body[body.length - 1 ].slice(0, 6) !== 'return'){
-    body[body.length - 1 ] = 'return ( ' + body[body.length - 1] + ' )';
+    body[body.length - 1 ] = ' debugger; return ( ' + body[body.length - 1] + ' )';
   }
   body = body.join('\n\n');
   var res = interpolate(compilerUtils.functionWrapper, {
