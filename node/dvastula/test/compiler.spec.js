@@ -21,7 +21,6 @@ Object.keys(ss2Files).forEach(function (filename) {
 	var fn = compiler(code),
 		jsPath =  join (__dirname, 'results', filename + '.js');
 
-	console.log('Writing file: ', jsPath, fn);
 	fs.writeFileSync(jsPath, fn);
 
 	ss2Files[filename] = require(jsPath);
