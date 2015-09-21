@@ -30,7 +30,6 @@ $(function() {
 
   var canvas = new Canvas(document.getElementById('play'));
 
-
   socket.on('tick', function(pkg) {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
     canvas.clear();

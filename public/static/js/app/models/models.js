@@ -3,5 +3,6 @@ module.exports = {
   Point : require('./Point'),
   Base : require('./Base'),
   Raster : require('./Raster'),
-  Rect : require('./Rect')
+  Rect : require('./Rect'),
+  Text : require('./Text')
 };

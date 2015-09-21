@@ -68,6 +68,13 @@ Canvas.prototype.getElementById = function(id){
 
 Canvas.prototype.assign = function(drawing, options) {
   this.objects.push(drawing);
+
+  // if (drawing.mixins.length){
+  //   drawing.mixins.forEach(function(mixin){
+  //     this.objects.push(mixin.object);
+  //   }.bind(this))
+  // }
+
   return this;
 };
 
