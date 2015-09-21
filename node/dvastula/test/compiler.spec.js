@@ -32,21 +32,12 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 		return {
 			width: 100,
 			height: 200,
-			// fn: function(x){
-			// 	return 2 * x;
-			// },
-			// ctxFn: function(x){
-			// 	return this.width * x;
-			// },
 			store : new Scope()
 		};
 	}
 
 	var getEl = function(glob){
 		return {
-			// fn: function(x){
-			// 	return 3 * x
-			// },
 			store : new Scope(glob)
 		};
 	}
@@ -74,8 +65,8 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 	describe('For simple definition', function () {
 		var glob = getGlob(),
 			el   = getEl(glob),
-			cloneG = clone(glob),
-			cloneE = clone(el);
+			cloneG = getGlob(),
+			cloneE = getEl(cloneG);
 
 		var resG = ss2Files.defline(glob),
 			resE = ss2Files.defline(el);
@@ -86,8 +77,7 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 		});
 
 		it('should change original value', function () {
-			expect(glob).not.toEqual(cloneG);
-			expect(el).not.toEqual(cloneE);
+			expect(glob.store.get('x')).not.toEqual(cloneG.store.get('x'));
 		});
 
 		it('should set a value', function () {
@@ -95,5 +85,4 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 			expect(el.store.get('x')).toBe(10);
 		});
 	});
-
 });
