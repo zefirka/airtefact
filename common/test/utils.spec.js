@@ -113,6 +113,7 @@ describe('Module: Common/utils'.bold, function (){
     });
 
   });
+
   describe(':: is', function () {
     var is = utils.is;
     var str = 'string',
@@ -199,4 +200,38 @@ describe('Module: Common/utils'.bold, function (){
     });
   });
 
+  describe(':: toArray', function () {
+    var toArray = utils.toArray;
+
+    it('should make array from arguments', function () {
+      var args = (function (){ return toArray(arguments)})(1, 2, 3);
+      expect(args).toEqual([1,2,3])
+    });
+
+    it('should transorm correct hash', function () {
+      var args = toArray({0: 1, 1: 2, 2: 3, length: 3});
+      expect(args).toEqual([1,2,3])
+    });
+
+    it('should transorm hash without length', function () {
+      var args = toArray({0: 1, 1: 2, 2: 3});
+      expect(args).toEqual([1,2,3])
+    });
+
+    it('should transorm only digit-keys in hash', function () {
+      var args = toArray({0: 1, 1: 2, 2: 3, j:20, k:30});
+      expect(args).toEqual([1,2,3])
+    });
+
+    it('should work with string', function () {
+      var args = toArray('123');
+      expect(args).toEqual(['1','2','3'])
+    });
+
+    it('should work with arrays', function () {
+      var args = toArray([1,2,3]);
+      expect(args).toEqual([1,2,3])
+    });
+
+  });
 });

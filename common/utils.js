@@ -171,12 +171,20 @@ Utils.not = function(predicate){
  * @param {mixed} a
  * @return {array}
  */
-Utils.toArray = function(a){
-  if (!a.length){
-    a.length = Object.keys(a).length;
+Utils.toArray = function(array){
+  if (typeof array == 'object'){
+    array = Utils.forFilter(array, function(value, key){
+      if(key === '0' || Number(key)){
+        return true;
+      }
+    });
+
+    array.length = Object.keys(array).length;
   }
-  return Array.prototype.slice.call(a);
+
+  return Array.prototype.slice.call(array);
 };
+
 
 Utils.extend = function () {
   function _extend(origin, add) {
