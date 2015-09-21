@@ -1,0 +1,3 @@
+[defn inc[x][+ x 1]]
+[def j [inc 10]]
+[def x [inc j]]

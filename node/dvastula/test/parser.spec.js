@@ -12,7 +12,7 @@ function parse(token){
   }
 }
 
-describe('Module: 2sula/Parser'.bold, function (){
+describe('Module: 2sula/Parser'.bold.underline, function (){
     describe('Should parse token', function () {
         var inputs = [
             'x',

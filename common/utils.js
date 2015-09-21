@@ -308,4 +308,8 @@ Utils.camelCase = function camelCase(input) {
   });
 };
 
+Utils.clone = function(obj) {
+  return require('warden.js').Utils.extend({}, obj);
+};
+
 module.exports = Utils;
