@@ -113,8 +113,16 @@ API.let = define(null, function(name, value){
   return debug + 'var ' + cname + ' = ' + value + ';' + toArray(arguments).slice(2).map(compile);
 });
 
+/**
+ * Возвращает целое число в диапазоне от from до to
+ * @public
+ * @param {number} from
+ * @param {number} to
+ * @return {number}
+ */
+function randomInt(from, to){
+  var debug = commentCode('[rand-int {{0}} {{1}}]', strarr(from), strarr(to));
 
-API['rand-int'] = define(null, function(from, to){
   if(!to){
     to = from;
     from = 1;
@@ -123,8 +131,10 @@ API['rand-int'] = define(null, function(from, to){
   from = compile(String(from));
   to = compile(String(to));
 
-  return '(' + from + ' + ( Math.random() * (' + to +' - ' + from + ') >> 0 ) )';
-});
+  return debug + '(' + from + ' + ( Math.random() * (' + to +' - ' + from + ') >> 0 ) )';
+}
+
+API['rand-int'] = define(null, randomInt);
 
 API.lambda = define(2, function(params, body){
   var debug = commentCode('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
