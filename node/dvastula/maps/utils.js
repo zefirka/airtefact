@@ -2,7 +2,7 @@
   @module 2Stula/maps/utils
 */
 
-var utils = require('warden.js').Utils,
+var utils = require('../../../common/utils'),
     toArray = utils.toArray,
     intp = utils.interpolate;
 

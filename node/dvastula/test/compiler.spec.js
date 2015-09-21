@@ -1,5 +1,4 @@
 var fs 		 = require('fs'),
-	warden 	 = require('warden.js'),
 	join   	 = require('path').join,
 	colors   = require('colors');
 

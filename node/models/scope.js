@@ -1,7 +1,7 @@
 var R       = require('ramda');
 
-var forIn   = require('../../common/utils').forIn,
-    utils   = require('warden.js').Utils,
+var utils   = require('../../common/utils'),
+    forIn   = utils.forIn,
     toArray = utils.toArray,
     extend  = utils.extend;
 

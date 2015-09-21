@@ -3,7 +3,7 @@
   @module 2Stula/maps/errors
 */
 
-var intp  = require('warden.js').Utils.interpolate;
+var intp  = require('../../../common/utils').interpolate;
 
 /**
   Ошибка несовпадения количество ожидаемых аргументов и реальных

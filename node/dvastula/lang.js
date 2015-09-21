@@ -1,5 +1,5 @@
 var Errors    = require('./maps/errors.js'),
-    utils     = require('warden.js').Utils,
+    utils     = require('../../common/utils'),
     toArray   = utils.toArray;
 
 function wrapCall(v){
