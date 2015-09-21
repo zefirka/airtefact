@@ -14,20 +14,21 @@ var ss2Files = {
 	'defoverwrite': null
 };
 
+Object.keys(ss2Files).forEach(function (filename) {
+	var s2Path =  join(__dirname, 'tests', filename + '.ss2'),
+		code = fs.readFileSync(s2Path, { encoding: 'utf-8' });
+	
+	var fn = compiler(code),
+		jsPath =  join (__dirname, 'results', filename + '.js');
+
+	console.log('Writing file: ', jsPath, fn);
+	fs.writeFileSync(jsPath, fn);
+
+	ss2Files[filename] = require(jsPath);
+});
+
 
 describe('Module: 2Stula/Compiler'.bold.underline, function () {		
-	Object.keys(ss2Files).forEach(function (filename) {
-		var s2Path =  join(__dirname, 'tests', filename + '.ss2'),
-			code = fs.readFileSync(s2Path, { encoding: 'utf-8' });
-		
-		var fn = compiler(code),
-			jsPath =  join (__dirname, 'results', filename + '.js');
-
-		fs.writeFileSync(jsPath, fn);
-
-		ss2Files[filename] = require(jsPath);
-	});
-
 	var getGlob = function(){ 
 		return {
 			width: 100,
