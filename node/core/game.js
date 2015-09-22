@@ -18,7 +18,7 @@ var LOCKED = false;
   @param {object} o - начальный объект игры (канвас и прочее)
 */
 function Game(o){
-  this.fps = 100;
+  this.fps = 200;
   this.inited = false;
   this.elements = [];
   this.api = api;
@@ -35,7 +35,7 @@ function Game(o){
   this.height = o.heigth;
 
   this.store = new Scope();
-  this.startInterval(config.env);
+  this.interval = this.startInterval(config.env);
 }
 
 /**
@@ -45,6 +45,8 @@ function Game(o){
 */
 Game.prototype.writeCode = function(data){
   var self = this;
+
+  data.elements.forEach(this.addElement.bind(this));
 
   var code = data.code;
   var js = S2(code);
@@ -84,6 +86,12 @@ Game.prototype.startInterval = function(env){
   this.inited = true;
 };
 
+
+Game.prototype.clear = function(){
+  clearInterval(this.interval);
+  this.elements = [];
+  this.startInterval(config.env);
+};
 
 Game.prototype.pause = function(){
   clearInterval(this.interval);

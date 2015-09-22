@@ -28,17 +28,6 @@ $(function() {
 
   })();
 
-  var canvas = new Canvas(document.getElementById('play'));
-  var $cnv  = $(canvas.node);
-  var data = {
-    width : $cnv.width(),
-    height : $cnv.height(),
-    time : new Date().getTime(),
-    instance : instanceId++,
-    uid : 'my-unique-id'
-  };
-
-  socket.emit('play', data);
 
   socket.on('tick', function(pkg) {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
@@ -60,35 +49,39 @@ $(function() {
     });
 
     canvas.assign(el).draw(el);
-    var elements = canvas.objects.map(function(o){
-      return o.getBase();
-    });
-    var data = {
-      elements : elements,
-    };
-    socket.emit('addElement', data);
+
+    // по клику ничего не передаю
+    // var elements = canvas.objects.map(function(o){
+    //   return o.getBase();
+    // });
+
+    // var data = {
+    //   elements : elements,
+    // };
+    // socket.emit('addElement', data);
   });
 
   $('#refresh').click(function() {
+    socket.emit('clear');
     canvas.objects = [];
     id = 0;
     paper.project.activeLayer.removeChildren();
-    socket.emit('clear');
   });
 
   $('#go').click(function() {
     var code = codeMirror.doc.getValue();
-
+    var elements = canvas.objects.map(function(o){
+      return o.getBase();
+    });
     var data = {
       code : code,
-      width : $cnv.width(),
-      height : $cnv.height(),
       time : new Date().getTime(),
       instance : instanceId++,
+      elements : elements,
       uid : 'my-unique-id'
     };
 
-    socket.emit('writeCode', data);
+    socket.emit('add', data);
   });
 
   var codeMirror = CodeMirror.fromTextArea(document.getElementById('code'), {
@@ -105,15 +98,16 @@ $(function() {
     socket.emit('save', code);
   });
 
-  /* Вот так я работаю с моделями на фронтенде */
-  // var testShape = new models.Circle(40, 40, 15);
-  // testShape.attach(canvas).draw();
-  //
-  // var osama = new models.Raster('Usama', {
-  //   src :'static/img/bin.png',
-  //   x : 200,
-  //   y : 150
-  // });
-  //
-  // osama.attach(canvas).draw();
+  var canvas = new Canvas(document.getElementById('play'));
+  var $cnv  = $(canvas.node);
+  var data = {
+    width : $cnv.width(),
+    height : $cnv.height(),
+  };
+
+  socket.emit('status', {
+    type : 'start',
+    data : data
+  });
+
 });

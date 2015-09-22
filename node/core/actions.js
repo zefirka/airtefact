@@ -18,23 +18,29 @@ var Actions = {};
   @access public
   @param {object} data
 */
-Actions.play = function(data, socket){
-  Core.play(data)
-    .onSnapshot(function(pkg){
-      if(config.env == 'debug') {
-        Core.freeze();
-      }
-      socket.emit('tick', pkg);
-    });
-  return Core;
+Actions.status = function(status, socket){
+  if(status.type == 'ready'){
+    return 'ready';
+  }
+
+  if(status.type == 'start'){
+    Core.start(status.data)
+        .onSnapshot(function(pkg){
+          if(config.env == 'debug') {
+            Core.freeze();
+          }
+          socket.emit('tick', pkg);
+        });
+    return Core;
+  }
+};
+
+Actions.add = function(data, socket){
+  Core.add(data);
 };
 
 Actions.clear = function() {
-  Core.game.elements = [];
-};
-
-Actions.writeCode = function(data, socket) {
-  Core.game.writeCode(data);
+  Core.clear();
 };
 
 Actions.addElement = function(data,socket) {

@@ -38,5 +38,8 @@ static:
 test:
 	npm test
 
-start:
+run:
 	$(NODE) node/index.js
+
+debug:
+	$(NODE) --debug node/index.js

@@ -1,28 +1,35 @@
 var Game   = require('./game');
-//
-//
-// var RULES = {
-//   FollowCursor : {Rule : 'followCursor'},
-//   FollowObject : {Rule : 'followObject'}
-// };
 
 
 var GameSession = {};
-
 var Core = {
   game : GameSession,
-  play : function (data){
-    GameSession = new Game(data);
-    this.game = GameSession;
+  start : function (data){
+    if(!GameSession.inited){
+      GameSession = new Game(data);
+      this.game = GameSession;
+      this.freeze();
+    }
+
+    if(GameSession.elements.length){
+      this.unfreeze();
+    }
     return Core;
   },
+
+  add : function (data){
+    GameSession.writeCode(data);
+  },
+
   onSnapshot : function(callback){
     GameSession.onFrameEnd = callback;
   },
+
   unfreeze : function(){
     GameSession.unlock();
     GameSession.update();
   },
+
   freeze : function(){
     GameSession.lock();
   }
