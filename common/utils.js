@@ -212,7 +212,7 @@ Utils.interpolate = function(str){
   if(argc ==2 && is.obj(argv[1])){
     data = argv[1];
   }else{
-    each(argv.slice(1, argc), function(e, i){
+    argv.slice(1, argc).forEach(function(e, i){
       data[i] = e;
     });
   }

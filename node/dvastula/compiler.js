@@ -293,8 +293,16 @@ API['for'] = define(2, function(name, rules){
   var body = rules.map(compile).join(';\n');
   lang.context = 'g';
 
-  return debug + '(function(){' + body + ' }).call(this.getElement("' +
-    name + '"))';
+  var res = '';
+
+  if(Array.isArray(name)){
+    res  = '(' + compile(name) + ').forEach(function (name){ ' +
+      '(function(){' + body + ' }).call(this.getElement(String(name)))}.bind(this))';
+  }else{
+    res = '(function(){' + body + ' }).call(this.getElement("' + name + '"))';
+  }
+
+  return debug + res;
 });
 
 API.nth = define(2, function(collection, n){
