@@ -17,6 +17,10 @@ var Core = {
     return Core;
   },
 
+  clear : function(){
+    GameSession.clear();
+  },
+
   add : function (data){
     GameSession.writeCode(data);
   },

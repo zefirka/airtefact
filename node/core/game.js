@@ -46,7 +46,12 @@ function Game(o){
 Game.prototype.writeCode = function(data){
   var self = this;
 
-  data.elements.forEach(this.addElement.bind(this));
+  // проверка на уникальность
+  data.elements.filter(function(el){
+    return self.elements.every(function(gel){
+      return gel.id !== el.id;
+    });
+  }).forEach(this.addElement.bind(this));
 
   var code = data.code;
   var js = S2(code);
@@ -123,9 +128,6 @@ Game.prototype.takeSnapshot = function(){
 
 Game.prototype.addElement = function(el){
   var element = new Element(el, this);
-
-  // TODO добавить проверку на уникальность
-
   this.elements.push(element);
 };
 

@@ -65,7 +65,8 @@ describe('Module: 2sula/Parser'.bold.underline, function (){
       '[defn inc[x] [+ x 1]]',
       '[list 1 2 [3 4 [5 6]]]',
       '[def x {test-something}]',
-      '[def j $global]'
+      '[def j $global]',
+      '[def x 20] [let x 20] [a b c d]'
     ];
 
     var ans = [
@@ -73,15 +74,34 @@ describe('Module: 2sula/Parser'.bold.underline, function (){
       [['defn', 'inc', ['x'], ['+', 'x', 1]]],
       [['list', 1, 2, [3, 4, [5,6]]]],
       [['def', 'x', '{test-something}']],
-      [['def', 'j', '$global']]
+      [['def', 'j', '$global']],
+      [['def', 'x', 20], ['let', 'x', 20], ['a','b','c','d']]
     ];
 
-
     var outputs = constrs.map(parse);
-    outputs.forEach(function (code, index){
-      it('Should parse: ' + constrs[index], function(){
-        expect(code).toEqual(ans[index]);
-      });
+    
+    it('Should parse: [def x 10]', function(){
+      expect(outputs[0]).toEqual(ans[0]);
     });
+
+    it('Should parse: [defn inc[x] [+ x 1]]', function(){
+      expect(outputs[1]).toEqual(ans[1]);
+    });
+
+    it('Should parse: [list 1 2 [3 4 [5 6]]]', function(){
+      expect(outputs[2]).toEqual(ans[2]);
+    });
+
+    it('Should parse: [def x {test-something}]', function(){
+      expect(outputs[3]).toEqual(ans[3]);
+    });
+
+    it('Should parse: [def j $global]', function(){
+      expect(outputs[4]).toEqual(ans[4]);
+    });
+
+    it('Should parse: [def x 20] [let x 20] [a b c d]', function(){
+      expect(outputs[5]).toEqual(ans[5]);
+    });    
   });
 });
