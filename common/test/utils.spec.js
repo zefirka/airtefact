@@ -126,7 +126,7 @@ describe('Module: Common/utils'.bold, function (){
         undef;
     
     describe('Datatype Checkings', function(){
-      it('::string', function(){
+      it('string', function(){
         expect(is.str(str)).toBe(true);
         expect(is.num(str)).toBe(false);
         expect(is.bool(str)).toBe(false);
@@ -135,7 +135,7 @@ describe('Module: Common/utils'.bold, function (){
         expect(is.obj(str)).toBe(false);
       });
 
-      it('::number', function(){
+      it('number', function(){
         expect(is.str(num)).toBe(false);
         expect(is.num(num)).toBe(true);
         expect(is.bool(num)).toBe(false);
@@ -144,7 +144,7 @@ describe('Module: Common/utils'.bold, function (){
         expect(is.obj(num)).toBe(false);
       });
 
-      it('::boolean', function(){
+      it('boolean', function(){
         expect(is.str(bool)).toBe(false);
         expect(is.num(bool)).toBe(false);
         expect(is.bool(bool)).toBe(true);
@@ -153,7 +153,7 @@ describe('Module: Common/utils'.bold, function (){
         expect(is.obj(bool)).toBe(false);
       });
 
-      it('::function', function(){
+      it('function', function(){
         expect(is.str(fn)).toBe(false);
         expect(is.num(fn)).toBe(false);
         expect(is.bool(fn)).toBe(false);
@@ -162,7 +162,7 @@ describe('Module: Common/utils'.bold, function (){
         expect(is.obj(fn)).toBe(false);
       });
 
-      it('::array', function(){
+      it('array', function(){
         expect(is.str(array)).toBe(false);
         expect(is.num(array)).toBe(false);
         expect(is.bool(array)).toBe(false);
@@ -171,7 +171,7 @@ describe('Module: Common/utils'.bold, function (){
         expect(is.obj(array)).toBe(false);
       });
 
-      it('::object', function(){
+      it('object', function(){
         expect(is.str(obj)).toBe(false);
         expect(is.num(obj)).toBe(false);
         expect(is.bool(obj)).toBe(false);
@@ -238,5 +238,31 @@ describe('Module: Common/utils'.bold, function (){
   describe(':: interpolate', function () {
     var intp = utils.interpolate;
     
+  });
+
+  describe(':: clone', function () {
+    var clone = utils.clone;  
+
+    it('should clone empty', function () {
+      var empty = {};
+      var cEmpty = clone(empty);
+      expect(empty === cEmpty).toBe(false)
+      expect(empty).toEqual(cEmpty);
+    });
+
+    it('should clone non-empty', function () {
+      var o = {a: 20};
+      var c = clone(o);
+      expect(o === c).toBe(false)
+      expect(o).toEqual(c);
+    });
+
+    it('should clone arrays', function () {
+      var o = [1,2,3];
+      var c = clone(o);
+      expect(o === c).toBe(false)
+      expect(o).toEqual(c);
+    });
+
   });
 });

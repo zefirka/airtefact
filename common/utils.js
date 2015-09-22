@@ -309,14 +309,27 @@ Utils.forReduce = function (hash, fn, initial){
   return res;
 };
 
-Utils.camelCase = function camelCase(input) {
+/**
+ * Трансформирует строку в camelCase
+ *
+ * @public
+ * @param {string} inpit
+ * @return {string}
+ */
+Utils.camelCase = function (input) {
   return input.toLowerCase().replace(/-(.)/g, function(match, group1) {
     return group1.toUpperCase();
   });
 };
 
+/**
+ * Клонирует объект
+ *
+ * @param {object} obj
+ * @return {object}
+ */
 Utils.clone = function(obj) {
-  return require('warden.js').Utils.extend({}, obj);
+  return Utils.extend({}, obj);
 };
 
 module.exports = Utils;
