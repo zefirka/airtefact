@@ -62,9 +62,11 @@ API.makeAliases = function(o){
 /**
  * Вычисляет value и в засовыывает в стор соответствующее значение
  * @name def
+ * @function
  * @access public
  * @param {symbol} name
  * @param {mixed} value
+ * @memberof 2Stula/compiler
  */
 API.def = define(2, function(name, value){
   // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать

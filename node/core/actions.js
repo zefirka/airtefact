@@ -1,8 +1,10 @@
 /**
   Список событий сокета, организует порядок работы в с веб-сокетом разных клиентов.
   Все коллбэки получают последним аргументом объект сокет-сервера
-  @module Core/Actions
+  @namespace {object} Actions
+  @mamberof node
 */
+var Actions = {};
 
 var fs            = require('fs');
 var beautify      = require('js-beautify').js_beautify;
@@ -11,14 +13,16 @@ var config        = require('../config/config'),
     s2Compiler    = require('../dvastula/compiler'),
     Core          = require('./core');
 
-var Actions = {};
-
 /**
-  Конфигурирует игру для текущего клиента (добавляет объекты или создает сессию, если объектов нет)
-  @access public
-  @param {object} data
+  * Конфигурирует игру для текущего клиента (добавляет объекты или создает сессию, если объектов нет)
+  * @public
+  * @function
+  * @method
+  * @param {object} status
+  * @param {string} status.type
+  * @return {object}
 */
-Actions.status = function(status, socket){
+Actions.status = function (status, socket){
   if(status.type == 'ready'){
     return 'ready';
   }
@@ -35,10 +39,20 @@ Actions.status = function(status, socket){
   }
 };
 
-Actions.add = function(data, socket){
+/**
+ * Добавляет новые данные в инстанс игры
+ * @param {object} data
+ * @param {object} data.elements
+ */
+Actions.add = function (data, socket){
   Core.add(data);
 };
 
+/**
+ * Добавляет новые данные в инстанс игры
+ * @param {object} data
+ * @param {object} data.elements
+ */
 Actions.clear = function() {
   Core.clear();
 };

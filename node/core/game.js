@@ -139,6 +139,13 @@ Game.prototype.lock = function(callback) {
   }
 };
 
+Game.prototype.shutDown = function(){
+  LOCKED = true;
+  this.elements = [];
+  this.inited = false;
+  this.store.clear(); //TODO реализовать метод clear у скопа
+};
+
 Game.prototype.unlock = function(callback) {
   LOCKED = false;
 

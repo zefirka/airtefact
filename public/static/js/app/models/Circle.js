@@ -1,5 +1,6 @@
 var Point = require('./Point.js');
 var Text = require('./Text');
+
 /**
  * Зависимость координат
  * @private

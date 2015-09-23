@@ -185,7 +185,16 @@ Utils.toArray = function(array){
   return Array.prototype.slice.call(array);
 };
 
-Utils.extend = function () {
+/**
+ * Расширяет первый объект-аргумент следующими
+ * @param {object} object - расширяемый объект
+ * @param {object} o1
+ * @param {object} o2
+ * @param {object} ...
+ * @param {object} on
+ * @return {object}
+ */
+Utils.extend = function (/* object, o1, o2, ... on */) {
   function _extend(origin, add) {
     if (!add || typeof add !== 'object') {
       return origin;
@@ -203,7 +212,12 @@ Utils.extend = function () {
   });
 };
 
-Utils.interpolate = function(str){
+/**
+ * @param {string}
+ * @param {object}
+ * @return {string}
+ */
+Utils.interpolate = function(str, object){
   var data = {},
       argc = arguments.length,
       argv = Utils.toArray(arguments),
@@ -313,7 +327,7 @@ Utils.forReduce = function (hash, fn, initial){
  * Трансформирует строку в camelCase
  *
  * @public
- * @param {string} inpit
+ * @param {string} input
  * @return {string}
  */
 Utils.camelCase = function (input) {
