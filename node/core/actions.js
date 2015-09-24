@@ -16,15 +16,18 @@ var config        = require('../config/config'),
 /**
   * Конфигурирует игру для текущего клиента (добавляет объекты или создает сессию, если объектов нет)
   * @public
-  * @function
-  * @method
   * @param {object} status
   * @param {string} status.type
-  * @return {object}
+  * @param {object} status.data
+  * @return {undefined}
 */
 Actions.status = function (status, socket){
   if(status.type == 'ready'){
     return 'ready';
+  }
+
+  if(status.type == 'error'){
+    return 'error';
   }
 
   if(status.type == 'start'){
@@ -35,8 +38,16 @@ Actions.status = function (status, socket){
           }
           socket.emit('tick', pkg);
         });
-    return Core;
   }
+};
+
+/**
+ * События, когда пользователь подключается к сессии
+ * @param {object} data
+ * @param {object} data.user
+ */
+Actions.connect = function(data, socket){
+  Core.connect(data);
 };
 
 /**
@@ -45,23 +56,47 @@ Actions.status = function (status, socket){
  * @param {object} data.elements
  */
 Actions.add = function (data, socket){
-  Core.add(data);
+  Core
+    .freeze()
+    .add(data)
+    .unfreeze();
 };
 
 /**
- * Добавляет новые данные в инстанс игры
- * @param {object} data
- * @param {object} data.elements
+ * Обновляет стейт игры полностью
+ * @param {string} csrf
  */
-Actions.clear = function() {
-  Core.clear();
+Actions.refresh = function(csrf, socket) {
+  if(Core.csrf(csrf)){
+    Core.refresh();
+  }else{
+    socket.emit('status', {
+      type : 'error',
+      code : 300,
+      message : 'You have no rights to refresh'
+    });
+  }
 };
 
-Actions.addElement = function(data,socket) {
-  Core.game.addElement(data.elements[data.elements.length -1]);
+/**
+ *
+ */
+Actions.clear = function(csrf, socket) {
+  if(Core.csrf(csrf)){
+    Core.clear();
+  }else{
+    socket.emit('status', {
+      type : 'error',
+      code : 301,
+      message : 'You have no rights to clear'
+    });
+  }
 };
 
-Actions.ready = function(data, socket){
+/**
+ * Дебажное событие, говорящее о том, что клиент обработал пакет и готов получить следущий
+ */
+Actions.ready = function(){
   Core.unfreeze();
 };
 

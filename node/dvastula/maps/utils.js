@@ -15,23 +15,48 @@ function evalForm(js){
   return 'eval("(function(){ return ' + exprForm(js) + '; }).call(this);");';
 }
 
+/**
+ * @param {string} js
+ * @param {boolean} semicolon
+ * @return {string}
+ */
 function funcForm(js, semicolon){
   return '(function(){ return ' + exprForm(js) + '; }).call(this)'  + (semicolon ? ';' : '');
 }
 
+/**
+ * @param {string} js
+ * @param {boolean} semicolon
+ * @return {string}
+ */
 function invokeForm(js, semicolon){
   return '(function(){' + js + '}).call(this)' + (semicolon ? ';' : '');
 }
 
+/**
+ * @param {string} js
+ * @param {boolean} semicolon
+ * @return {string}
+ */
 function derefForm(js, semicolon){
   return 'this["' + js.slice(1) + '"]' + (semicolon ? ';' : '');
 }
 
+/**
+ * @param {string} js
+ * @param {boolean} semicolon
+ * @return {string}
+ */
 function globalForm(js, semicolon){
   return 'GAME["' + js.slice(1) +  '"]' + (semicolon ? ';' : '');
 }
 
-function exprForm(js){
+/**
+ * @param {string} js
+ * @param {boolean} semicolon
+ * @return {string}
+ */
+function exprForm(js, semicolon){
   return js .slice(1,-1)
             .replace(/(@[a-z\$_][\$_a-z0-9\.]*)/gi, function(a,b){
               return 'this.["' + a.slice(1)  + '"]';
@@ -40,13 +65,11 @@ function exprForm(js){
               return 'GAME["' + a.slice(1) + '"]';
             });
 }
-/**
 
-
-  */
 function comment(){
   return process.env.DEBUG == 'true' ?  intp('\n/*  {{0}}  */\n', intp.apply(null, toArray(arguments))) : '';
 }
+
 
 function wrapInnerCall(fn, params){
   return 'this.store.get("' + fn + '").call(this' + (params.length ? ',' + params.join(', ') : '') + ')';
@@ -68,10 +91,6 @@ function strarr(arr){
     return arr;
   }
 }
-
-
-
-
 
 module.exports  = {
   functionWrapper : wrapper,

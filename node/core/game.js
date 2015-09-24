@@ -19,7 +19,7 @@ var LOCKED = false;
 */
 function Game(o){
   this.fps = 200;
-  this.inited = false;
+  this.inited = true;
   this.elements = [];
   this.api = api;
   this.phases = {};
@@ -35,8 +35,19 @@ function Game(o){
   this.height = o.heigth;
 
   this.store = new Scope();
-  this.interval = this.startInterval(config.env);
 }
+
+Game.prototype.isLocked = function(data){
+  return LOCKED;
+};
+
+Game.prototype.destroy = function(){
+  this.clear();
+  for(var i in this){
+    this[i] = null;
+  }
+  return null;
+};
 
 /**
  Запускает инстанс игры
@@ -59,7 +70,7 @@ Game.prototype.writeCode = function(data){
   var fileName = [data.instance, data.time , 'js'].join('.');
   var filePathName = join(pathName, fileName);
 
-  this.lock(this.pause);
+  this.lock();
 
   mkdirp(pathName, function(err) {
     if(err){
@@ -74,7 +85,7 @@ Game.prototype.writeCode = function(data){
 
       var fn = require(filePathName);
       fn(self, self.game); // <- лол, точка входа в скомпелдированный код
-      self.unlock(self.startInterval);
+      self.unlock(self.startInterval.bind(self));
     });
   });
 };
@@ -89,13 +100,18 @@ Game.prototype.startInterval = function(env){
   }, this.fps);
 
   this.inited = true;
+
+  return this.interval;
 };
 
 
-Game.prototype.clear = function(){
+Game.prototype.clear = function(refresh){
   clearInterval(this.interval);
   this.elements = [];
-  this.startInterval(config.env);
+
+  if(refresh){
+    this.startInterval(config.env);
+  }
 };
 
 Game.prototype.pause = function(){
@@ -143,6 +159,7 @@ Game.prototype.shutDown = function(){
   LOCKED = true;
   this.elements = [];
   this.inited = false;
+  this.clear();
   this.store.clear(); //TODO реализовать метод clear у скопа
 };
 

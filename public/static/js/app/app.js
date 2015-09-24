@@ -43,22 +43,12 @@ $(function() {
 
   $('#summoner').click(function() {
     var el = new models.Circle(id++, {
-      x : 20 + (Math.random() * 100 >> 0),
-      y : 20 + (Math.random() * 100 >> 0),
+      x : 20 + (Math.random() * 120 >> 0),
+      y : 20 + (Math.random() * 120 >> 0),
       radius :10
     });
 
     canvas.assign(el).draw(el);
-
-    // по клику ничего не передаю
-    // var elements = canvas.objects.map(function(o){
-    //   return o.getBase();
-    // });
-
-    // var data = {
-    //   elements : elements,
-    // };
-    // socket.emit('addElement', data);
   });
 
   $('#refresh').click(function() {
@@ -103,11 +93,15 @@ $(function() {
   var data = {
     width : $cnv.width(),
     height : $cnv.height(),
+    user : {
+      id : 0
+    }
   };
 
   socket.emit('status', {
     type : 'start',
     data : data
   });
+  socket.emit('connect', data);
 
 });

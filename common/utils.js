@@ -1,6 +1,6 @@
 /**
  * Модуль утилит
- * @namespace Utils
+ * @module common/utils
  */
 
 var Utils = {};
@@ -45,6 +45,7 @@ Utils.uid = function(){
  * Обработчик fn ходит по массиву, пока не натыкается на выражение
  * preventValue и тогда возвращает его, иначе exceptions (или false)
  * @public
+ * @name forWhile
  * @param {array} arr
  * @param {function} fn
  * @param {mixed} preventValue

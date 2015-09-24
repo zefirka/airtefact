@@ -2,40 +2,76 @@ var Game   = require('./game');
 
 
 var GameSession = {};
+
+/**
+ * @module Core
+ */
 var Core = {
-  game : GameSession,
-  start : function (data){
-    if(!GameSession.inited){
-      GameSession = new Game(data);
-      this.game = GameSession;
-      this.freeze();
+  game : null,
+  started : false,
+
+  start : function (data) {
+    this.game = new Game(data);
+    this.started = true;
+    this.freeze();
+
+    return this;
+  },
+
+  connect : function (data){
+    if(this.started){
+      this.game.connect(data);
     }
 
-    if(GameSession.elements.length){
-      this.unfreeze();
-    }
-    return Core;
+    return this;
   },
 
   clear : function(){
-    GameSession.clear();
+    if(this.started){
+      this.game.clear();
+      this.freeze();
+    }
+
+    return this;
   },
 
   add : function (data){
-    GameSession.writeCode(data);
+    this.game.writeCode(data);
+    return this;
   },
 
   onSnapshot : function(callback){
-    GameSession.onFrameEnd = callback;
+    this.game.onFrameEnd = callback;
+    return this;
   },
 
   unfreeze : function(){
-    GameSession.unlock();
-    GameSession.update();
+    this.game.unlock();
+    return this;
   },
 
   freeze : function(){
-    GameSession.lock();
+    this.game.lock();
+    return this;
+  },
+
+  state : function(){
+    return !this.game.isLocked();
+  },
+
+  close : function(){
+    this.clear();
+    this.game.shutDown();
+    this.game = null;
+
+    return this;
+  },
+
+  destroy : function(){
+    this.game.destroy();
+    this.game = null;
+    this.started = false;
+    Core = null;
   }
 
 };

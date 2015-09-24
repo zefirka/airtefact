@@ -22,11 +22,22 @@ ifdef SUPERVISOR
 	NODE = supervisor
 endif
 
+COVERAGE_REPORT = ./coverage/lcov.info
+COVERALLS = ./node_modules/coveralls/bin/coveralls.js
+
+coveralls:
+	cat $(COVERAGE_REPORT) | $(COVERALLS)
+
+html-cov-report: 
+	istanbul report html
+
+test:
+	npm test
+
 release:
 	npm install
 	gulp build
 	npm test
-
 
 build:
 	npm install
@@ -35,8 +46,6 @@ build:
 static:
 	gulp build:static
 
-test:
-	npm test
 
 run:
 	$(NODE) node/index.js
