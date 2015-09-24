@@ -1,5 +1,5 @@
-var expect = require('must');
-var file = require('../file');
+import expect from 'must';
+import file from '../file';
 
 describe('Module: node/utils/file', () => {
 
@@ -10,11 +10,9 @@ describe('Module: node/utils/file', () => {
   });
 
   it(':: isFileExist', (done) => {
-    file.isFileExist('./file.spec.js', () =>{
+    file.isFileExist('./file.spec.js', () => {
       expect(true).to.be(true);
       done();
-    }, () => {});
-
+    });
   });
-
 });
