@@ -18,7 +18,7 @@ module.exports = Translator;
 function Translator(source) {
   var js = toJs(tokeinzer(source));
   return (function() {
-    return this.eval(js);
+    return global.eval(js);
   })();
 }
 
