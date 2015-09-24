@@ -344,7 +344,7 @@ Utils.camelCase = function (input) {
  * @return {object}
  */
 Utils.clone = function(obj) {
-  return Utils.extend({}, obj);
+  return Utils.extend(Array.isArray(obj) ? [] : {}, obj);
 };
 
 module.exports = Utils;
