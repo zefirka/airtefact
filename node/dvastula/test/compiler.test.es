@@ -1,10 +1,13 @@
-var fs 		 = require('fs'),
-	join   	 = require('path').join,
+import fs from 'fs';
+import expect from 'must';
+
+var	join   	 = require('path').join,
 	colors   = require('colors');
 
 var compiler = require('../compiler'),
-	Scope    = require('../../models/scope'),
-	clone    = require('../../../common/utils').clone;
+	Scope    = require('../../models/scope');
+
+import {clone} from '../../../common/utils';
 
 // TODO: remove hardcoding
 var ss2Files = {
@@ -51,13 +54,13 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 			resE = ss2Files.empty(el);
 
 		it('return undefined for empty code', function () {
-			expect(resG).toBe(undefined);
-			expect(resE).toBe(undefined);
+			expect(resG).to.be(undefined);
+			expect(resE).to.be(undefined);
 		});
 
 		it('should not change original object store', function () {
-			expect(glob).toEqual(cloneG);
-			expect(el).toEqual(cloneE);
+			expect(glob).to.eql(cloneG);
+			expect(el).to.eql(cloneE);
 		});
 	});
 
@@ -71,17 +74,17 @@ describe('Module: 2Stula/Compiler'.bold.underline, function () {
 			resE = ss2Files.defline(el);
 
 		it('should return setn value', function () {
-			expect(resG).toBe(10);
-			expect(resE).toBe(10);
+			expect(resG).to.be(10);
+			expect(resE).to.be(10);
 		});
 
 		it('should change original value', function () {
-			expect(glob.store.get('x')).not.toEqual(cloneG.store.get('x'));
+			expect(glob.store.get('x')).not.to.eql(cloneG.store.get('x'));
 		});
 
 		it('should set a value', function () {
-			expect(glob.store.get('x')).toBe(10);
-			expect(el.store.get('x')).toBe(10);
+			expect(glob.store.get('x')).to.be(10);
+			expect(el.store.get('x')).to.be(10);
 		});
 	});
 });
