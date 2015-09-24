@@ -1,5 +1,5 @@
 /**
-  @module 2Stula/maps/utils
+  @module ss2/utils
 */
 
 var utils = require('../../../common/utils'),

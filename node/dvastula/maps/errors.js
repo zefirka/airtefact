@@ -1,12 +1,13 @@
 /**
   Модуль реализующий выдачу ошибков в компилятор
-  @module 2Stula/maps/errors
+  @module ss2/errors
 */
 
 var intp  = require('../../../common/utils').interpolate;
 
 /**
   Ошибка несовпадения количество ожидаемых аргументов и реальных
+  @public
   @param {string} fname - название функции
   @param {string} expArity - ожидамое количество аргументов
   @param {string} realArity - реальное количество аргументов
@@ -21,6 +22,7 @@ ArityErrorMismatch.signature = ['name', 'exptected arguments', 'recieved argumen
 
 /**
   Синтаксическая ошибка
+  @public
   @param {string} errorMessage - текст ошибки
   @return {string}
 */

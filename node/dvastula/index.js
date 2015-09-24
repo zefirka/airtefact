@@ -1,6 +1,6 @@
 /**
   Модуль для парсинга и компиляции кода на языке dvastula
-  @module 2stula
+  @module ss2
   */
 
 var beautify    = require('js-beautify').js_beautify;

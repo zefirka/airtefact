@@ -1,7 +1,7 @@
 /**
   Модуль реализующий парсинг кода на языке 2stula и возвращающий массив js - символов,
   которые компилятор превратит в js - код
-  @module 2stula/Parser
+  @module ss2/parser
 */
 
 var is = require('./maps/types').is;

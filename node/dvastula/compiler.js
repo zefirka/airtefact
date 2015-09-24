@@ -1,6 +1,10 @@
 /**
   Модуль реализующий комплияцию кода на 2stula в JavaScript
-  @namespace 2Stula/compiler
+  @requires {@link module:ss2/errors}
+  @requires module:ss2/utils
+  @requires module:ss2/parser
+  @requires module:common/utils
+  @module ss2/compiler
 */
 
 var Errors  = require('./maps/errors'),
@@ -17,7 +21,7 @@ var toArray     = utils.toArray,
 /**
  * Короткий алиас, позволяющий определять функции для компилятора
  * Если arity == null, то функция может принимать разное количество аргументов
- * @private
+ * @static
  * @param {number} arity
  * @param {function} fn
  * @return {object}
@@ -32,7 +36,7 @@ function define(arity, fn){
 /**
  * Если list - массив массивов, то компилирует каждый элемент как отдельный список
  * Иначе компилирует как выражение SS2
- * @private
+ * @static
  * @param {array} list - ss2 code
  * @return {string} js code
  */
@@ -49,10 +53,14 @@ function compileWithLastValue(list){
 /**
   Language reference
   Здесь описывается сами директивы языка
-  @access public
+  @namespace SS2
 */
 var API = {};
 
+/**
+ * @param {object} o - алиасы в виде исходное значение : алаис
+ * @memberof SS2
+ */
 API.makeAliases = function(o){
   for(var i in o){
     this[o[i]] = this[i];
@@ -66,7 +74,7 @@ API.makeAliases = function(o){
  * @access public
  * @param {symbol} name
  * @param {mixed} value
- * @memberof 2Stula/compiler
+ * @memberof SS2
  */
 API.def = define(2, function(name, value){
   // добавляем сначала комментарий кода, чтобы не запутаться и для того, чтобы можно было потом сорс-мап написать
@@ -93,11 +101,22 @@ API.def = define(2, function(name, value){
   });
 });
 
+
 API.log = define(null, function(){
   console.log(toArray(arguments).map(compile));
   return '';
 });
 
+
+/**
+ * Вычисляет value и в засовыывает в текущий скоупg
+ * @name let
+ * @function
+ * @access public
+ * @param {symbol} name
+ * @param {mixed} value
+ * @memberof SS2
+ */
 API.let = define(null, function(name, value){
   var debug = commentCode('[let {{0}} {{1}}]', name, strarr(value));
 
@@ -117,12 +136,13 @@ API.let = define(null, function(name, value){
 
 /**
  * Возвращает целое число в диапазоне от from до to
- * @public
+ * @function
+ * @name rand-int
  * @param {number} from
  * @param {number} to
- * @return {number}
+ * @memberof SS2
  */
-function randomInt(from, to){
+API['rand-int'] = define(null, function (from, to){
   var debug = commentCode('[rand-int {{0}} {{1}}]', strarr(from), strarr(to));
 
   if(!to){
@@ -134,10 +154,16 @@ function randomInt(from, to){
   to = compile(String(to));
 
   return debug + '(' + from + ' + ( Math.random() * (' + to +' - ' + from + ') >> 0 ) )';
-}
+});
 
-API['rand-int'] = define(null, randomInt);
-
+/**
+ * Генерирует лямбдя-функцию
+ * @function
+ * @name lambda
+ * @param {symbols} params
+ * @param {ast} body
+ * @memberof SS2
+ */
 API.lambda = define(2, function(params, body){
   var debug = commentCode('[lambda {{0}} {{1}}]', strarr(params), strarr(body));
 
