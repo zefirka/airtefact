@@ -236,7 +236,24 @@ describe('Module: Common/utils'.bold, () => {
   });
 
   describe(':: interpolate', () => {
-    var intp = utils.interpolate;
+    let intp = utils.interpolate;
+
+    it('should interpolate arguments', function () {
+      let res = intp('argument {{0}} {{1}} {{2}}', 'one', 'two', 'three');
+      expect(res).to.be('argument one two three');
+    });
+
+    it('should interpolate data', function () {
+      let res = intp('argument {{one}} {{two}} {{three}}', {
+        one: 'one', 
+        two: 'two',
+        three: 'three'});
+      expect(res).to.be('argument one two three');
+    });
+
+    it('should ignore unvalid', function () {
+      expect(intp('test {{data}} case')).to.be('test {{data}} case');
+    });
     
   });
 

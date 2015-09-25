@@ -12,23 +12,6 @@ $(function() {
   var id         = 0,
       instanceId = 0;
 
-  (function(){
-    var $pg = $('#PlayGround'),
-        $console = $('#Console'),
-        $pp = $('#PlayPane'),
-        $code = $('#Code');
-
-    function toggle(){
-      $pp.toggle();
-      $code.toggle();
-    }
-
-    $pg.click(toggle);
-    $console.click(toggle);
-
-  })();
-
-
   socket.on('tick', function(pkg) {
     /* здесь можно все определить в классе Canvas (../modules/canvas.js) */
     canvas.clear();

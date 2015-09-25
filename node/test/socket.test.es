@@ -3,8 +3,8 @@ import socketModule from '../socket';
 import EventEmitter from 'events';
 
 describe('Module: node/socket', () => {
-  var socket = new EventEmitter(),
-      io     = new EventEmitter();
+  let socket = new EventEmitter();
+  let io     = new EventEmitter();
 
   it('should emit connection  exist', (done) => {
     io.on('status', (data) => {

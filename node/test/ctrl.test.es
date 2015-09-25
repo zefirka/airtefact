@@ -2,9 +2,9 @@ import expect from 'must';
 import ctrl from '../ctrl';
 
 describe('Module: node/ctrl', () =>  {
-  var indexController = ctrl('index', {url: '/'});
-  var commonController = ctrl('common', {url: '/'});
-  var unexistController = ctrl('nope', {url: '/nope'});
+  let indexController = ctrl('index', {url: '/'});
+  let commonController = ctrl('common', {url: '/'});
+  let unexistController = ctrl('nope', {url: '/nope'});
 
   it('should return controller, if it exist', () =>  {
     expect(indexController).not.to.be(undefined);
