@@ -33,8 +33,8 @@ var API = {
 
 module.exports = function(name){
   var args = [].slice.call(arguments, 1);
-  var method = API[name].name,
-      params = (API[name].params ? [API[name].params] : []).concat(args);
+  var method = API[name] && API[name].name,
+      params = method && (API[name].params ? [API[name].params] : []).concat(args);
 
-  return this[method].apply(this, params);
+  return method ? this[method].apply(this, params) : this.throwError.apply(this, params);
 };

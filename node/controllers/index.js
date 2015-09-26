@@ -23,7 +23,6 @@ var data = {
   ]),
 
   styles : common.styles.concat([
-    path(lib, 'highlightjs/styles/github.css'),
     path(lib, 'codemirror/lib/codemirror.css'),
     path(lib, 'codemirror/theme/monokai.css')
   ]),
