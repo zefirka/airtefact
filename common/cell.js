@@ -16,6 +16,12 @@ function execPipeline(pipeline, end, value){
   }
 }
 
+function inherit(from){
+  var n = new Cell();
+  n.__pipeline = from.__pipeline.slice();
+  return n;
+}
+
 function Cell(value){
   this.__handlers = [];
   this.__pipeline = [];
@@ -40,6 +46,10 @@ Object.defineProperty(Cell.prototype, 'value', {
   }
 });
 
+Cell.prototype.valueOf = function(){
+  return this.__value;
+};
+
 Cell.prototype.emit = function(value){
   execPipeline(this.__pipeline, function(result){
     this.__value = result;
@@ -55,7 +65,7 @@ Cell.prototype.on = function(callback){
 };
 
 Cell.prototype.filter = function(fn){
-  var ncell = new Cell();
+  var ncell = inherit(this);
   ncell.pipe(function(value, next, stop){
     return fn(value) === true ? next(value) : stop();
   });
@@ -64,7 +74,7 @@ Cell.prototype.filter = function(fn){
 };
 
 Cell.prototype.map = function(fn){
-  var ncell = new Cell();
+  var ncell = inherit(this);
   ncell.pipe(function(value, next){
     return next(fn(value));
   });
@@ -73,10 +83,26 @@ Cell.prototype.map = function(fn){
 };
 
 Cell.prototype.reduce = function(fn, init){
-  var ncell = new Cell();
-  var self = this;
+  var ncell = inherit(this);
   ncell.pipe(function(value, next){
     return next(fn(ncell.__prev || init, value));
+  });
+  ncell.value = this.value;
+  return ncell;
+};
+
+Cell.prototype.debounce = function(timeout){
+  var ncell = inherit(this);
+  var timer = null;
+
+  ncell.pipe(function(value, next){
+    if(timer){
+      clearTimeout(timer);
+    }
+
+    timer = setTimeout(function(){
+      next(value);
+    }, timeout);
   });
   ncell.value = this.value;
   return ncell;
@@ -100,6 +126,8 @@ function cell (cellar, def) {
 
 function formula(deps, func, init ){
   var cell = new Cell(init);
+
+  cell.__value = init;
 
   deps.forEach(function(dep){
     dep.on(function(){
