@@ -1,4 +1,6 @@
-function Break(){}
+function Break(){
+  return null;
+}
 
 function execPipeline(pipeline, end, value){
   if(value instanceof(Break)){
@@ -23,11 +25,27 @@ function inherit(from){
 }
 
 function Cell(value){
+
+  function bindValue(value, prop){
+    if(typeof value == 'object'){
+      for(prop in value){
+        bind(value, prop);
+      }
+    }else{
+      value[prop] = new Cell(value[prop]);
+    }
+  }
+
   this.__handlers = [];
   this.__pipeline = [];
   this.__prev = null;
 
   if(typeof value !== 'undefined'){
+
+    if(typeof value == 'object'){
+      value = bindValue(value);
+    }
+
     this.__value  = value;
     this.value = value;
   }
