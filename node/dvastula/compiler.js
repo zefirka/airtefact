@@ -102,9 +102,20 @@ API.def = define(2, function(name, value){
 });
 
 
-API.log = define(null, function(){
-  console.log(toArray(arguments).map(compile));
-  return '';
+/**
+ * Компилирует в логгер
+ * @name log
+ * @function
+ * @access public
+ * @param {mixed} argument
+ * @return {string}
+ * @memberof SS2
+ */
+API.log = define(null, function(/* ... */){
+  var args = toArray(arguments).map(compile);
+  return '(function(){' +
+    'console.log.call(console, ' + args + ');' +
+    '}).call(this)';
 });
 
 
