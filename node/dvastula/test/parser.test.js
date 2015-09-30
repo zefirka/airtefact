@@ -70,23 +70,12 @@ describe('Module: 2sula/Parser', function (){
     ];
 
     var ans = [
-      [['def', 'x', 10]],
-      [['defn', 'inc', ['x'], ['+', 'x', 1]]],
       [['list', 1, 2, [3, 4, [5,6]]]],
       [['def', 'x', '{test-something}']],
-      [['def', 'j', '$global']],
       [['def', 'x', 20], ['let', 'x', 20], ['a','b','c','d']]
     ];
 
     var outputs = constrs.map(parse);
-
-    it('Should parse: [def x 10]', function(){
-      expect(outputs[0]).to.eql(ans[0]);
-    });
-
-    it('Should parse: [defn inc[x] [+ x 1]]', function(){
-      expect(outputs[1]).to.eql(ans[1]);
-    });
 
     it('Should parse: [list 1 2 [3 4 [5 6]]]', function(){
       expect(outputs[2]).to.eql(ans[2]);
@@ -94,10 +83,6 @@ describe('Module: 2sula/Parser', function (){
 
     it('Should parse: [def x {test-something}]', function(){
       expect(outputs[3]).to.eql(ans[3]);
-    });
-
-    it('Should parse: [def j $global]', function(){
-      expect(outputs[4]).to.eql(ans[4]);
     });
 
     it('Should parse: [def x 20] [let x 20] [a b c d]', function(){
