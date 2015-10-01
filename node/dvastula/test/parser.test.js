@@ -61,11 +61,8 @@ describe('Module: 2sula/Parser', function (){
 
   describe('Should parse constructions', function(){
     var constrs = [
-      '[def x 10]',
-      '[defn inc[x] [+ x 1]]',
       '[list 1 2 [3 4 [5 6]]]',
       '[def x {test-something}]',
-      '[def j $global]',
       '[def x 20] [let x 20] [a b c d]'
     ];
 

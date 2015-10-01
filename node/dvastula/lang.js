@@ -27,6 +27,17 @@ function define(scope, name, fn, arity){
   };
 }
 
+/** TODO **/
+function defType(){
+  return true;
+}
+
+/**
+ * Определяет список зарезервированных слов в SCOP
+ *
+ * @param {object} api
+ * @return {object}
+ */
 function defineLang(api) {
   var scope = {};
   for(var name in api){
@@ -35,9 +46,20 @@ function defineLang(api) {
   return scope;
 }
 
+
+function defineTypes(types){
+  var scope = {};
+  for(var name in type){
+    defType(scope, name, types[name]);
+  }
+  return scope;
+}
+
 function lang(referenceLanguage){
   var dict = {
     public : {},
+    protected : {},
+    types : defineTypes(referenceLanguage.types),
     private : {},
     reserved : defineLang(referenceLanguage)
   };
@@ -52,8 +74,8 @@ function lang(referenceLanguage){
     derefAll : function(token){
       return dict.public[token] || dict.reserved[token];
     },
-    derefPublic : function(name){
-      return dict.public[name];
+    derefPublic : function(token){
+      return dict.public[token];
     },
     derefPrivate : function(token){
       return dict.private[token];
