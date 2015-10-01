@@ -32,7 +32,7 @@ CodeMirror.defineMode("ss2", function (options) {
 
     var keywords = makeKeywords("def defn for if when as + - = / > < >= <= << >> && & || | * % or and not");
 
-    var builtins = makeKeywords("let log idle phase do");
+    var builtins = makeKeywords("let log idle phase do rand-int lambda");
 
     var indentKeys = makeKeywords(
         // Built-ins

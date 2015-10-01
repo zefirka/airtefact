@@ -2,8 +2,16 @@ var Errors    = require('./maps/errors.js'),
     utils     = require('../../common/utils'),
     toArray   = utils.toArray;
 
-function wrapCall(v){
-  return '(function(){\n\t\treturn ' + v + ';\n\t}).call(this);';
+
+
+/**
+ * @private
+ * @param {number|array} want - Ожидамый arity
+ * @param {number} get - Реальный arity
+ * @return {boolean}
+ */
+function checkArity(want, get){
+  return typeof want == 'number' ? want !== get : !Boolean(~want.indexOf(get));
 }
 
 function define(scope, name, fn, arity){
@@ -11,8 +19,8 @@ function define(scope, name, fn, arity){
     var argv = toArray(arguments),
         argc = argv.length;
 
-    if (arity && arity !== argc){
-      return wrapCall(Errors.ArityErrorMismatch(name, arity, argc));
+    if (arity && checkArity(arity, argc)){
+      return Errors.ArityErrorMismatch(name, arity, argc);
     }
 
     return fn.apply(scope, arguments);
