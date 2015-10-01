@@ -48,8 +48,11 @@ function defineLang(api) {
 
 
 function defineTypes(types){
+  if(!types){
+    return;
+  }
   var scope = {};
-  for(var name in type){
+  for(var name in types){
     defType(scope, name, types[name]);
   }
   return scope;
