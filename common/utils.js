@@ -347,4 +347,10 @@ Utils.clone = function(obj) {
   return Utils.extend(Array.isArray(obj) ? [] : {}, obj);
 };
 
+Utils.guid = function(length){
+  return new Array(length + 1).join('.').split('.').map(function(){
+    return Math.random() * 10 >> 0;
+  }).join('');
+};
+
 module.exports = Utils;
