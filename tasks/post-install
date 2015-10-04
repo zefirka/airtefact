@@ -2,3 +2,8 @@
 
 ln -fs $(pwd)/tasks/pre-commit $(pwd)/.git/hooks/pre-commit
 chmod 777 $(pwd)/tasks/*
+
+node $(pwd)/tasks/get-frontend-deps.js deps
+echo $(pwd)
+cat deps | xargs -J % cp -r % $(pwd)/public/static/lib
+rm deps
