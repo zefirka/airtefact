@@ -299,6 +299,23 @@ API.makeAliases({
   '<=' : 'lte'
 });
 
+API.range = define(null, function(from, to){
+  var t = '[{{0}}]';
+  var j = '';
+
+  if(!to){
+    to = from;
+    from = 0;
+  }
+
+  while(to - from >= 0){
+    j += from + ', ';
+    from++;
+  }
+  console.log(interpolate(t, j));
+  return compile(interpolate(t, j));
+});
+
 API.hash = define(null, function(){
   var args = toArray(arguments);
   var res = '';
