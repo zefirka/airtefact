@@ -299,6 +299,12 @@ API.makeAliases({
   '<=' : 'lte'
 });
 
+API.last = define(1, function(lst){
+  var l = compile(['length', lst]);
+  var coll = compile(lst);
+  return coll + '[' + l +' - 1]';
+});
+
 API.range = define(null, function(from, to){
   var t = '[{{0}}]';
   var j = '';
@@ -312,7 +318,6 @@ API.range = define(null, function(from, to){
     j += from + ', ';
     from++;
   }
-  console.log(interpolate(t, j));
   return compile(interpolate(t, j));
 });
 
@@ -365,6 +370,16 @@ API.nth = define(2, function(collection, n){
 
 API.length = define(1, function(collection){
   return '(' + compile(collection) + ').length';
+});
+
+API.call = define(null, function(fn){
+  var args = toArray(arguments).slice(1).map(compile).join(', ');
+  return '(' + utils.camelCase(fn) + ').call(this, ' + (args || 'null') + ' )';
+});
+
+API.apply = define(2, function(fn){
+  var args = compile(toArray(arguments).slice(1));
+  return '(' + utils.camelCase(fn) + ').apply(this, ' + (args || 'null') + ' )';
 });
 
 API.when = define(2, function(phase, behavior){

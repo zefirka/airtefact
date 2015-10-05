@@ -5,7 +5,8 @@ var common = require('./common');
 var config   = require('../config/config.js'),
     path     = require('path').join,
     lib = path(config.static, 'lib'),
-    jsc = path(config.static, 'js');
+    jsc = path(config.static, 'js'),
+    css = path(config.static, 'css');
 
 var data = {
   scripts : common.scripts.concat([
@@ -20,7 +21,7 @@ var data = {
 
   styles : common.styles.concat([
     path(lib, 'codemirror/lib/codemirror.css'),
-    path(lib, 'codemirror/theme/monokai.css')
+    path(css, 'monokai.ss2.css')
   ]),
 
   route : 'compier'
