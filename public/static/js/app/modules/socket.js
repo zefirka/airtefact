@@ -1,10 +1,10 @@
-var socket = io();
+'use strict';
+
+var socket = window.io();
 
 module.exports = {
   init : function () {
-    socket.on('ready', function(msg){
-      console.log('Socker is ready!');
-    });
+
   },
   transmit : function (pipe, ctx) {
     socket.on('data', function(diff){

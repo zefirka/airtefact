@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "Started server tests"
+
+# istanbul
+FILES=$(find ./node -name "*test.[ej]s" && find ./common -name "*test.[ej]s") && NODE_ENV=development && istanbul cover _mocha $FILES --report lcovonly -- -R spec -t 100000 --compilers js:babel-core/register
+
+# jscoverage
+# FILES=$(find ./node -name "*test.[ej]s" && find ./common -name "*test.[ej]s") && NODE_ENV=development && mocha $FILES -r jscoverage mocha-lcov-reporter -t 100000 --compilers js:babel-core/register
+
+# karma start --single-run

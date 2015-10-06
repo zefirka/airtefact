@@ -1,24 +1,34 @@
+import App from '../flux/app';
 
-/* Isomorphic, lol */
-//var App = require('../flux/app');
-
-var extend = require('warden.js').Utils.extend;
+var extend = require('../../common/utils').extend;
 var common = require('./common');
 
 var config   = require('../config/config.js'),
-    join     = require('path').join;
+    path     = require('path').join;
 
-var jsc = join(config.static, 'js'),
-    lib = join(config.static, 'lib'),
+var jsc = path(config.static, 'js'),
+    lib = path(config.static, 'lib'),
     env = process.env.NODE_ENV || config.env || 'dev';
 
-common.scripts = common.scripts.concat([
-  join(lib, 'socket.io-client/socket.io.js'),
-  join(lib, 'paper/dist/paper-full.js'),
-  join(jsc, 'bundle/bundle.js')
-]);
+var data = {
+  scripts : common.scripts.concat([
+    path(lib, 'socket.io-client/socket.io.js'),
+    path(lib, 'paper/dist/paper-full.js'),
+    path(lib, 'codemirror/lib/codemirror.js'),
+    path(lib, 'codemirror/addon/edit/closebrackets.js'),
+    path(lib, 'codemirror/addon/edit/matchbrackets.js'),
+    path(lib, 'codemirror/addon/selection/active-line.js'),
+    path(lib, 'codemirror/mode/javascript/javascript.js'),
+    path(jsc, 'dsl/ss2.js'),
+    path(jsc, 'bundle/bundle.js')
+  ]),
 
-module.exports = extend({}, common, {
-  route : 'index',
-  html : '' //App.render() /* Isomorphic, lol */
-});
+  styles : common.styles.concat([
+    path(lib, 'codemirror/lib/codemirror.css'),
+    path(lib, 'codemirror/theme/monokai.css')
+  ]),
+
+  route : 'index'
+};
+
+module.exports = extend({}, common, data);

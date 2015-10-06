@@ -2,7 +2,7 @@
   "templates": {
     "systemName"            : "nadmozg",
     "footer"                : "{string}",
-    "copyright"             :  "{string}",
+    "copyright"             : "{string}",
     "navType"               : "vertical",
     "theme"                 : "simplex",
     "linenums"              : true,

@@ -1,14 +1,9 @@
 extend ./layout.jade
 
 block vars
-  - var rows = new Array(10)
-  - var cols = new Array(15);
-
+  - var env = locals.env;
 
 block content
   !{html}
-  
-block footer
-  footer
-    .container
-      p1 footer
+  script(type='text/javascript')
+    |  window.ENV = '#{env}';

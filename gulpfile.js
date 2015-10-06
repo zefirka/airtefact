@@ -1,13 +1,23 @@
 /* GULP modules */
-var gulp      = require('gulp'),
-    less      = require('gulp-less'),
-    bfy       = require('browserify'),
-    bower     = require('gulp-bower'),
-    jsdoc     = require('gulp-jsdoc'),
+// <<<<<<< HEAD
+// var gulp      = require('gulp'),
+//     less      = require('gulp-less'),
+//     bfy       = require('browserify'),
+//     bower     = require('gulp-bower'),
+//     jsdoc     = require('gulp-jsdoc'),
+//     reactify  = require('reactify'),
+//     babelify  = require('babelify'),
+//     source    = require('vinyl-source-stream'),
+//     jasmine   = require('gulp-jasmine-phantom');
+// =======
+var gulp    = require('gulp'),
+    less    = require('gulp-less'),
+    bfy     = require('browserify'),
     reactify  = require('reactify'),
     babelify  = require('babelify'),
     source    = require('vinyl-source-stream'),
-    jasmine   = require('gulp-jasmine-phantom');
+    jsdoc   = require('gulp-jsdoc');
+//>>>>>>> master
 
 var color   = require('colors'),
     pkg     = require('./package.json');
@@ -39,12 +49,6 @@ task('less:main', task('less:main', function () {
   }
 })).
 
-task('bower', function(){
-  return bower({
-    directory : _static + 'lib'
-  });
-}).
-
 task('less', ['less:main']).
 task('styles', ['less']).
 
@@ -56,7 +60,7 @@ task('scripts:build', task('Building scripts', function() {
   b .transform(babelify) // use babelify transform
     .transform(reactify) // use reactify transform
     .add(enter)
-    .on('error', function(err) {console.error(err.message); });
+    .on('error', (err) => console.error(err.message) );
 
   return b.bundle()
         .pipe(source('bundle.js'))
@@ -65,12 +69,20 @@ task('scripts:build', task('Building scripts', function() {
 
 task('scripts', ['scripts:build']).
 
-task('build', ['bower', 'build:static', /* 'docs' */ ]).
+
+task('build', ['build:static', 'docs']).
 
 task('build:static', ['scripts', 'styles']).
 
 task('docs', task('Generation documentation', function () {
-  gulp.src(['./node/*.js', './node/**/*.js'])
+  var sources = [
+    './node/*.js',
+    './node/**/*.js',
+    './common/**/*.js',
+    './public/static/js/app/**/*.js'
+  ];
+
+  gulp.src(sources)
       .pipe(jsdoc.parser())
       .pipe(jsdoc.generator('./docs'));
 })).

@@ -12,13 +12,13 @@ function config(locale){
     root : rooty(''),
     public : rooty('public'),
     views : rooty('public/view'),
+    files : rooty('files'),
     static : 'static',
     port : 7778,
-
     meta : {
       favicon : rooty('public/favicon.png'),
     },
-
+    env : process.env.ENV || 'debug',
     dev : {
       logTime : {
         repl : true,

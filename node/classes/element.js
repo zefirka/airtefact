@@ -1,4 +1,5 @@
 var logics = require('./executer.js');
+var phases = require('./phases.js');
 
 function getRandomArbitary(min, max)
 {
@@ -13,26 +14,47 @@ function len(vector) {
   return (Math.sqrt(vector.X * vector.X + vector.Y * vector.Y));
 }
 function Idle(){}
-
 var InfoBag = {MousePos : {X :0, Y :0}};
+
+
+
 
 module.exports = {
 
   Element : function() {
     this.position = {X :0, Y :0};
     this.ID = logics.Elements.length + 1;
-    this.Action = { Act : Idle, Params : 0};
+    this.Action  = 0;
     this.actions = [];
-    this.Rules = [];
+    this.Phase = 0;
+    this.ItemsInMind = {};
     this.Speed = 2;
 
+    this.ConsiderAlgorithm = function() {
+      if (this.Phase === 0) {
+        this.AddAction(Idle);
+      } else if (this.Phase.Blocks !== undefined) {
+        var self = this;
+        this.Phase.Blocks.forEach(function(item, i) {
+          if(item.Condition.call(self)) {
+            self.AddAction(module.exports[item.Action]);
+            self.SetPhase(item.NextPhase);
+          }
+        });
+      }
+    };
+    this.SetPhase = function (PhaseName) {
+      var phase = (phases.Phases.filter(function(a) {
+        return a.Name == PhaseName;
+      }));
+      this.Phase = phase[0];
+    };
     this.DoAction = function() {
       if (this.actions.length === 0) {
-        this.AddAction(module.exports.MoveRandomly);
+        this.AddAction(Idle);
       }
-      this.Action.Act = this.actions[0].Act;
-      this.Action.Params = this.actions[0].Params;
-      this.Action.Act.call(this, this.Action.Params);
+      this.Action = this.actions[0];
+      this.Action.call(this);
       this.actions.shift();
 
     };
@@ -43,27 +65,8 @@ module.exports = {
       this.Action.Act = Act;
       this.Action.Params = params;
     };
-    this.AddAction = function(Act, params) {
-      var Action = {};
-      Action.Act = Act;
-      Action.Params = params;
-      this.actions.push(Action);
-    };
-    this.AddRule = function(Rule, params, Name) {
-      var contains = false;
-      this.Rules.forEach(function(item) {
-        if (item.Name == Name) {
-          contains = true;
-        }
-      });
-      if (!contains)
-      {
-        var R = {};
-        R.Rule = Rule;
-        R.Params = params;
-        R.Name = Name;
-        this.Rules.push(R);
-      }
+    this.AddAction = function(Act) {
+      this.actions.push(Act);
     };
     return this;
   },
@@ -80,20 +83,22 @@ module.exports = {
     }
   },
 
-  Move : function(vector) {
+  Move : function() {
+    var vector = this.ItemsInMind.position;
     var X = vector.X /len(vector) * this.Speed;
     var Y = vector.Y /len(vector) * this.Speed;
     this.position.X += X;
     this.position.Y += Y;
   },
-  MoveTo : function(position) {
-    var vector = {X : position.X - this.position.X, Y : position.Y - this.position.Y};
+  GoTo : function() {
+    var pos = this.ItemsInMind.position;
+    var vector = {X : pos.X - this.position.X, Y : pos.Y - this.position.Y};
     var X = vector.X /len(vector) * this.Speed;
     var Y = vector.Y /len(vector) * this.Speed;
     this.position.X += X;
     this.position.Y += Y;
-    if (dist(position, this.position) > 10){
-      this.AddAction(module.exports.MoveTo, position);
+    if (dist(pos, this.position) > 10){
+      this.AddAction(module.exports.GoTo);
     }
   },
   FollowCursor : function() {
@@ -102,14 +107,24 @@ module.exports = {
       {X : InfoBag.MousePos.X - this.position.X,
         Y : InfoBag.MousePos.Y - this.position.Y});
   },
-  FollowObject : function(elem) {
-    elem = elem[0];
+  MoveToPosition : function() {
+    var pos = this.ItemsInMind.position;
     this.AddAction(module.exports.Move,
-      {X : elem.position.X - this.position.X,
-        Y : elem.position.Y - this.position.Y});
+      {X : pos.X - this.position.X,
+        Y : pos.Y - this.position.Y});
+  },
+  FollowObject : function() {
+    var obj = this.ItemsInMind.follow;
+    this.AddAction(module.exports.Move,
+      {X : obj.position.X - this.position.X,
+        Y : obj.position.Y - this.position.Y});
   },
   MoveRandomly : function() {
-    var randPos = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
-    this.AddAction(module.exports.MoveTo, randPos);
+    this.ItemsInMind.position = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
+    this.AddAction(module.exports.GoTo);
+  },
+  MoveRandom : function() {
+    this.ItemsInMind.position = {X : getRandomArbitary(0, 300), Y : getRandomArbitary(0,300)};
+    this.AddAction(module.exports.Move);
   }
 };

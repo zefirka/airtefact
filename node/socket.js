@@ -5,15 +5,24 @@
   @module node/socket
 */
 
-var socket = null;
-
+var forIn = require('../common/utils').forIn;
+var actions = require('./core/actions');
 /**
   Возвращает веб-сокет (по идее должен его конфигурировать)
   @public
-  @param {object} _ws_ - объект socket.io
+  @param {object} sockets - объект socket.io
   @return {object}
 */
-module.exports = function(_ws_){
-  socket = _ws_;
-  return socket;
+module.exports = function(sockets){
+  sockets.on('connection', function(socket){
+    forIn(actions, function(callback, action){
+      socket.on(action, function(data){
+        callback(data, socket);
+      });
+    });
+
+    socket.emit('status', 'ready');
+  });
+
+  return sockets;
 };

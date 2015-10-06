@@ -30,6 +30,8 @@ module.exports = function(app){
 
 };
 
-function uiDetect () {
-  return {};
+function uiDetect (res, req, next) {
+  req.user = req.user || {};
+  req.user.ui = {};
+  next();
 }

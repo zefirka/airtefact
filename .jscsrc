@@ -39,6 +39,7 @@
     "excludeFiles" : [
       "karma.conf.js",
       "*.jsx",
-      "public/static/js/bundle/*"
+      "public/static/js/bundle/*",
+      "node/dvastula/test/results/*.js"
     ]
 }

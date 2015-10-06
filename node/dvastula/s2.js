@@ -1,7 +1,8 @@
 /**
   Модуль реализующий парсинг кода на языке 2stula и возвращающий массив js - символов,
   которые компилятор превратит в js - код
-  @module 2stula/Parser
+  @module ss2/parser
+  @requires ss2/types
 */
 
 var is = require('./maps/types').is;
@@ -17,7 +18,7 @@ module.exports = Translator;
 function Translator(source) {
   var js = toJs(tokeinzer(source));
   return (function() {
-    return this.eval(js);
+    return global.eval(js);
   })();
 }
 

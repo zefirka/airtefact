@@ -1,0 +1,7 @@
+{
+  "source": "./",
+  "includes": ["\\.(js|es6)$"],
+  "excludes": ["\\.test\\.(js|es6)$", "/docs/*", "coverage/", "files/", "tasks/", ".git/"],
+  "autoPrivate": false,
+  "destination": "./esdoc"
+}

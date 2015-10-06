@@ -1,9 +1,17 @@
 var Errors    = require('./maps/errors.js'),
-    utils     = require('warden.js').Utils,
+    utils     = require('../../common/utils'),
     toArray   = utils.toArray;
 
-function wrapCall(v){
-  return '(function(){\n\t\treturn ' + v + ';\n\t}).call(this);';
+
+
+/**
+ * @private
+ * @param {number|array} want - Ожидамый arity
+ * @param {number} get - Реальный arity
+ * @return {boolean}
+ */
+function checkArity(want, get){
+  return typeof want == 'number' ? want !== get : !Boolean(~want.indexOf(get));
 }
 
 function define(scope, name, fn, arity){
@@ -11,14 +19,25 @@ function define(scope, name, fn, arity){
     var argv = toArray(arguments),
         argc = argv.length;
 
-    if (arity && arity !== argc){
-      return wrapCall(Errors.ArityErrorMismatch(name, arity, argc));
+    if (arity && checkArity(arity, argc)){
+      return Errors.ArityErrorMismatch(name, arity, argc);
     }
 
     return fn.apply(scope, arguments);
   };
 }
 
+/** TODO **/
+function defType(){
+  return true;
+}
+
+/**
+ * Определяет список зарезервированных слов в SCOP
+ *
+ * @param {object} api
+ * @return {object}
+ */
 function defineLang(api) {
   var scope = {};
   for(var name in api){
@@ -27,9 +46,23 @@ function defineLang(api) {
   return scope;
 }
 
+
+function defineTypes(types){
+  if(!types){
+    return;
+  }
+  var scope = {};
+  for(var name in types){
+    defType(scope, name, types[name]);
+  }
+  return scope;
+}
+
 function lang(referenceLanguage){
   var dict = {
     public : {},
+    protected : {},
+    types : defineTypes(referenceLanguage.types),
     private : {},
     reserved : defineLang(referenceLanguage)
   };
@@ -40,11 +73,12 @@ function lang(referenceLanguage){
       dict[keyset][key] = value;
       return value;
     },
+    context : 'g',
     derefAll : function(token){
       return dict.public[token] || dict.reserved[token];
     },
-    derefPublic : function(name){
-      return dict.public[name];
+    derefPublic : function(token){
+      return dict.public[token];
     },
     derefPrivate : function(token){
       return dict.private[token];

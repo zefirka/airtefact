@@ -1,6 +1,6 @@
 /**
   Модуль реализующий типизацию языка 2stula
-  @module 2stula/maps/types
+  @module ss2/types
 */
 
 /**

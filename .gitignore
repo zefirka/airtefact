@@ -10,8 +10,13 @@ npm-debug.log
 node_modules
 server/commit.js
 docs
+esdocs
 .tern-project
 .anti_cache
 public/static/lib
 public/static/js/bundle
 public/static/js/app.js
+public/static/js/bundle/
+run
+*sublime*
+coverage

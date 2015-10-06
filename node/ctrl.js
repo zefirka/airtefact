@@ -4,7 +4,7 @@
   @memberof Node
 */
 
-var extend = require('warden.js').Utils.extend;
+var extend = require('../common/utils').extend;
 var config = require('./config/config.js');
 
 /**
@@ -26,9 +26,9 @@ function resolveControllerByName(name, req){
     ctrlData = require(ctrl);
   }catch(error){
     console.log(error);
-    console.trace();
+    console.error('Controller: ' + ctrl + ' not found.');
+    ctrlData = require('./controllers/error404');
   }finally{
-    console.log(ctrlData);
     return extend(data, ctrlData);
   }
 

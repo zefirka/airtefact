@@ -1,10 +1,14 @@
+'use strict';
+
 import { clone } from 'ramda';
+import { initial } from '../app';
 
-var initial = [{
-  id: 0,
-  rules: [] }]
+let initial = {
+  id : 0,
+  elements : []
+};
 
-export default function reducers(state = {elements: initial}, action) {
+export default function reducers(state = initial, action) {
   switch (action.type) {
 
   case 'ADD':
@@ -22,8 +26,7 @@ export default function reducers(state = {elements: initial}, action) {
     return state;
 
   case 'START':
-    
-    console.log('started');
+    break;
 
   default:
     return state;
