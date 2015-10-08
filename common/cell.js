@@ -142,6 +142,7 @@ function cell (cellar, def) {
   }
 }
 
+
 function formula(deps, func, init ){
   var cell = new Cell(init);
 

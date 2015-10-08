@@ -21,4 +21,8 @@ describe('Module common/cell', function () {
       expect(a + b).to.be(30);
     });
   });
+
+  describe('methods', () => {
+    
+  });
 });

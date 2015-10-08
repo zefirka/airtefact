@@ -11,46 +11,35 @@ describe('Module: Common/utils'.bold, () => {
       var vals = [];
       var keys = [];
 
-      forIn(ins, function(val, key){
+      forIn(ins, (val, key) => {
         vals.push(val);
         keys.push(key);
       });
 
-      it('should iterate by values', () => {
-        expect(vals).to.eql([1,2,3]);
-      });
-
-      it('should iterate by keys', () => {
-        expect(keys).to.eql(['a','b','c']);
-      });
+      it('should iterate by values', () => expect(vals).to.eql([1,2,3]));
+      it('should iterate by keys', () => expect(keys).to.eql(['a','b','c']));
   });
 
   describe(':: forMap', () => {
-      var ins = { a: 1, b: 2, c: 3 };
-      var vals = [];
-      var keys = [];
+      let ins = { a: 1, b: 2, c: 3 };
+      let vals = [];
+      let keys = [];
 
-      vals = forMap(ins, function(val, key){
-        return val + key;
-      });
+      vals = forMap(ins, (val, key) => val + key)
 
-      it('should transform values', () => {
-        expect(vals).to.eql({a:'1a',b : '2b', c: '3c'});
-      });
+      it('should transform values', () => expect(vals).to.eql({a:'1a',b : '2b', c: '3c'}));
 
   });
 
   describe(':: forReduce', () => {
       var ins = { a: 1, b: 2, c: 3 };
 
-      var vals = forReduce(ins, function(res, val, key){
+      var vals = forReduce(ins, (res, val, key) => {
         res.push(key + val);
         return res;
       }, []);
 
-      it('should transform values', () => {
-        expect(vals).to.eql(['a1','b2','c3']);
-      });
+      it('should transform values', () => expect(vals).to.eql(['a1','b2','c3']));
 
   });
 
@@ -62,17 +51,12 @@ describe('Module: Common/utils'.bold, () => {
       '_allahu_akbar_'
     ]
 
-    it('should transform lisp-case', () => {
-      expect(utils.camelCase(inps[0])).to.eql('allahuAkbar');
-    })
+    it('should transform lisp-case', () => expect(utils.camelCase(inps[0])).to.eql('allahuAkbar'));
+    it('should transform first case', () => expect(utils.camelCase(inps[2])).to.eql('AllahuAkbar-'));
 
     it('should not transform underscore-case', () => {
       expect(utils.camelCase(inps[1])).to.eql('allahu_akbar');
       expect(utils.camelCase(inps[3])).to.eql('_allahu_akbar_');
-    });
-
-    it('should transform first case', () => {
-      expect(utils.camelCase(inps[2])).to.eql('AllahuAkbar-');
     });
   });
 
