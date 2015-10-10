@@ -8,15 +8,18 @@
 */
 
 var Errors  = require('./maps/errors'),
-    Parser  = require('./s2.js'),
-    compilerUtils  = require('./maps/utils'),
-    utils       = require('../../common/utils');
+    Parser  = require('./s2.js');
 
-var toArray     = utils.toArray,
+var utils       = require('../../common/utils'),
+    toArray     = utils.toArray,
     interpolate = utils.interpolate,
-    is          = utils.is,
-    strarr      = compilerUtils.strarr,
-    commentCode = compilerUtils.comment;
+    is          = utils.is;
+
+var compilerUtils   = require('./maps/utils'),
+    strarr          = compilerUtils.strarr,
+    call            = compilerUtils.call,
+    returnLastValue = compilerUtils.returnLastValue,
+    commentCode     = compilerUtils.comment;
 
 /**
  * Короткий алиас, позволяющий определять функции для компилятора
@@ -33,6 +36,7 @@ function define(arity, fn){
   };
 }
 
+
 /**
  * Если list - массив массивов, то компилирует каждый элемент как отдельный список
  * Иначе компилирует как выражение SS2
@@ -41,13 +45,7 @@ function define(arity, fn){
  * @return {string} js code
  */
 function compileWithLastValue(list){
-  if(Array.isArray(list[0])){
-    var strings = list.map(compile);
-    strings[strings.length - 1] = 'return (' + strings[strings.length - 1] +  ')';
-    return strings.join('\n');
-  }else{
-    return compile(list);
-  }
+  return returnLastValue(list, compile);
 }
 
 /**
@@ -102,9 +100,18 @@ API.def = define(2, function(name, value){
 });
 
 
-API.log = define(null, function(){
-  console.log(toArray(arguments).map(compile));
-  return '';
+/**
+ * Компилирует в логгер
+ * @name log
+ * @function
+ * @access public
+ * @param {mixed} argument
+ * @return {string}
+ * @memberof SS2
+ */
+API.log = define(null, function(/* ... */){
+  var args = toArray(arguments).map(compile);
+  return '(function(){console.log.call(console, ' + args + ');}).call(this)';
 });
 
 
@@ -142,7 +149,7 @@ API.let = define(null, function(name, value){
  * @param {number} to
  * @memberof SS2
  */
-API['rand-int'] = define(null, function (from, to){
+API['rand-int'] = define([1,2], function (from, to){
   var debug = commentCode('[rand-int {{0}} {{1}}]', strarr(from), strarr(to));
 
   if(!to){
@@ -189,10 +196,11 @@ API.lambda = define(2, function(params, body){
 });
 
 
-API.idle = define(null, function(){
+
+API.idle = define(0, function(){
   var debug = commentCode('[idle]');
 
-  return debug + 'this.phase = null';
+  return debug + call('this.phase = null');
 });
 
 /**
@@ -212,7 +220,7 @@ API.defn = define(3, function(name, params, body){
 /**
  @name if
  */
-API['if'] = define(null, function(cond, then, _else){
+API['if'] = define([2,3], function(cond, then, _else){
   var debug = commentCode('[if {{0}} {{1}} {{2}}]', strarr(cond), strarr(then), _else ? strarr(_else) : '');
 
   var ar2Statement = 'if ({{condition}}) { {{then}}}',
@@ -353,6 +361,10 @@ API['for'] = define(2, function(name, rules){
 API.nth = define(2, function(collection, n){
   var coll = compile(collection);
   return coll + '[' + compile(n) +']';
+});
+
+API.length = define(1, function(collection){
+  return '(' + compile(collection) + ').length';
 });
 
 API.when = define(2, function(phase, behavior){

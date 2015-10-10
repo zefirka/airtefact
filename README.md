@@ -6,3 +6,6 @@
   - `static` - builds static files (js/css)
   - `docs` - build documentation
   - `test` - runs auto-testing server
+
+## Frontend packages 
+To use browser package we don't use bower anymore. Just write dependencie in NPM package.json and add name of dependency to `frontend/dependencies` array in file. It will be installed to the `public/static/lib`. 

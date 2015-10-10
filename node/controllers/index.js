@@ -12,7 +12,6 @@ var data = {
   scripts : common.scripts.concat([
     path(lib, 'socket.io-client/socket.io.js'),
     path(lib, 'paper/dist/paper-full.js'),
-    path(lib, 'highlightjs/highlight.pack.min.js'),
     path(lib, 'codemirror/lib/codemirror.js'),
     path(lib, 'codemirror/addon/edit/closebrackets.js'),
     path(lib, 'codemirror/addon/edit/matchbrackets.js'),

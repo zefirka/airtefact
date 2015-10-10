@@ -51,6 +51,32 @@ function globalForm(js, semicolon){
   return 'GAME["' + js.slice(1) +  '"]' + (semicolon ? ';' : '');
 }
 
+
+/**
+ * Возвращает последний конструкцию с return
+ *
+ * @param {mixed} list
+ * @param {function} processor
+ * @return {stirng}
+ */
+function returnLastValue(list, processor){
+  if(Array.isArray(list)){
+    list = processor ? list.map(processor) : list;
+    list[list.length - 1] = intp('return ({{0}});', list[list.length - 1]);
+    return list.join('\n');
+  }else{
+    return intp('return ({{0}});', processor ? processor(list) : list);
+  }
+}
+
+/**
+ * @param {string} v
+ * @return {string}
+ */
+function call(v, semicolon){
+  return '(function(){ ' + returnLastValue(v) + '}).call(this)' + (semicolon ? ',' : '');
+}
+
 /**
  * @param {string} js
  * @param {boolean} semicolon
@@ -103,5 +129,7 @@ module.exports  = {
   invokeForm      : invokeForm,
   comment         : comment,
   wrapInnerCall   : wrapInnerCall,
-  strarr          : strarr
+  strarr          : strarr,
+  call            : call,
+  returnLastValue : returnLastValue
 };

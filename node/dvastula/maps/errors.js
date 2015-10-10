@@ -5,6 +5,9 @@
 
 var intp  = require('../../../common/utils').interpolate;
 
+var utils = require('./utils'),
+    call  = utils.call;
+
 /**
   Ошибка несовпадения количество ожидаемых аргументов и реальных
   @public
@@ -14,11 +17,21 @@ var intp  = require('../../../common/utils').interpolate;
   @return {string}
 */
 function ArityErrorMismatch(fname, expArity, realArity){
-  return intp('(function(){ this.throwError(\"Arity Error: function {{0}} exptects {{1}} ' +
-  'arguments, but {{2}} was recieved.\")})();', fname, expArity, realArity);
+  var error = 'Arity Error: function {{0}} exptects {{1}} arguments, but {{2}} was recieved.';
+  error = intp(error, fname, expArity, realArity);
+  return throwError(error);
 }
 
-ArityErrorMismatch.signature = ['name', 'exptected arguments', 'recieved arguments'];
+/**
+ * Создает конструкцию, которая викидывает ошибку
+ *
+ * @param {string} error
+ * @return {string}
+ */
+function throwError(error){
+  var t = intp('this.throwError("{{0}}")', error);
+  return call(t);
+}
 
 /**
   Синтаксическая ошибка
@@ -29,7 +42,6 @@ ArityErrorMismatch.signature = ['name', 'exptected arguments', 'recieved argumen
 function SyntaxError(errorMessage){
   return intp('SyntaxError: {{0}}.', errorMessage);
 }
-
 
 module.exports = {
   ArityErrorMismatch  : ArityErrorMismatch,
