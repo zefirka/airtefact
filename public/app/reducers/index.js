@@ -1,7 +1,7 @@
 'use strict';
 
 import { clone } from 'ramda';
-import { initial } from '../app';
+//import { initial } from '../app';
 
 let initial = {
   id : 0,

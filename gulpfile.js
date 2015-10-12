@@ -9,14 +9,17 @@
 //     babelify  = require('babelify'),
 //     source    = require('vinyl-source-stream'),
 //     jasmine   = require('gulp-jasmine-phantom');
+
+
 // =======
+
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('browserify'),
     reactify  = require('reactify'),
     babelify  = require('babelify'),
     source    = require('vinyl-source-stream'),
-    jsdoc   = require('gulp-jsdoc');
+    esdoc   = require('gulp-esdoc');
 //>>>>>>> master
 
 var color   = require('colors'),
@@ -75,16 +78,24 @@ task('build', ['build:static', 'docs']).
 task('build:static', ['scripts', 'styles']).
 
 task('docs', task('Generation documentation', function () {
-  var sources = [
-    './node/*.js',
-    './node/**/*.js',
-    './common/**/*.js',
-    './public/static/js/app/**/*.js'
-  ];
+  function settings(dest){
+    return {
+      'includes' : ['\\.(js|es)$'],
+      'excludes' : ['\\.test\\.(js|es)$', 'bundle', 'lib/', '/docs/*', 'coverage/', 'files/', 'tasks/', '.git/'],
+      'autoPrivate' : false,
+      'destination' : './esdoc/' + dest
+    }
+  }
 
-  gulp.src(sources)
-      .pipe(jsdoc.parser())
-      .pipe(jsdoc.generator('./docs'));
+  gulp.src('./public/')
+      .pipe(esdoc(settings('public')));
+
+  gulp.src('./node/')
+      .pipe(esdoc(settings('server')));
+
+  gulp.src('./common/')
+      .pipe(esdoc(settings('common')));
+
 })).
 
 task('default', function() {
