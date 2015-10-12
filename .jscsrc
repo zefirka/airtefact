@@ -1,4 +1,5 @@
-{
+{   
+    "esnext": true,
     "disallowEmptyBlocks": true,
     "disallowKeywordsOnNewLine": [ "else" ],
     "disallowMixedSpacesAndTabs": true,
@@ -38,6 +39,8 @@
     "validateQuoteMarks": true,
     "excludeFiles" : [
       "karma.conf.js",
+      "*.jsx",
+      "public/static/js/bundle/*",
       "node/dvastula/test/results/*.js"
     ]
 }

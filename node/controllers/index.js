@@ -1,3 +1,5 @@
+import App from '../flux/app';
+
 var extend = require('../../common/utils').extend;
 var common = require('./common');
 
@@ -18,7 +20,7 @@ var data = {
     path(lib, 'codemirror/addon/selection/active-line.js'),
     path(lib, 'codemirror/mode/javascript/javascript.js'),
     path(jsc, 'dsl/ss2.js'),
-    path(jsc, 'app.js')
+    path(jsc, 'bundle/bundle.js')
   ]),
 
   styles : common.styles.concat([

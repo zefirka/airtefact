@@ -1,7 +1,8 @@
+'use strict';
+
 $(function(){
   var output = $('#output'),
       debugMode = $('#debug');
-
 
   var inputCodeMirror = CodeMirror.fromTextArea(document.getElementById('input'), {
     lineNumbers : true,
@@ -29,12 +30,6 @@ $(function(){
 
   var isDebug = checkBoxSwitches.grep('@prop("checked")').watch();
 
-  function highlight(){
-    hljs.initHighlightingOnLoad();
-    $('pre').each(function(i, block) {
-       hljs.highlightBlock(block);
-     });
-  }
   function trigger(emit){
     return function(value){
       $.post('/compile', {
@@ -46,7 +41,6 @@ $(function(){
 
   function update(value){
     outputCodeMittos.setValue(value);
-    //highlight();
   }
 
   var call = null;

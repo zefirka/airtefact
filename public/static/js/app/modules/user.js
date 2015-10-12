@@ -1,4 +1,5 @@
 'use strict';
+
 var Cookies = require('js-cookie'),
     utils   = require('../../../../../common/utils');
 

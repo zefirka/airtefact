@@ -1,4 +1,6 @@
-var socket = io();
+'use strict';
+
+var socket = window.io();
 
 module.exports = {
   init : function () {

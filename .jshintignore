@@ -1,1 +1,2 @@
 node/dvastula/test/results/*.js
+public/static/js/ui/**/*

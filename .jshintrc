@@ -11,30 +11,33 @@
   "indent": 4,
   "latedef": "nofunc",
   "laxbreak": true,
-  "newcap": true,
+  "newcap": false,
   "noarg": true,
   "noempty": true,
   "nonew": true,
   "quotmark": "single",
   "undef": true,
-  "unused": true,
-  "strict": true,
+  "unused": false,
+  "strict": false,
   "trailing": true,
+  "validthis": true,
   "-W058": false,
-  
 
   "node": true,
   "globals": {
-    "window": false,
-    "paper": false,
-    "CodeMirror": false,
-    "document": false,
     "Promise": true,
     "describe": false,
     "it": false,
     "before": false,
     "beforeEach": false,
     "after": false,
-    "afterEach": false
+    "afterEach": false,
+    "CodeMirror": false,
+    "Warden": false,
+    "$": false,
+    "React": false,
+    "document": false,
+    "window": false,
+    "paper": false
   }
 }

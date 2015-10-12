@@ -4,24 +4,6 @@ block vars
   - var env = locals.env;
 
 block content
+  !{html}
   script(type='text/javascript')
     |  window.ENV = '#{env}';
-  .container
-    h1!=title
-  .container#playPane
-    .row
-      .col-md-8.col-lg-8.col-sm-12.col-xs-12
-        .b-game
-          canvas#play(resize)
-      .col-md-4.col-lg-4.col-sm-12.col-xs-12
-        h2 Моя команда
-        form
-          textarea#code(rows=5)
-        i#summoner.glyphicon.glyphicon-asterisk
-        i#go.glyphicon.glyphicon-play
-        i#refresh.glyphicon.glyphicon-refresh
-
-block footer
-  footer
-    .container
-      p1 footer

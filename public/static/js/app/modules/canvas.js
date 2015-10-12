@@ -1,3 +1,5 @@
+'use strict';
+
 var Queue = require('../../utils/queue.js');
 var sequence = new Queue();
 
@@ -62,7 +64,7 @@ Canvas.prototype.clear = function(){
 
 Canvas.prototype.getElementById = function(id){
   return this.objects.filter(function(i){
-    return i.id == id;
+    return i.id === id;
   })[0];
 };
 

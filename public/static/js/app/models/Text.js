@@ -18,7 +18,7 @@ Text.prototype = new Base();
 Text.prototype.constructor = Text;
 
 Text.prototype.draw = function(content){
-  this.instance = new PointText({
+  this.instance = new paper.PointText({
     point : [this.x, this.y],
     justification : 'center',
     fontSize : 14,

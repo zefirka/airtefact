@@ -9,10 +9,10 @@ function physics() {
     }
     if(item.a !== undefined) {
       if(!item.v) {
-        item.v = {x: 0, y: 0};
+        item.v = {x : 0, y : 0};
       }
       if(!item.a) {
-        item.v = {x: -1, y: -1  };
+        item.v = {x : -1, y : -1  };
       }
       item.v.x = item.v.x + item.a.x;
       item.v.y = item.v.y + item.a.y;
