@@ -1,18 +1,3 @@
-/* GULP modules */
-// <<<<<<< HEAD
-// var gulp      = require('gulp'),
-//     less      = require('gulp-less'),
-//     bfy       = require('browserify'),
-//     bower     = require('gulp-bower'),
-//     jsdoc     = require('gulp-jsdoc'),
-//     reactify  = require('reactify'),
-//     babelify  = require('babelify'),
-//     source    = require('vinyl-source-stream'),
-//     jasmine   = require('gulp-jasmine-phantom');
-
-
-// =======
-
 var gulp    = require('gulp'),
     less    = require('gulp-less'),
     bfy     = require('browserify'),
@@ -20,7 +5,6 @@ var gulp    = require('gulp'),
     babelify  = require('babelify'),
     source    = require('vinyl-source-stream'),
     esdoc   = require('gulp-esdoc');
-//>>>>>>> master
 
 var color   = require('colors'),
     pkg     = require('./package.json');

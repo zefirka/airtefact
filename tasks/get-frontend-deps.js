@@ -1,8 +1,8 @@
 'use strict';
 
-var fs = require('fs');
-var pkg = require('../package.json');
-var deps = pkg.front.dependencies.map( (dep) => 'node_modules/' + dep ).join('\n') + '\n';
+const fs = require('fs');
+const pkg = require('../package.json');
+const deps = pkg.front.dependencies.map(x => 'node_modules/' + x).join('\n') + '\n';
 
 fs.writeFile('deps', deps, {encoding : 'utf-8'}, (err) => {
   if(err){

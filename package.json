@@ -24,6 +24,7 @@
     "babel": "^5.8.21",
     "babel-core": "^5.8.22",
     "babelify": "^6.2.0",
+    "browserify": "latest",
     "coveralls": "2.3.0",
     "css-modules-require-hook": "^1.0.3",
     "gulp": "^3.9.0",
@@ -58,6 +59,7 @@
     "postcss-modules-extract-imports": "0.0.5",
     "postcss-modules-local-by-default": "0.0.12",
     "postcss-modules-scope": "0.0.8",
+    "reactify": "^1.1.1",
     "sinon": "1.14.0",
     "supervisor": "^0.7.1",
     "vinyl-source-stream": "^1.1.0"
