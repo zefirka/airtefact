@@ -1,3 +1,10 @@
+'use strict';
+
+require('babel/register');
+
+var Iterable = require('immutable').Iterable;
+var extend = require('./utils').extend;
+
 function Break(){
   return null;
 }
@@ -7,43 +14,45 @@ function execPipeline(pipeline, end, value){
     return;
   }
 
-  if(pipeline.length){
-    return pipeline[0].call(this, value, function(transform){
-      return execPipeline.call(this, pipeline.slice(1), end, transform);
-    }, function(){
-      return new Break();
-    });
+  if(pipeline && pipeline.size){
+    /*jshint validthis:true */
+    return pipeline.get(0).call(this, value,
+      (transform) => execPipeline.call(this, pipeline.slice(1), end, transform),
+      () => new Break()
+    );
+    /*jshint validthis:false */
   }else{
     return end(value);
   }
 }
 
-function inherit(from){
-  var n = new Cell();
-  n.__pipeline = from.__pipeline.slice();
-  return n;
-}
-
 function Cell(value){
-
-  function bindValue(value, prop){
-    if(typeof value == 'object'){
-      for(prop in value){
-        bind(value, prop);
+  function bindValue(value, root){
+    if(typeof value === 'object'){
+      for(let prop in value){
+        value[prop] = bindValue(value[prop], root, prop);
       }
     }else{
-      value[prop] = new Cell(value[prop]);
+      /*Что-то очень странное */
+      value = new Cell(value);
+      value.on(() => {
+        root.__handlers.forEach(handler =>handler.call(root, root.__value));
+        root.emit(root.value);
+      });
     }
+
+    return value;
   }
 
   this.__handlers = [];
-  this.__pipeline = [];
+  this.__pipeline = new Iterable();
   this.__prev = null;
+  this.__value = null;
 
   if(typeof value !== 'undefined'){
 
-    if(typeof value == 'object'){
-      value = bindValue(value);
+    if(typeof value === 'object'){
+      value = bindValue(value, this);
     }
 
     this.__value  = value;
@@ -64,78 +73,116 @@ Object.defineProperty(Cell.prototype, 'value', {
   }
 });
 
-Cell.prototype.valueOf = function(){
-  return this.__value;
-};
+extend(Cell.prototype, {
 
-Cell.prototype.emit = function(value){
-  execPipeline(this.__pipeline, function(result){
-    this.__value = result;
-    this.changed = true;
-    this.__handlers.forEach(function(handler){
-      handler.call(this, this.__value);
-    }.bind(this));
-  }.bind(this), value);
-};
+  emit (value) {
+    execPipeline(this.__pipeline, function(result){
+      this.__value = result;
+      this.changed = true;
+      this.__handlers.forEach(function(handler){
+        handler.call(this, this.__value);
+      }.bind(this));
+    }.bind(this), value);
+  },
 
-Cell.prototype.on = function(callback){
-  this.__handlers.push(callback);
-};
+  on (callback){
+    this.__handlers.push(callback);
+    return this;
+  },
 
-Cell.prototype.filter = function(fn){
-  var ncell = inherit(this);
-  ncell.pipe(function(value, next, stop){
-    return fn(value) === true ? next(value) : stop();
-  });
-  ncell.value = this.value;
-  return ncell;
-};
+  inherit (fn){
+    let n = new Cell();
+    n.__pipeline = this.__pipeline.concat(fn.bind(n));
+    n.value = this.value;
+    return n;
+  },
 
-Cell.prototype.map = function(fn){
-  var ncell = inherit(this);
-  ncell.pipe(function(value, next){
-    return next(fn(value));
-  });
-  ncell.value = this.value;
-  return ncell;
-};
+  log (){
+    this.on(console.log.bind.apply(console.log, [console].concat([].slice.call(arguments))));
+  },
 
-Cell.prototype.reduce = function(fn, init){
-  var ncell = inherit(this);
-  ncell.pipe(function(value, next){
-    return next(fn(ncell.__prev || init, value));
-  });
-  ncell.value = this.value;
-  return ncell;
-};
+  valueOf () {
+    this.changed = false;
+    return this.__value;
+  },
 
-Cell.prototype.debounce = function(timeout){
-  var ncell = inherit(this);
-  var timer = null;
+  filter (fn){
+    return this.inherit((value, next, stop) => fn(value) === true ? next(value) : stop());
+  },
 
-  ncell.pipe(function(value, next){
-    if(timer){
-      clearTimeout(timer);
+  map (fn) {
+    return this.inherit((value, next) => next(fn(value)));
+  },
+
+  reduce (fn, init){
+    return this.inherit((value, next) => next(fn(this.__prev || init, value)));
+  },
+
+  pipe (fn){
+    this.__pipeline = this.__pipeline.concat(fn);
+    return this;
+  },
+
+  merge (c){
+    let n = new Cell();
+    let set = x => n.value = x;
+    this.on(set);
+    c.on(set);
+    return n;
+  },
+
+  sync (c){
+    let synced = new Cell();
+    let vals = [];
+    this.on(x => {
+      vals[0] = x;
+      if(vals[1] !== undefined){
+        synced.value = [vals[0], vals[1]];
+      }
+    });
+    c.on(x => {
+      vals[1] = x;
+      if(vals[0] !== undefined){
+        synced.value = [vals[0], vals[1]];
+      }
+    });
+    return synced;
+  },
+
+  sample (c, fn){
+    var nc = new Cell();
+    var self = this;
+
+    function sample(){
+      nc.value = fn(self.__value, c.__value);
     }
 
-    timer = setTimeout(function(){
-      next(value);
-    }, timeout);
-  });
-  ncell.value = this.value;
-  return ncell;
-};
+    this.on(sample);
+    c.on(sample);
+    sample();
+    return nc;
+  },
 
-Cell.prototype.pipe = function(fn){
-  this.__pipeline.push(fn);
-};
+  or (a){
+    return this.sample(a, (x, y) => x || y);
+  },
+
+  and (a){
+    return this.sample(a, (x, y) => x && y);
+  },
+
+  debounce (timeout){
+    var timer = null;
+    return this.inherit((value, next) => {
+      timer = timer ? clearTimeout(timer) : setTimeout(() => next(value), timeout);
+    });
+  }
+});
 
 function cell (cellar, def) {
   if(typeof cellar === 'function'){
     def = new Cell(def);
-    cellar(function(value){
-      def.value = value;
-    });
+    cellar(value => def.value = value);
     return def;
   }else{
     return new Cell(cellar);
@@ -147,11 +194,9 @@ function formula(deps, func, init ){
 
   cell.__value = init;
 
-  deps.forEach(function(dep){
-    dep.on(function(){
-      cell.value = func.apply(null, deps.map(function(d){
-        return d.value;
-      }));
+  deps.forEach((dep) => {
+    dep.on(() => {
+      cell.value = func.apply(null, deps.map(d => d.value));
     });
   });
 
