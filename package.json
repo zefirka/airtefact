@@ -4,8 +4,8 @@
   "description": "Pretty AI Interface",
   "main": "node/index.js",
   "scripts": {
-    "postinstall": "./tasks/post-install",
-    "test": "./tasks/tests"
+    "postinstall": "tasks/post-install",
+    "test": "tasks/tests"
   },
   "repository": {
     "type": "git",
