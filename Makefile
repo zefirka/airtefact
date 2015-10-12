@@ -52,3 +52,6 @@ run:
 
 debug:
 	$(NODE) --debug node/index.js
+
+docs:
+	gulp docs

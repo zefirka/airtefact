@@ -4,8 +4,8 @@
   "description": "Pretty AI Interface",
   "main": "node/index.js",
   "scripts": {
-    "postinstall": "tasks/post-install",
-    "test": "tasks/tests"
+    "postinstall": "./tasks/post-install",
+    "test": "./tasks/tests"
   },
   "repository": {
     "type": "git",
@@ -83,7 +83,7 @@
     "jquery": "^1.11.2",
     "warden.js": "^0.4.1",
     "bootstrap": "3.3.5",
-    "paper": "^0.9.23",
+    "paper": "latest",
     "socket.io-client": "^1.3.6",
     "codemirror": "^5.7.0"
   },
