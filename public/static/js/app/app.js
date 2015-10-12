@@ -1,10 +1,14 @@
+'use strict';
+
 var models = require('./models/models'),
     socket = require('./modules/socket'),
     Canvas = require('./modules/canvas'),
-    utils  = require('../../../../common/utils.js');
+    utils  = require('../../../../common/utils.js'),
+    User   = require('./modules/user');
 
 /* Первоначальная инициализация */
 socket.init();
+User.init();
 paper.install(window);
 
 $(function() {
@@ -19,7 +23,7 @@ $(function() {
       canvas.getElementById(elem.id).update(elem);
     });
 
-    if (window.ENV == 'debug') {
+    if (window.ENV === 'debug') {
       socket.emit('ready', true);
     }
   });

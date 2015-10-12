@@ -25,6 +25,10 @@
 
   "node": true,
   "globals": {
+    "window": false,
+    "paper": false,
+    "CodeMirror": false,
+    "document": false,
     "Promise": true,
     "describe": false,
     "it": false,
