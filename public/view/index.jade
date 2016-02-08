@@ -1,9 +1,0 @@
-extend ./layout.jade
-
-block vars
-  - var env = locals.env;
-
-block content
-  !{html}
-  script(type='text/javascript')
-    |  window.ENV = '#{env}';

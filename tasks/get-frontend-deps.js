@@ -4,9 +4,10 @@ require('babel/register');
 
 var fs = require('fs');
 var pkg = require('../package.json');
-var deps = pkg.front.dependencies.map(x => 'node_modules/' + x).join('\n') + '\n';
+var deps = pkg.front.dependencies.map(x => 'require(\'node_modules/' + x + '\')').join(';\n') + ';\n';
+deps += 'require(\'./static/jsx/main.jsx\');';
 
-fs.writeFile('deps', deps, {encoding : 'utf-8'}, (err) => {
+fs.writeFile('./entry.js', deps, {encoding : 'utf-8'}, (err) => {
   if(err){
     throw err;
   }
