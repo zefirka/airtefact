@@ -6,7 +6,6 @@ var Link = window.ReactRouter.Link;
 
 var socket =  io.connect(location.host);
 
-
   function render() {
       ReactDOM.render(
       <div>

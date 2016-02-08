@@ -1,5 +1,11 @@
 webpack = require("webpack");
-module.exports = {
+var libsDir = './public/static/js/libs/';
+var config = {
+    addVendor: function (name, path) {
+      this.resolve.alias[name] = path;
+      this.module.noParse.push(new RegExp(path));
+    },
+    resolve: { alias: {} },
     entry: "./entry.js",
     output: {
         path: __dirname,
@@ -7,6 +13,7 @@ module.exports = {
         library: 'Nadmozg'
     },
     module: {
+        noParse: [],
         loaders: [
             { test: /\.css$/, loader: "style!css" },
             {
@@ -19,10 +26,18 @@ module.exports = {
            }
         ]
     },
-  //  plugins: [
-  //                  new webpack.optimize.UglifyJsPlugin()
-  //              ],
+    plugins: [
+                   new webpack.optimize.UglifyJsPlugin()
+              ],
     //watch: true,
     //progress: true,
     devtool: 'source-map'
 };
+
+
+config.addVendor('warden', libsDir + 'warden');
+config.addVendor('jquery', libsDir + 'jquery');
+config.addVendor('bootstrap', libsDir + 'bootstrap');
+config.addVendor('react', libsDir + 'react');
+config.addVendor('react-dom', libsDir + 'react-dom');
+module.exports = config;
